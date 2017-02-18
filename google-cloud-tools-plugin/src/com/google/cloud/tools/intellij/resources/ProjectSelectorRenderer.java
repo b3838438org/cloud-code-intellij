@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,8 +50,8 @@ class ProjectSelectorRenderer implements TreeCellRenderer, MouseListener, MouseM
   private static final Cursor NORMAL_CURSOR = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR);
   private static final Color ERROR_COLOR = JBColor.RED;
 
-  private final ScheduledExecutorService loadingAnimationScheduler = ConcurrencyUtil
-      .newSingleScheduledThreadExecutor("Animations");
+  private final ScheduledExecutorService loadingAnimationScheduler =
+      ConcurrencyUtil.newSingleScheduledThreadExecutor("Animations");
 
   private ScheduledFuture<?> ticker;
   private JTree tree;
@@ -69,25 +69,34 @@ class ProjectSelectorRenderer implements TreeCellRenderer, MouseListener, MouseM
     this.tree = tree;
     Color backgroundNonSelectionColor = defaultRenderer.getBackgroundNonSelectionColor();
     Color textNonSelectionColor = defaultRenderer.getTextNonSelectionColor();
-    projectSelectorItem = new ProjectSelectorItem(backgroundNonSelectionColor,
-        defaultRenderer.getTextSelectionColor(), textNonSelectionColor);
-    resourceSelectorLoadingItem = new ResourceSelectorLoadingItem(backgroundNonSelectionColor,
-        textNonSelectionColor);
+    projectSelectorItem =
+        new ProjectSelectorItem(
+            backgroundNonSelectionColor,
+            defaultRenderer.getTextSelectionColor(),
+            textNonSelectionColor);
+    resourceSelectorLoadingItem =
+        new ResourceSelectorLoadingItem(backgroundNonSelectionColor, textNonSelectionColor);
     projectSelectorNewProjectItem = new ProjectSelectorNewProjectItem(tree);
     selectorErrorItem = new ResourceSelectorErrorItem(ERROR_COLOR);
   }
 
   @Override
-  public Component getTreeCellRendererComponent(JTree tree, Object value, boolean selected,
+  public Component getTreeCellRendererComponent(
+      JTree tree,
+      Object value,
+      boolean selected,
       boolean expanded,
-      boolean leaf, int row, boolean hasFocus) {
+      boolean leaf,
+      int row,
+      boolean hasFocus) {
     Component returnValue = null;
     if ((value != null) && (value instanceof DefaultMutableTreeNode)) {
       returnValue = getComponentForNode(value, selected);
     }
     if (returnValue == null) {
-      returnValue = defaultRenderer
-          .getTreeCellRendererComponent(tree, value, selected, expanded, leaf, row, hasFocus);
+      returnValue =
+          defaultRenderer.getTreeCellRendererComponent(
+              tree, value, selected, expanded, leaf, row, hasFocus);
     }
     return returnValue;
   }
@@ -105,8 +114,8 @@ class ProjectSelectorRenderer implements TreeCellRenderer, MouseListener, MouseM
     for (int index = 0; index < rootNode.getChildCount(); index++) {
       GoogleUserModelItem userModelItem = (GoogleUserModelItem) rootNode.getChildAt(index);
       if (userModelItem.isSynchronizing()
-          && userModelItem.getChildCount() == 1 && userModelItem
-          .getChildAt(0) instanceof ResourceLoadingModelItem) {
+          && userModelItem.getChildCount() == 1
+          && userModelItem.getChildAt(0) instanceof ResourceLoadingModelItem) {
         TreePath path = new TreePath(model.getPathToRoot(userModelItem.getChildAt(0)));
         Rectangle rect = tree.getPathBounds(path);
         if (rect != null) {
@@ -130,12 +139,17 @@ class ProjectSelectorRenderer implements TreeCellRenderer, MouseListener, MouseM
       return projectSelectorNewProjectItem;
     } else if (userObject instanceof ResourceLoadingModelItem) {
       if (ticker == null) {
-        ticker = loadingAnimationScheduler.scheduleWithFixedDelay(new Runnable() {
-          @Override
-          public void run() {
-            repaintLoadingNodes();
-          }
-        }, 100, 100, TimeUnit.MILLISECONDS);
+        ticker =
+            loadingAnimationScheduler.scheduleWithFixedDelay(
+                new Runnable() {
+                  @Override
+                  public void run() {
+                    repaintLoadingNodes();
+                  }
+                },
+                100,
+                100,
+                TimeUnit.MILLISECONDS);
       }
       resourceSelectorLoadingItem.snap();
       return resourceSelectorLoadingItem;
@@ -143,16 +157,17 @@ class ProjectSelectorRenderer implements TreeCellRenderer, MouseListener, MouseM
       selectorErrorItem.setText(((ResourceErrorModelItem) userObject).getErrorMessage());
       return selectorErrorItem;
     } else if (userObject instanceof ResourceProjectModelItem) {
-      projectSelectorItem
-          .initialize(((ResourceProjectModelItem) userObject).getDescription(),
-              ((ResourceProjectModelItem) userObject).getProjectId(), selected,
-              lastHoveredNode == userObject);
+      projectSelectorItem.initialize(
+          ((ResourceProjectModelItem) userObject).getDescription(),
+          ((ResourceProjectModelItem) userObject).getProjectId(),
+          selected,
+          lastHoveredNode == userObject);
 
       return projectSelectorItem;
     } else if (userObject instanceof GoogleUserModelItem) {
       GoogleUserModelItem userModelItem = (GoogleUserModelItem) userObject;
-      projectSelectorCredentialedUser
-          .initialize(userModelItem.getImage(), userModelItem.getName(), userModelItem.getEmail());
+      projectSelectorCredentialedUser.initialize(
+          userModelItem.getImage(), userModelItem.getName(), userModelItem.getEmail());
       return projectSelectorCredentialedUser;
     }
     return null;
@@ -174,29 +189,32 @@ class ProjectSelectorRenderer implements TreeCellRenderer, MouseListener, MouseM
   public void mousePressed(MouseEvent event) {
     Component component = getComponentFromCoordinates(event.getX(), event.getY(), false);
     if (component instanceof MouseListener) {
-      ((MouseListener) component).mousePressed(
-          new MouseEvent(component, event.getID(), event.getWhen(), event.getModifiers(),
-              getXTranslation(event.getX(), event.getY()),
-              getYTranslation(event.getX(), event.getY()),
-              event.getClickCount(), event.isPopupTrigger(), event.getButton()));
+      ((MouseListener) component)
+          .mousePressed(
+              new MouseEvent(
+                  component,
+                  event.getID(),
+                  event.getWhen(),
+                  event.getModifiers(),
+                  getXTranslation(event.getX(), event.getY()),
+                  getYTranslation(event.getX(), event.getY()),
+                  event.getClickCount(),
+                  event.isPopupTrigger(),
+                  event.getButton()));
     }
   }
 
   @Override
-  public void mouseReleased(MouseEvent event) {
-  }
+  public void mouseReleased(MouseEvent event) {}
 
   @Override
-  public void mouseEntered(MouseEvent event) {
-  }
+  public void mouseEntered(MouseEvent event) {}
 
   @Override
-  public void mouseExited(MouseEvent event) {
-  }
+  public void mouseExited(MouseEvent event) {}
 
   @Override
-  public void mouseDragged(MouseEvent event) {
-  }
+  public void mouseDragged(MouseEvent event) {}
 
   @Override
   public void mouseMoved(MouseEvent event) {
@@ -221,11 +239,18 @@ class ProjectSelectorRenderer implements TreeCellRenderer, MouseListener, MouseM
       Component component = getComponentForNode(newHoveredNode, false);
 
       if (component instanceof MouseMotionListener) {
-        ((MouseMotionListener) component).mouseMoved(
-            new MouseEvent(component, event.getID(), event.getWhen(), event.getModifiers(),
-                getXTranslation(event.getX(), event.getY()),
-                getYTranslation(event.getX(), event.getY()),
-                event.getClickCount(), event.isPopupTrigger(), event.getButton()));
+        ((MouseMotionListener) component)
+            .mouseMoved(
+                new MouseEvent(
+                    component,
+                    event.getID(),
+                    event.getWhen(),
+                    event.getModifiers(),
+                    getXTranslation(event.getX(), event.getY()),
+                    getYTranslation(event.getX(), event.getY()),
+                    event.getClickCount(),
+                    event.isPopupTrigger(),
+                    event.getButton()));
         mouseMovedHandled = true;
       }
     }

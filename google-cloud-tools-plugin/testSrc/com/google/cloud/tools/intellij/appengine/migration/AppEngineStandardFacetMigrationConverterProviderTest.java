@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,13 +18,10 @@ package com.google.cloud.tools.intellij.appengine.migration;
 
 import java.io.IOException;
 
-/**
- * Unit tests for {@link AppEngineStandardFacetMigrationConverterProvider}
- */
+/** Unit tests for {@link AppEngineStandardFacetMigrationConverterProvider} */
 public class AppEngineStandardFacetMigrationConverterProviderTest extends BaseConverterTest {
 
   public void testConvertBasic() throws IOException {
     testConvert("conversion/appEngineFacetMigration");
   }
-
 }

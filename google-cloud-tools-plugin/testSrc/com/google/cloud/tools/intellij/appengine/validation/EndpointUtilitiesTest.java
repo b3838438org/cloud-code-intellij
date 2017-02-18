@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,17 +17,14 @@
 package com.google.cloud.tools.intellij.appengine.validation;
 
 import com.google.cloud.tools.intellij.appengine.util.EndpointUtilities;
-import junit.framework.Assert;
-import junit.framework.TestCase;
 
-/**
- * Unit test for {@link EndpointUtilities}.
- */
+import org.junit.Assert;
+import org.junit.TestCase;
+
+/** Unit test for {@link EndpointUtilities}. */
 public class EndpointUtilitiesTest extends TestCase {
 
-  /**
-   *  Tests {@link EndpointUtilities#removeBeginningAndEndingQuotes(String)} }
-   */
+  /** Tests {@link EndpointUtilities#removeBeginningAndEndingQuotes(String)} } */
   public void testRemoveBeginningAndEndingQuotes() {
     String a = "";
     String b = "abc";
@@ -36,7 +33,7 @@ public class EndpointUtilitiesTest extends TestCase {
     String d = "\"\"abc\"\"";
     String dResult = "\"abc\"";
     String e = "a\"a";
-    String f =  "\"abc";
+    String f = "\"abc";
     String g = "abc\"";
 
     Assert.assertEquals(null, EndpointUtilities.removeBeginningAndEndingQuotes(null));
@@ -48,5 +45,4 @@ public class EndpointUtilitiesTest extends TestCase {
     Assert.assertEquals(f, EndpointUtilities.removeBeginningAndEndingQuotes(f));
     Assert.assertEquals(g, EndpointUtilities.removeBeginningAndEndingQuotes(g));
   }
-
 }

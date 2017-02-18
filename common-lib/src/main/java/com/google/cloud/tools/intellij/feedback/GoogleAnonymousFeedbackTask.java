@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,18 +16,21 @@
 
 package com.google.cloud.tools.intellij.feedback;
 
-import com.android.tools.idea.diagnostics.error.AnonymousFeedback;
 import com.google.common.annotations.VisibleForTesting;
+
+import com.android.tools.idea.diagnostics.error.AnonymousFeedback;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
 import com.intellij.util.Consumer;
 import com.intellij.util.net.HttpConfigurable;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.Map;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /** Reports an error to Google Feedback in the background. */
 public class GoogleAnonymousFeedbackTask extends Task.Backgroundable {

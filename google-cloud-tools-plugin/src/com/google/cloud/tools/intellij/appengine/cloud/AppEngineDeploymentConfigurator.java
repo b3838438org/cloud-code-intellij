@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,11 +31,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Sets up the configuration elements for an AppEngine Cloud deployment.
- */
-class AppEngineDeploymentConfigurator extends
-    DeploymentConfigurator<AppEngineDeploymentConfiguration, AppEngineServerConfiguration> {
+/** Sets up the configuration elements for an AppEngine Cloud deployment. */
+class AppEngineDeploymentConfigurator
+    extends DeploymentConfigurator<AppEngineDeploymentConfiguration, AppEngineServerConfiguration> {
 
   private static final Logger logger = Logger.getInstance(AppEngineDeploymentConfigurator.class);
 
@@ -70,15 +68,13 @@ class AppEngineDeploymentConfigurator extends
       @NotNull RemoteServer<AppEngineServerConfiguration> server) {
     if (!(source instanceof AppEngineDeployable)) {
       logger.error(
-          String.format("Deployment source with name %s is not deployable to App Engine.",
+          String.format(
+              "Deployment source with name %s is not deployable to App Engine.",
               source.getPresentableName()));
       return null;
     }
 
     return new AppEngineDeploymentRunConfigurationEditor(
-        project,
-        (AppEngineDeployable) source,
-        new CloudSdkAppEngineHelper(project)
-    );
+        project, (AppEngineDeployable) source, new CloudSdkAppEngineHelper(project));
   }
 }

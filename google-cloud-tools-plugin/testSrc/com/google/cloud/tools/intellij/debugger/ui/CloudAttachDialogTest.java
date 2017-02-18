@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,14 +21,14 @@ import static org.mockito.Mockito.when;
 
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.services.clouddebugger.v2.model.Debuggee;
-import com.google.cloud.tools.intellij.debugger.SyncResult;
 import com.google.cloud.tools.intellij.debugger.CloudDebugProcessState;
 import com.google.cloud.tools.intellij.debugger.ProjectRepositoryValidator;
-import com.google.cloud.tools.intellij.resources.ProjectSelector;
-import com.google.cloud.tools.intellij.testing.TestUtils;
+import com.google.cloud.tools.intellij.debugger.SyncResult;
 import com.google.cloud.tools.intellij.login.CredentialedUser;
 import com.google.cloud.tools.intellij.login.GoogleLoginService;
 import com.google.cloud.tools.intellij.login.Services;
+import com.google.cloud.tools.intellij.resources.ProjectSelector;
+import com.google.cloud.tools.intellij.testing.TestUtils;
 import com.google.gdt.eclipse.login.common.GoogleLoginState;
 
 import com.intellij.openapi.project.Project;
@@ -44,7 +44,8 @@ import javax.swing.JLabel;
 public class CloudAttachDialogTest extends PlatformTestCase {
   private static final String NO_LOGIN_WARNING = "You must be logged in to perform this action.";
   private static final String NO_PROJECT_ID_WARNING = "Please enter a Project ID.";
-  private static final String NO_MODULES_FOUND_WARNING = "No debuggable modules found. Please ensure that your application has live instances.";
+  private static final String NO_MODULES_FOUND_WARNING =
+      "No debuggable modules found. Please ensure that your application has live instances.";
 
   private static final String USER = "test@user.com";
   private static final String PASSWORD = "123";
@@ -130,10 +131,9 @@ public class CloudAttachDialogTest extends PlatformTestCase {
   }
 
   /**
-   * If there is no module loaded (including no default module)
-   * then this indicates that the async module loading is still in progress. We do not
-   * want to display an error to the user until the thread completes to avoid
-   * flashing error messages
+   * If there is no module loaded (including no default module) then this indicates that the async
+   * module loading is still in progress. We do not want to display an error to the user until the
+   * thread completes to avoid flashing error messages
    */
   public void testUnknownProjectSelected() {
     CloudAttachDialog dialog = initDialog();
@@ -152,10 +152,9 @@ public class CloudAttachDialogTest extends PlatformTestCase {
   }
 
   /**
-   * After selecting a module that requires sync/stash, any subsequent module that is
-   * selected that has no remote repository is shown the sync/stash checkbox regardless of its state.
-   * The visibility of this option needs to be properly reset.
-   *
+   * After selecting a module that requires sync/stash, any subsequent module that is selected that
+   * has no remote repository is shown the sync/stash checkbox regardless of its state. The
+   * visibility of this option needs to be properly reset.
    */
   public void testSyncStashReset() {
     mockLoggedInUser();
@@ -233,7 +232,8 @@ public class CloudAttachDialogTest extends PlatformTestCase {
     GoogleLoginState googleLoginState = mock(GoogleLoginState.class);
     Credential credential = mock(Credential.class);
     this.user = mock(CredentialedUser.class);
-    LinkedHashMap<String, CredentialedUser> allusers = new LinkedHashMap<String, CredentialedUser>();
+    LinkedHashMap<String, CredentialedUser> allusers =
+        new LinkedHashMap<String, CredentialedUser>();
 
     when(this.user.getCredential()).thenReturn(credential);
     when(this.user.getEmail()).thenReturn(USER);
@@ -252,8 +252,8 @@ public class CloudAttachDialogTest extends PlatformTestCase {
   }
 
   /**
-   * Creates a mock sync result representing a debuggable module selection
-   * that doesn't need stash or sync
+   * Creates a mock sync result representing a debuggable module selection that doesn't need stash
+   * or sync
    */
   private SyncResult mockSyncResult(boolean needsStash, boolean hasRemoteRepository) {
     SyncResult syncResult = mock(SyncResult.class);

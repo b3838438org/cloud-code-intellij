@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,9 +42,7 @@ import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * Deploys an application to App Engine.
- */
+/** Deploys an application to App Engine. */
 public class AppEngineDeploy {
 
   private static final Logger logger = Logger.getInstance(AppEngineDeploy.class);
@@ -55,9 +53,7 @@ public class AppEngineDeploy {
   private AppEngineEnvironment environment;
   private DeploymentOperationCallback callback;
 
-  /**
-   * Initialize the deployment dependencies.
-   */
+  /** Initialize the deployment dependencies. */
   public AppEngineDeploy(
       @NotNull AppEngineHelper helper,
       @NotNull LoggingHandler loggingHandler,
@@ -72,11 +68,26 @@ public class AppEngineDeploy {
   }
 
   /**
-   * Given a staging directory, deploy the application to Google App Engine.
+   * Parse the raw json output of the deployment.
+   *
+   * @return an object modeling the output of a deploy command
+   * @throws JsonParseException if unable to extract the deploy output information needed
    */
+  @VisibleForTesting
+  static DeployOutput parseDeployOutput(String jsonOutput) throws JsonParseException {
+    Type deployOutputType = new TypeToken<DeployOutput>() {}.getType();
+    DeployOutput deployOutput = new Gson().fromJson(jsonOutput, deployOutputType);
+    if (deployOutput == null
+        || deployOutput.versions == null
+        || deployOutput.versions.size() != 1) {
+      throw new JsonParseException("Cannot get app version: unexpected gcloud JSON output format");
+    }
+    return deployOutput;
+  }
+
+  /** Given a staging directory, deploy the application to Google App Engine. */
   public void deploy(
-      @NotNull Path stagingDirectory,
-      @NotNull ProcessStartListener deployStartListener) {
+      @NotNull Path stagingDirectory, @NotNull ProcessStartListener deployStartListener) {
     final StringBuilder rawDeployOutput = new StringBuilder();
 
     DefaultDeployConfiguration configuration = new DefaultDeployConfiguration();
@@ -97,26 +108,29 @@ public class AppEngineDeploy {
       configuration.setVersion(deploymentConfiguration.getVersion());
     }
 
-    ProcessOutputLineListener deployLogListener = new ProcessOutputLineListener() {
-      @Override
-      public void onOutputLine(String line) {
-        loggingHandler.print(line + "\n");
-      }
-    };
-    ProcessOutputLineListener deployOutputListener = new ProcessOutputLineListener() {
-      @Override
-      public void onOutputLine(String output) {
-        rawDeployOutput.append(output);
-      }
-    };
+    ProcessOutputLineListener deployLogListener =
+        new ProcessOutputLineListener() {
+          @Override
+          public void onOutputLine(String line) {
+            loggingHandler.print(line + "\n");
+          }
+        };
+    ProcessOutputLineListener deployOutputListener =
+        new ProcessOutputLineListener() {
+          @Override
+          public void onOutputLine(String output) {
+            rawDeployOutput.append(output);
+          }
+        };
     ProcessExitListener deployExitListener = new DeployExitListener(rawDeployOutput);
 
-    CloudSdk sdk = helper.createSdk(
-        loggingHandler,
-        deployStartListener,
-        deployLogListener,
-        deployOutputListener,
-        deployExitListener);
+    CloudSdk sdk =
+        helper.createSdk(
+            loggingHandler,
+            deployStartListener,
+            deployLogListener,
+            deployOutputListener,
+            deployExitListener);
 
     // show a warning notification if the cloud sdk version is not supported
     CloudSdkVersionNotifier.getInstance().notifyIfUnsupportedVersion();
@@ -141,6 +155,35 @@ public class AppEngineDeploy {
     return callback;
   }
 
+  /**
+   * Holds de-serialized JSON output of gcloud app deploy. Don't change the field names because Gson
+   * uses it for automatic de-serialization.
+   */
+  static class DeployOutput {
+    List<Version> versions;
+
+    @Nullable
+    public String getVersion() {
+      if (versions == null || versions.size() != 1) {
+        return null;
+      }
+      return versions.get(0).id;
+    }
+
+    @Nullable
+    public String getService() {
+      if (versions == null || versions.size() != 1) {
+        return null;
+      }
+      return versions.get(0).service;
+    }
+
+    private static class Version {
+      String id;
+      String service;
+    }
+  }
+
   private class DeployExitListener implements ProcessExitListener {
     final StringBuilder rawDeployOutput;
 
@@ -161,73 +204,34 @@ public class AppEngineDeploy {
           }
 
           if (deployOutput == null
-              || deployOutput.getService() == null || deployOutput.getVersion() == null) {
+              || deployOutput.getService() == null
+              || deployOutput.getVersion() == null) {
             loggingHandler.print(
-                GctBundle.message("appengine.deployment.version.extract.failure") + "\n"
-                    + GctBundle.message("appengine.action.error.update.message") + "\n");
+                GctBundle.message("appengine.deployment.version.extract.failure")
+                    + "\n"
+                    + GctBundle.message("appengine.action.error.update.message")
+                    + "\n");
           }
 
           callback.succeeded(
               new AppEngineDeploymentRuntime(
-                  loggingHandler, helper, deploymentConfiguration, environment,
+                  loggingHandler,
+                  helper,
+                  deploymentConfiguration,
+                  environment,
                   deployOutput != null ? deployOutput.getService() : null,
                   deployOutput != null ? deployOutput.getVersion() : null));
 
         } else {
           logger.warn("Deployment process exited with an error. Exit Code:" + exitCode);
           callback.errorOccurred(
-              GctBundle.message("appengine.deployment.error.with.code", exitCode) + "\n"
+              GctBundle.message("appengine.deployment.error.with.code", exitCode)
+                  + "\n"
                   + GctBundle.message("appengine.action.error.update.message"));
         }
       } finally {
         helper.deleteCredentials();
       }
-    }
-  }
-
-  /**
-   * Parse the raw json output of the deployment.
-   *
-   * @return an object modeling the output of a deploy command
-   * @throws JsonParseException if unable to extract the deploy output information needed
-   */
-  @VisibleForTesting
-  static DeployOutput parseDeployOutput(String jsonOutput) throws JsonParseException {
-    Type deployOutputType = new TypeToken<DeployOutput>() {}.getType();
-    DeployOutput deployOutput = new Gson().fromJson(jsonOutput, deployOutputType);
-    if (deployOutput == null
-        || deployOutput.versions == null || deployOutput.versions.size() != 1) {
-      throw new JsonParseException("Cannot get app version: unexpected gcloud JSON output format");
-    }
-    return deployOutput;
-  }
-
-  /**
-   * Holds de-serialized JSON output of gcloud app deploy. Don't change the field names
-   * because Gson uses it for automatic de-serialization.
-   */
-  static class DeployOutput {
-    private static class Version {
-      String id;
-      String service;
-    }
-
-    List<Version> versions;
-
-    @Nullable
-    public String getVersion() {
-      if (versions == null || versions.size() != 1) {
-        return null;
-      }
-      return versions.get(0).id;
-    }
-
-    @Nullable
-    public String getService() {
-      if (versions == null || versions.size() != 1) {
-        return null;
-      }
-      return versions.get(0).service;
     }
   }
 }

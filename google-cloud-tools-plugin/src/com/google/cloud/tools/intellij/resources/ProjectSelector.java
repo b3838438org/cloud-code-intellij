@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -75,9 +75,9 @@ import javax.swing.tree.TreeSelectionModel;
 
 /**
  * ProjectSelector allows the user to select a GCP project id. It calls into {@link
- * IntellijGoogleLoginService} to get the set of credentialed users and then into
- * resource manager to get the set of projects. The result is displayed in a tree view organized by
- * google login. */
+ * IntellijGoogleLoginService} to get the set of credentialed users and then into resource manager
+ * to get the set of projects. The result is displayed in a tree view organized by google login.
+ */
 public class ProjectSelector extends CustomizableComboBox implements CustomizableComboBoxPopup {
 
   // An empty marker is used because the template engine validates even
@@ -101,9 +101,7 @@ public class ProjectSelector extends CustomizableComboBox implements Customizabl
     this(false);
   }
 
-  /**
-   * Initialize the project selector.
-   */
+  /** Initialize the project selector. */
   public ProjectSelector(final boolean queryOnExpand) {
     this.queryOnExpand = queryOnExpand;
     modelRoot = new DefaultMutableTreeNode("root");
@@ -111,55 +109,57 @@ public class ProjectSelector extends CustomizableComboBox implements Customizabl
     projectSelectionListeners = new ArrayList<>();
 
     // synchronize selection between the treemodel and current text.
-    treeModel.addTreeModelListener(new TreeModelListener() {
-      @Override
-      public void treeNodesChanged(TreeModelEvent event) {
-      }
+    treeModel.addTreeModelListener(
+        new TreeModelListener() {
+          @Override
+          public void treeNodesChanged(TreeModelEvent event) {}
 
-      @Override
-      public void treeNodesInserted(TreeModelEvent event) {
-      }
+          @Override
+          public void treeNodesInserted(TreeModelEvent event) {}
 
-      @Override
-      public void treeNodesRemoved(TreeModelEvent event) {
-      }
+          @Override
+          public void treeNodesRemoved(TreeModelEvent event) {}
 
-      @Override
-      public void treeStructureChanged(TreeModelEvent event) {
-        if (!Strings.isNullOrEmpty(getText())
-            && popup != null && !popup.isDisposed() && popupPanel != null
-            && event.getTreePath() != null
-            && event.getTreePath().getLastPathComponent() instanceof GoogleUserModelItem) {
-          GoogleUserModelItem userItem = (GoogleUserModelItem) event.getTreePath()
-              .getLastPathComponent();
-          for (int index = 0; index < userItem.getChildCount(); index++) {
-            DefaultMutableTreeNode loadedItem = (DefaultMutableTreeNode) userItem.getChildAt(index);
-            if (loadedItem instanceof ResourceProjectModelItem
-                && getText().equals(((ResourceProjectModelItem) loadedItem).getProjectId())) {
-              popupPanel.tree.setSelectionPath(new TreePath(loadedItem.getPath()));
+          @Override
+          public void treeStructureChanged(TreeModelEvent event) {
+            if (!Strings.isNullOrEmpty(getText())
+                && popup != null
+                && !popup.isDisposed()
+                && popupPanel != null
+                && event.getTreePath() != null
+                && event.getTreePath().getLastPathComponent() instanceof GoogleUserModelItem) {
+              GoogleUserModelItem userItem =
+                  (GoogleUserModelItem) event.getTreePath().getLastPathComponent();
+              for (int index = 0; index < userItem.getChildCount(); index++) {
+                DefaultMutableTreeNode loadedItem =
+                    (DefaultMutableTreeNode) userItem.getChildAt(index);
+                if (loadedItem instanceof ResourceProjectModelItem
+                    && getText().equals(((ResourceProjectModelItem) loadedItem).getProjectId())) {
+                  popupPanel.tree.setSelectionPath(new TreePath(loadedItem.getPath()));
+                }
+              }
             }
           }
-        }
-      }
-    });
+        });
 
     // When the project selector becomes visible, we synchronize and call elysium.
-    addComponentListener(new ComponentAdapter() {
-      @Override
-      public void componentShown(ComponentEvent event) {
-        synchronize(false);
-        if (EMPTY_MARKER.equals(getText())) {
-          setText(EMPTY_VALUE);
-        }
-      }
+    addComponentListener(
+        new ComponentAdapter() {
+          @Override
+          public void componentShown(ComponentEvent event) {
+            synchronize(false);
+            if (EMPTY_MARKER.equals(getText())) {
+              setText(EMPTY_VALUE);
+            }
+          }
 
-      @Override
-      public void componentHidden(ComponentEvent event) {
-        if (EMPTY_VALUE.equals(getText())) {
-          setText(EMPTY_MARKER);
-        }
-      }
-    });
+          @Override
+          public void componentHidden(ComponentEvent event) {
+            if (EMPTY_VALUE.equals(getText())) {
+              setText(EMPTY_MARKER);
+            }
+          }
+        });
 
     getTextField().setCursor(Cursor.getDefaultCursor());
     getTextField().getEmptyText().setText("Enter a cloud project ID...");
@@ -170,38 +170,48 @@ public class ProjectSelector extends CustomizableComboBox implements Customizabl
     // the play services activity wizard, but never selects enable cloudsave.
     // In cases outside of the wizard (such as deploy), we will be visible,
     // so the call to elysium will happen immediately when the hierarchy is shown.
-    addHierarchyListener(new HierarchyListener() {
-      @Override
-      public void hierarchyChanged(HierarchyEvent event) {
-        if ((event.getChangeFlags() & HierarchyEvent.SHOWING_CHANGED) != 0) {
-          SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-              if (ProjectSelector.this.isVisible()) {
-                synchronize(false);
-              }
+    addHierarchyListener(
+        new HierarchyListener() {
+          @Override
+          public void hierarchyChanged(HierarchyEvent event) {
+            if ((event.getChangeFlags() & HierarchyEvent.SHOWING_CHANGED) != 0) {
+              SwingUtilities.invokeLater(
+                  new Runnable() {
+                    @Override
+                    public void run() {
+                      if (ProjectSelector.this.isVisible()) {
+                        synchronize(false);
+                      }
+                    }
+                  });
             }
-          });
-        }
-      }
-    });
-
-    getTextField().addFocusListener(new FocusListener() {
-      @Override
-      public void focusGained(FocusEvent e) {
-        // do nothing
-      }
-
-      @Override
-      public void focusLost(FocusEvent event) {
-        if (!event.isTemporary()) {
-          ResourceProjectModelItem node = getCurrentModelItem();
-          if (node != null) {
-            onSelectionChanged(node);
           }
-        }
-      }
-    });
+        });
+
+    getTextField()
+        .addFocusListener(
+            new FocusListener() {
+              @Override
+              public void focusGained(FocusEvent e) {
+                // do nothing
+              }
+
+              @Override
+              public void focusLost(FocusEvent event) {
+                if (!event.isTemporary()) {
+                  ResourceProjectModelItem node = getCurrentModelItem();
+                  if (node != null) {
+                    onSelectionChanged(node);
+                  }
+                }
+              }
+            });
+  }
+
+  private static boolean needsToSignIn() {
+    Map<String, CredentialedUser> users = Services.getLoginService().getAllUsers();
+
+    return users.isEmpty();
   }
 
   public void addModelListener(TreeModelListener listener) {
@@ -214,8 +224,8 @@ public class ProjectSelector extends CustomizableComboBox implements Customizabl
 
   /**
    * Returns the selected credentialed user for the project id represented by {@link #getText()}.
-   * <p/>
-   * Note: if the ProjectSelector is created with queryOnExpand, this value could be {@code null}
+   *
+   * <p>Note: if the ProjectSelector is created with queryOnExpand, this value could be {@code null}
    * even if {@link #getText()} represents a valid project because the user has not expanded the
    * owning {@link IntellijGoogleLoginService}.
    */
@@ -244,8 +254,8 @@ public class ProjectSelector extends CustomizableComboBox implements Customizabl
 
   /**
    * Returns the selected project's description.
-   * <p/>
-   * This has the same limitations as {@link #getSelectedUser()}  in that it may be null even if
+   *
+   * <p>This has the same limitations as {@link #getSelectedUser()} in that it may be null even if
    * getText represents a valid ID if queryOnExpand is true.
    */
   @Nullable
@@ -256,8 +266,8 @@ public class ProjectSelector extends CustomizableComboBox implements Customizabl
 
   /**
    * Returns the selected project's numeric code.
-   * <p/>
-   * This has the same limitations as {@link #getSelectedUser()}  in that it may be null even if
+   *
+   * <p>This has the same limitations as {@link #getSelectedUser()} in that it may be null even if
    * getText represents a valid ID if queryOnExpand is true.
    */
   @Nullable
@@ -268,8 +278,8 @@ public class ProjectSelector extends CustomizableComboBox implements Customizabl
 
   /**
    * Returns the selected project.
-   * <p/>
-   * This has the same limitations as {@link #getSelectedUser()}  in that it may be null even if
+   *
+   * <p>This has the same limitations as {@link #getSelectedUser()} in that it may be null even if
    * getText represents a valid ID if queryOnExpand is true.
    */
   @Nullable
@@ -303,7 +313,8 @@ public class ProjectSelector extends CustomizableComboBox implements Customizabl
 
   @Override
   protected int getPreferredPopupHeight() {
-    return !needsToSignIn() ? PREFERRED_HEIGHT
+    return !needsToSignIn()
+        ? PREFERRED_HEIGHT
         : BaseGoogleLoginUi.PREFERRED_HEIGHT + POPUP_HEIGHTFRAMESIZE;
   }
 
@@ -331,12 +342,6 @@ public class ProjectSelector extends CustomizableComboBox implements Customizabl
     GoogleUserModelItem newUser = new GoogleUserModelItem(user, treeModel);
     treeModel.insertNodeInto(newUser, modelRoot, modelRoot.getChildCount());
     return newUser;
-  }
-
-  private static boolean needsToSignIn() {
-    Map<String, CredentialedUser> users = Services.getLoginService().getAllUsers();
-
-    return users.isEmpty();
   }
 
   @SuppressWarnings("AssignmentToForLoopParameter")
@@ -383,8 +388,9 @@ public class ProjectSelector extends CustomizableComboBox implements Customizabl
             if (forceUpdate) {
               node.setNeedsSynchronizing();
             }
-            if (!queryOnExpand ||
-                (popupPanel != null && popupPanel.tree.isExpanded(new TreePath(node.getPath())))) {
+            if (!queryOnExpand
+                || (popupPanel != null
+                    && popupPanel.tree.isExpanded(new TreePath(node.getPath())))) {
               node.synchronize();
             }
           }
@@ -401,158 +407,13 @@ public class ProjectSelector extends CustomizableComboBox implements Customizabl
       popupPanel = new PopupPanel();
 
       popupPanel.initializeContent(getText());
-      ComponentPopupBuilder popup = JBPopupFactory.getInstance()
-          .createComponentPopupBuilder(popupPanel, popupPanel.getInitialFocus());
+      ComponentPopupBuilder popup =
+          JBPopupFactory.getInstance()
+              .createComponentPopupBuilder(popupPanel, popupPanel.getInitialFocus());
       this.popup = popup.createPopup();
     }
     if (!popup.isVisible()) {
       popup.show(showTarget);
-    }
-  }
-
-  private class PopupPanel extends GoogleLoginEmptyPanel {
-
-    private JTree tree;
-
-    @Nullable
-    private TreePath find(DefaultMutableTreeNode root, String str) {
-      @SuppressWarnings("unchecked") Enumeration<DefaultMutableTreeNode> nodes = root
-          .depthFirstEnumeration();
-      while (nodes.hasMoreElements()) {
-        DefaultMutableTreeNode node = nodes.nextElement();
-        if (node instanceof ResourceProjectModelItem
-            && str.equalsIgnoreCase(((ResourceProjectModelItem) node).getProjectId())) {
-          return new TreePath(node.getPath());
-        }
-      }
-      return null;
-    }
-
-    public JComponent getInitialFocus() {
-      return tree;
-    }
-
-    public void initializeContent(String selectedProjectId) {
-      tree = new Tree(treeModel);
-      tree.setRowHeight(0);
-
-      if (!Strings.isNullOrEmpty(selectedProjectId)) {
-        TreePath path = find(modelRoot, selectedProjectId);
-        if (path != null) {
-          tree.setSelectionPath(path);
-        }
-      }
-      tree.setRootVisible(false);
-      tree.setOpaque(false);
-      tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-      ProjectSelectorRenderer renderer = new ProjectSelectorRenderer(tree);
-      tree.addMouseListener(renderer);
-      tree.addMouseMotionListener(renderer);
-      tree.setCellRenderer(renderer);
-      this.getContentPane()
-          .setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-      this.getContentPane().setViewportView(tree);
-      tree.addTreeSelectionListener(new TreeSelectionListener() {
-        @Override
-        public void valueChanged(TreeSelectionEvent event) {
-          DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree
-              .getLastSelectedPathComponent();
-          if (node != null) {
-            if (node instanceof ResourceProjectModelItem) {
-              ResourceProjectModelItem projectNode = (ResourceProjectModelItem) node;
-              String oldSelection = ProjectSelector.this.getText();
-              String newSelection = projectNode.getProject().getProjectId();
-              if (Strings.isNullOrEmpty(oldSelection) || !oldSelection.equals(newSelection)) {
-                ProjectSelector.this.setText(newSelection);
-                onSelectionChanged(projectNode);
-                SwingUtilities.invokeLater(new Runnable() {
-                  @Override
-                  public void run() {
-                    ProjectSelector.this.hidePopup();
-                  }
-                });
-              }
-            } else {
-              tree.clearSelection();
-            }
-          }
-        }
-      });
-
-      if (queryOnExpand) {
-        tree.addTreeExpansionListener(new TreeExpansionListener() {
-          @Override
-          public void treeExpanded(TreeExpansionEvent event) {
-            TreePath expandedPath = event.getPath();
-            if (expandedPath != null && expandedPath
-                .getLastPathComponent() instanceof GoogleUserModelItem) {
-              ((GoogleUserModelItem) expandedPath.getLastPathComponent()).synchronize();
-            }
-          }
-
-          @Override
-          public void treeCollapsed(TreeExpansionEvent event) {
-          }
-        });
-      }
-
-      for (int i = 0; i < tree.getRowCount(); i++) {
-        tree.expandRow(i);
-        TreePath path = tree.getPathForRow(i);
-        if (path.getLastPathComponent() instanceof GoogleUserModelItem) {
-          break; // Remove this to expand all rows on show.
-        }
-      }
-
-      tree.requestFocusInWindow();
-      Insets thisInsets = this.getInsets();
-      Insets contentInset = this.getContentPane().getInsets();
-      Insets treeInset = tree.getInsets();
-
-      int preferredWidth = renderer.getMaximumWidth()
-          + UIUtil.getTreeLeftChildIndent() * 2
-          + UIUtil.getTreeExpandedIcon().getIconWidth() * 2
-          + UIUtil.getScrollBarWidth()
-          + (thisInsets != null ? (thisInsets.left + thisInsets.right) : 0)
-          + (contentInset != null ? (contentInset.left + contentInset.right) : 0)
-          + (treeInset != null ? (treeInset.left + treeInset.right) : 0);
-
-      preferredWidth = Math.max(preferredWidth, ProjectSelector.this.getWidth());
-      this.setPreferredSize(new Dimension(Math.max(BaseGoogleLoginUi.MIN_WIDTH, preferredWidth),
-          getPreferredPopupHeight()));
-
-      getBottomPane().setLayout(new BorderLayout());
-
-      if (!needsToSignIn()) {
-        JButton synchronizeButton = new JButton();
-        synchronizeButton.setIcon(GoogleCloudToolsIcons.REFRESH);
-        synchronizeButton.addActionListener(new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent event) {
-            if (!needsToSignIn()) {
-              synchronize(true);
-            }
-          }
-        });
-
-        getBottomPane().add(synchronizeButton, BorderLayout.EAST);
-      }
-
-      if (treeModel.isModelNeedsRefresh()) {
-        treeModel.setModelNeedsRefresh(false);
-        synchronize(true);
-      }
-    }
-
-    @Override
-    protected void doLogin() {
-      Services.getLoginService().logIn(null, new IGoogleLoginCompletedCallback() {
-
-        @Override
-        public void onLoginCompleted() {
-          synchronize(true);
-        }
-      });
     }
   }
 
@@ -561,8 +422,8 @@ public class ProjectSelector extends CustomizableComboBox implements Customizabl
     if (newSelection.getParent() instanceof GoogleUserModelItem) {
       user = ((GoogleUserModelItem) newSelection.getParent()).getCredentialedUser();
     }
-    ProjectSelectionChangedEvent event
-        = new ProjectSelectionChangedEvent(newSelection.getProject(), user);
+    ProjectSelectionChangedEvent event =
+        new ProjectSelectionChangedEvent(newSelection.getProject(), user);
     for (ProjectSelectionListener listener : projectSelectionListeners) {
       listener.selectionChanged(event);
     }
@@ -599,6 +460,14 @@ public class ProjectSelector extends CustomizableComboBox implements Customizabl
     projectSelectionListeners.remove(projectSelectionListener);
   }
 
+  /**
+   * Interface that must be implemented in order to be informed of {@link
+   * ProjectSelectionChangedEvent} events.
+   */
+  public interface ProjectSelectionListener {
+    void selectionChanged(ProjectSelectionChangedEvent event);
+  }
+
   static class SelectorTreeModel extends DefaultTreeModel {
 
     private boolean modelNeedsRefresh;
@@ -616,23 +485,12 @@ public class ProjectSelector extends CustomizableComboBox implements Customizabl
     }
   }
 
-  /**
-   * Interface that must be implemented in order to be informed of
-   * {@link ProjectSelectionChangedEvent} events.
-   */
-  public interface ProjectSelectionListener {
-    void selectionChanged(ProjectSelectionChangedEvent event);
-  }
-
-  /**
-   * Event for when the selection changes to a valid project.
-   */
+  /** Event for when the selection changes to a valid project. */
   public static class ProjectSelectionChangedEvent {
     private final Project selectedProject;
     private final CredentialedUser user;
 
-    public ProjectSelectionChangedEvent(
-        Project selectedProject, CredentialedUser user) {
+    public ProjectSelectionChangedEvent(Project selectedProject, CredentialedUser user) {
       this.selectedProject = selectedProject;
       this.user = user;
     }
@@ -644,7 +502,159 @@ public class ProjectSelector extends CustomizableComboBox implements Customizabl
     public CredentialedUser getUser() {
       return user;
     }
-
   }
 
+  private class PopupPanel extends GoogleLoginEmptyPanel {
+
+    private JTree tree;
+
+    @Nullable
+    private TreePath find(DefaultMutableTreeNode root, String str) {
+      @SuppressWarnings("unchecked")
+      Enumeration<DefaultMutableTreeNode> nodes = root.depthFirstEnumeration();
+      while (nodes.hasMoreElements()) {
+        DefaultMutableTreeNode node = nodes.nextElement();
+        if (node instanceof ResourceProjectModelItem
+            && str.equalsIgnoreCase(((ResourceProjectModelItem) node).getProjectId())) {
+          return new TreePath(node.getPath());
+        }
+      }
+      return null;
+    }
+
+    public JComponent getInitialFocus() {
+      return tree;
+    }
+
+    public void initializeContent(String selectedProjectId) {
+      tree = new Tree(treeModel);
+      tree.setRowHeight(0);
+
+      if (!Strings.isNullOrEmpty(selectedProjectId)) {
+        TreePath path = find(modelRoot, selectedProjectId);
+        if (path != null) {
+          tree.setSelectionPath(path);
+        }
+      }
+      tree.setRootVisible(false);
+      tree.setOpaque(false);
+      tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+      ProjectSelectorRenderer renderer = new ProjectSelectorRenderer(tree);
+      tree.addMouseListener(renderer);
+      tree.addMouseMotionListener(renderer);
+      tree.setCellRenderer(renderer);
+      this.getContentPane()
+          .setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+      this.getContentPane().setViewportView(tree);
+      tree.addTreeSelectionListener(
+          new TreeSelectionListener() {
+            @Override
+            public void valueChanged(TreeSelectionEvent event) {
+              DefaultMutableTreeNode node =
+                  (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+              if (node != null) {
+                if (node instanceof ResourceProjectModelItem) {
+                  ResourceProjectModelItem projectNode = (ResourceProjectModelItem) node;
+                  String oldSelection = ProjectSelector.this.getText();
+                  String newSelection = projectNode.getProject().getProjectId();
+                  if (Strings.isNullOrEmpty(oldSelection) || !oldSelection.equals(newSelection)) {
+                    ProjectSelector.this.setText(newSelection);
+                    onSelectionChanged(projectNode);
+                    SwingUtilities.invokeLater(
+                        new Runnable() {
+                          @Override
+                          public void run() {
+                            ProjectSelector.this.hidePopup();
+                          }
+                        });
+                  }
+                } else {
+                  tree.clearSelection();
+                }
+              }
+            }
+          });
+
+      if (queryOnExpand) {
+        tree.addTreeExpansionListener(
+            new TreeExpansionListener() {
+              @Override
+              public void treeExpanded(TreeExpansionEvent event) {
+                TreePath expandedPath = event.getPath();
+                if (expandedPath != null
+                    && expandedPath.getLastPathComponent() instanceof GoogleUserModelItem) {
+                  ((GoogleUserModelItem) expandedPath.getLastPathComponent()).synchronize();
+                }
+              }
+
+              @Override
+              public void treeCollapsed(TreeExpansionEvent event) {}
+            });
+      }
+
+      for (int i = 0; i < tree.getRowCount(); i++) {
+        tree.expandRow(i);
+        TreePath path = tree.getPathForRow(i);
+        if (path.getLastPathComponent() instanceof GoogleUserModelItem) {
+          break; // Remove this to expand all rows on show.
+        }
+      }
+
+      tree.requestFocusInWindow();
+      Insets thisInsets = this.getInsets();
+      Insets contentInset = this.getContentPane().getInsets();
+      Insets treeInset = tree.getInsets();
+
+      int preferredWidth =
+          renderer.getMaximumWidth()
+              + UIUtil.getTreeLeftChildIndent() * 2
+              + UIUtil.getTreeExpandedIcon().getIconWidth() * 2
+              + UIUtil.getScrollBarWidth()
+              + (thisInsets != null ? (thisInsets.left + thisInsets.right) : 0)
+              + (contentInset != null ? (contentInset.left + contentInset.right) : 0)
+              + (treeInset != null ? (treeInset.left + treeInset.right) : 0);
+
+      preferredWidth = Math.max(preferredWidth, ProjectSelector.this.getWidth());
+      this.setPreferredSize(
+          new Dimension(
+              Math.max(BaseGoogleLoginUi.MIN_WIDTH, preferredWidth), getPreferredPopupHeight()));
+
+      getBottomPane().setLayout(new BorderLayout());
+
+      if (!needsToSignIn()) {
+        JButton synchronizeButton = new JButton();
+        synchronizeButton.setIcon(GoogleCloudToolsIcons.REFRESH);
+        synchronizeButton.addActionListener(
+            new ActionListener() {
+              @Override
+              public void actionPerformed(ActionEvent event) {
+                if (!needsToSignIn()) {
+                  synchronize(true);
+                }
+              }
+            });
+
+        getBottomPane().add(synchronizeButton, BorderLayout.EAST);
+      }
+
+      if (treeModel.isModelNeedsRefresh()) {
+        treeModel.setModelNeedsRefresh(false);
+        synchronize(true);
+      }
+    }
+
+    @Override
+    protected void doLogin() {
+      Services.getLoginService()
+          .logIn(
+              null,
+              new IGoogleLoginCompletedCallback() {
+
+                @Override
+                public void onLoginCompleted() {
+                  synchronize(true);
+                }
+              });
+    }
+  }
 }

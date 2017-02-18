@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,8 +27,8 @@ import com.intellij.conversion.ProjectConverter;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Provides converters for an App Engine Facet Migration. This migration migrates facets that use
- * a deprecated facet ID to a new facet ID.
+ * Provides converters for an App Engine Facet Migration. This migration migrates facets that use a
+ * deprecated facet ID to a new facet ID.
  */
 public class AppEngineStandardFacetMigrationConverterProvider extends ConverterProvider {
 
@@ -52,5 +52,4 @@ public class AppEngineStandardFacetMigrationConverterProvider extends ConverterP
   public String getConversionDescription() {
     return GctBundle.message("appengine.facet.converter.description");
   }
-
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,14 +26,11 @@ import com.intellij.conversion.ModuleSettings;
 import org.jdom.Element;
 import org.jetbrains.jps.model.serialization.facet.JpsFacetSerializer;
 
-/**
- * Performs conversions from deprecated App Engine Facets to their new version.
- */
-public class AppEngineStandardFacetMigrationConversionProcessor extends
-    ConversionProcessor<ModuleSettings> {
+/** Performs conversions from deprecated App Engine Facets to their new version. */
+public class AppEngineStandardFacetMigrationConversionProcessor
+    extends ConversionProcessor<ModuleSettings> {
 
-  @VisibleForTesting
-  static final String DEPRECATED_APP_ENGINE_FACET_ID = "google-app-engine";
+  @VisibleForTesting static final String DEPRECATED_APP_ENGINE_FACET_ID = "google-app-engine";
 
   @Override
   public boolean isConversionNeeded(ModuleSettings settings) {
@@ -50,8 +47,8 @@ public class AppEngineStandardFacetMigrationConversionProcessor extends
       String facetName = deprecatedTag.getAttributeValue(JpsFacetSerializer.NAME_ATTRIBUTE);
 
       // add a new tag with all the same settings as the old one, but the new facet type id
-      settings.addFacetElement(AppEngineStandardFacetType.STRING_ID, facetName,
-          configuration.clone());
+      settings.addFacetElement(
+          AppEngineStandardFacetType.STRING_ID, facetName, configuration.clone());
     }
   }
 }

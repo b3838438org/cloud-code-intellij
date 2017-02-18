@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  */
 
 package com.google.cloud.tools.intellij.startup;
-
 
 import com.google.cloud.tools.intellij.util.GctBundle;
 
@@ -94,14 +93,19 @@ public class PluginCompatibilityCheck implements StartupActivity {
               "plugin.compatibility.error.update.link", "<a href=\"#update\">", "</a>"));
       errorMessage.append("</p>");
 
-      NotificationGroup notification = new NotificationGroup(
-          GctBundle.message("plugin.compatibility.error.title"),
-          NotificationDisplayType.BALLOON, true);
+      NotificationGroup notification =
+          new NotificationGroup(
+              GctBundle.message("plugin.compatibility.error.title"),
+              NotificationDisplayType.BALLOON,
+              true);
 
-      notification.createNotification(
-          GctBundle.message("plugin.compatibility.error.title"),
-          errorMessage.toString(),
-          NotificationType.ERROR, new PluginCompatibilityLinkListener(project)).notify(project);
+      notification
+          .createNotification(
+              GctBundle.message("plugin.compatibility.error.title"),
+              errorMessage.toString(),
+              NotificationType.ERROR,
+              new PluginCompatibilityLinkListener(project))
+          .notify(project);
     }
   }
 
@@ -114,15 +118,13 @@ public class PluginCompatibilityCheck implements StartupActivity {
     }
 
     @Override
-    public void hyperlinkUpdate(@NotNull Notification notification,
-        @NotNull HyperlinkEvent event) {
+    public void hyperlinkUpdate(@NotNull Notification notification, @NotNull HyperlinkEvent event) {
       String href = event.getDescription();
 
       if ("#update".equals(href)) {
         UpdateChecker.updateAndShowResult(project, null);
       } else if ("#manage".equals(href)) {
-        ShowSettingsUtil.getInstance().showSettingsDialog(project,
-            PluginManagerConfigurable.class);
+        ShowSettingsUtil.getInstance().showSettingsDialog(project, PluginManagerConfigurable.class);
       }
     }
   }

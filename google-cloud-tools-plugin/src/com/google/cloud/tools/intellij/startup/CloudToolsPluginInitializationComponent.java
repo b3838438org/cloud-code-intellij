@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,9 +24,7 @@ import com.intellij.openapi.components.ServiceManager;
 
 import org.jetbrains.annotations.NotNull;
 
-/**
- * Performs runtime initialization for the GCT plugin.
- */
+/** Performs runtime initialization for the GCT plugin. */
 public class CloudToolsPluginInitializationComponent implements ApplicationComponent {
 
   @Override
@@ -42,10 +40,10 @@ public class CloudToolsPluginInitializationComponent implements ApplicationCompo
 
   @Override
   public void initComponent() {
-    CloudToolsPluginConfigurationService pluginConfigurationService = ServiceManager
-        .getService(CloudToolsPluginConfigurationService.class);
-    CloudToolsPluginInfoService pluginInfoService = ServiceManager
-        .getService(CloudToolsPluginInfoService.class);
+    CloudToolsPluginConfigurationService pluginConfigurationService =
+        ServiceManager.getService(CloudToolsPluginConfigurationService.class);
+    CloudToolsPluginInfoService pluginInfoService =
+        ServiceManager.getService(CloudToolsPluginInfoService.class);
 
     if (pluginInfoService.shouldEnableErrorFeedbackReporting()) {
       initErrorReporting(pluginConfigurationService, pluginInfoService);
@@ -54,9 +52,9 @@ public class CloudToolsPluginInitializationComponent implements ApplicationCompo
     new ConflictingAppEnginePluginCheck().notifyIfConflicting();
   }
 
-  private void initErrorReporting(CloudToolsPluginConfigurationService pluginConfigurationService,
+  private void initErrorReporting(
+      CloudToolsPluginConfigurationService pluginConfigurationService,
       CloudToolsPluginInfoService pluginInfoService) {
-    pluginConfigurationService
-        .enabledGoogleFeedbackErrorReporting(pluginInfoService.getPluginId());
+    pluginConfigurationService.enabledGoogleFeedbackErrorReporting(pluginInfoService.getPluginId());
   }
 }

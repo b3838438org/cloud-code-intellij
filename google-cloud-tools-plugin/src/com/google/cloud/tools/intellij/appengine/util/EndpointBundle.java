@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,14 +25,13 @@ import java.lang.ref.Reference;
 import java.lang.ref.SoftReference;
 import java.util.ResourceBundle;
 
-/**
- * Endpoint messages bundle.
- */
+/** Endpoint messages bundle. */
 public class EndpointBundle {
 
-  @NonNls
-  private static final String BUNDLE_NAME = "messages.EndpointBundle";
+  @NonNls private static final String BUNDLE_NAME = "messages.EndpointBundle";
   private static Reference<ResourceBundle> bundleReference;
+
+  private EndpointBundle() {}
 
   private static ResourceBundle getBundle() {
     ResourceBundle bundle = null;
@@ -46,11 +45,8 @@ public class EndpointBundle {
     return bundle;
   }
 
-  private EndpointBundle() {
-  }
-
-  public static String message(@PropertyKey(resourceBundle = BUNDLE_NAME) String key,
-      Object... params) {
+  public static String message(
+      @PropertyKey(resourceBundle = BUNDLE_NAME) String key, Object... params) {
     return CommonBundle.message(getBundle(), key, params);
   }
 }

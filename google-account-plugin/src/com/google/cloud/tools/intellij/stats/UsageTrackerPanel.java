@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,9 +34,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-/**
- * Contains the panel with the Google plugin usage tracker settings.
- */
+/** Contains the panel with the Google plugin usage tracker settings. */
 public class UsageTrackerPanel {
 
   public static final String PRIVACY_POLICY_URL = "http://www.google.com/policies/privacy/";
@@ -50,36 +48,35 @@ public class UsageTrackerPanel {
     this.usageTrackerManager = usageTrackerManager;
 
     enableUsageTrackerBox.setSelected(usageTrackerManager.hasUserOptedIn());
-    privacyPolicyText.setText(TrackerMessageBundle.message(
-        "settings.privacy.policy.comment",
-        PRIVACY_POLICY_URL));
-
+    privacyPolicyText.setText(
+        TrackerMessageBundle.message("settings.privacy.policy.comment", PRIVACY_POLICY_URL));
 
     // Disable checkbox if usage tracker property has not been configured
     if (!usageTrackerManager.isUsageTrackingAvailable()) {
       enableUsageTrackerBox.setEnabled(false);
     }
 
-    privacyPolicyText.addMouseListener(new MouseAdapter() {
-      @Override
-      public void mouseEntered(MouseEvent me) {
-        privacyPolicyText.setCursor(new Cursor(Cursor.HAND_CURSOR));
-      }
+    privacyPolicyText.addMouseListener(
+        new MouseAdapter() {
+          @Override
+          public void mouseEntered(MouseEvent me) {
+            privacyPolicyText.setCursor(new Cursor(Cursor.HAND_CURSOR));
+          }
 
-      @Override
-      public void mouseExited(MouseEvent me) {
-        privacyPolicyText.setCursor(Cursor.getDefaultCursor());
-      }
+          @Override
+          public void mouseExited(MouseEvent me) {
+            privacyPolicyText.setCursor(Cursor.getDefaultCursor());
+          }
 
-      @Override
-      public void mouseClicked(MouseEvent me) {
-        try {
-          BrowserUtil.browse(new URL(PRIVACY_POLICY_URL));
-        } catch (MalformedURLException mue) {
-          LOG.error(mue);
-        }
-      }
-    });
+          @Override
+          public void mouseClicked(MouseEvent me) {
+            try {
+              BrowserUtil.browse(new URL(PRIVACY_POLICY_URL));
+            } catch (MalformedURLException mue) {
+              LOG.error(mue);
+            }
+          }
+        });
   }
 
   public boolean isModified() {

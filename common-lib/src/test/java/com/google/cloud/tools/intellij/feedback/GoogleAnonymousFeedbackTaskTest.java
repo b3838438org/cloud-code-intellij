@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,16 +24,19 @@ import static org.mockito.Mockito.when;
 
 import com.google.cloud.tools.intellij.feedback.GoogleAnonymousFeedbackTask.FeedbackSender;
 import com.google.common.collect.ImmutableMap;
+
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.project.Project;
 import com.intellij.util.Consumer;
-import java.io.IOException;
-import java.util.Map;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import java.io.IOException;
+import java.util.Map;
 
 /** Test cases for {@link GoogleAnonymousFeedbackTask}. */
 @RunWith(MockitoJUnitRunner.class)

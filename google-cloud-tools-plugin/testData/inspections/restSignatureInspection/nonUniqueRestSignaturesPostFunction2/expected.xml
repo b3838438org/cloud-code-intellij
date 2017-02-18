@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~ Copyright (C) 2014 The Android Open Source Project
+  ~ Copyright 2017 Google Inc. All Rights Reserved.
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -15,9 +15,10 @@
   ~ limitations under the License.
   -->
 <problems>
-  <problem>
-    <file>test.java</file>
-    <line>38</line>
-    <description>Multiple methods with same rest path &quot;POST function2/{}&quot;: &quot;function2&quot; and &quot;function2&quot;</description>
-  </problem>
+    <problem>
+        <file>test.java</file>
+        <line>38</line>
+        <description>Multiple methods with same rest path &quot;POST function2/{}&quot;: &quot;function2&quot;
+            and &quot;function2&quot;</description>
+    </problem>
 </problems>

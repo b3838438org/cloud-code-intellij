@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,9 +46,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 
-/**
- * Unit tests for {@link DefaultAppEngineProjectService}
- */
+/** Unit tests for {@link DefaultAppEngineProjectService} */
 public class DefaultAppEngineProjectServiceTest extends PlatformTestCase {
 
   private AppEngineProjectService appEngineProjectService;
@@ -66,8 +64,8 @@ public class DefaultAppEngineProjectServiceTest extends PlatformTestCase {
 
     XmlFile flexCompatWebXml = loadTestWebXml("testData/descriptor/appengine-web.xml");
 
-    AppEngineEnvironment environment
-        = appEngineProjectService.getModuleAppEngineEnvironment(flexCompatWebXml);
+    AppEngineEnvironment environment =
+        appEngineProjectService.getModuleAppEngineEnvironment(flexCompatWebXml);
 
     assertEquals(AppEngineEnvironment.APP_ENGINE_STANDARD, environment);
   }
@@ -76,11 +74,13 @@ public class DefaultAppEngineProjectServiceTest extends PlatformTestCase {
     addAppEngineFacet(createModule("myModule"));
 
     // JAR Artifact Type
-    assertEquals(AppEngineEnvironment.APP_ENGINE_FLEX,
+    assertEquals(
+        AppEngineEnvironment.APP_ENGINE_FLEX,
         appEngineProjectService.getModuleAppEngineEnvironment(null /*appengine-web.xml*/));
 
     // WAR Artifact Type
-    assertEquals(AppEngineEnvironment.APP_ENGINE_FLEX,
+    assertEquals(
+        AppEngineEnvironment.APP_ENGINE_FLEX,
         appEngineProjectService.getModuleAppEngineEnvironment(null /*appengine-web.xml*/));
   }
 
@@ -89,12 +89,14 @@ public class DefaultAppEngineProjectServiceTest extends PlatformTestCase {
 
     // Load flex-compat appengine-web.xml with vm: true
     XmlFile vmTrueWebXml = loadTestWebXml("testData/descriptor/appengine-web_flex-compat_vm.xml");
-    assertEquals(AppEngineEnvironment.APP_ENGINE_FLEX,
+    assertEquals(
+        AppEngineEnvironment.APP_ENGINE_FLEX,
         appEngineProjectService.getModuleAppEngineEnvironment(vmTrueWebXml));
 
     // Load flex-compat appengine-web.xml with env: flex
     XmlFile envFlexWebXml = loadTestWebXml("testData/descriptor/appengine-web_flex-compat_env.xml");
-    assertEquals(AppEngineEnvironment.APP_ENGINE_FLEX,
+    assertEquals(
+        AppEngineEnvironment.APP_ENGINE_FLEX,
         appEngineProjectService.getModuleAppEngineEnvironment(envFlexWebXml));
   }
 
@@ -109,13 +111,14 @@ public class DefaultAppEngineProjectServiceTest extends PlatformTestCase {
 
   public void testGetAppEngineStandardDeclaredRuntime_Java8() {
     XmlFile appEngineWebXml = loadTestWebXml("testData/descriptor/appengine-web_runtime-java8.xml");
-    assertEquals(AppEngineStandardRuntime.JAVA_8,
+    assertEquals(
+        AppEngineStandardRuntime.JAVA_8,
         appEngineProjectService.getAppEngineStandardDeclaredRuntime(appEngineWebXml));
   }
 
   public void testGetAppEngineStandardDeclaredRuntime_Invalid() {
-    XmlFile appEngineWebXml = loadTestWebXml(
-        "testData/descriptor/appengine-web_runtime-invalid.xml");
+    XmlFile appEngineWebXml =
+        loadTestWebXml("testData/descriptor/appengine-web_runtime-invalid.xml");
     assertNull(appEngineProjectService.getAppEngineStandardDeclaredRuntime(appEngineWebXml));
   }
 
@@ -123,19 +126,16 @@ public class DefaultAppEngineProjectServiceTest extends PlatformTestCase {
     new WriteAction() {
       @Override
       protected void run(@NotNull Result result) throws Throwable {
-        FacetManager.getInstance(module).addFacet(
-            new AppEngineFacetTestType(), "Google App Engine Standard", null);
+        FacetManager.getInstance(module)
+            .addFacet(new AppEngineFacetTestType(), "Google App Engine Standard", null);
       }
     }.execute();
   }
 
   private XmlFile loadTestWebXml(String path) {
-    VirtualFile vFile = LocalFileSystem.getInstance().findFileByIoFile(
-        new File(path));
+    VirtualFile vFile = LocalFileSystem.getInstance().findFileByIoFile(new File(path));
 
-    return vFile == null
-        ? null
-        : (XmlFile) PsiManager.getInstance(getProject()).findFile(vFile);
+    return vFile == null ? null : (XmlFile) PsiManager.getInstance(getProject()).findFile(vFile);
   }
 
   @SuppressWarnings("unchecked")
@@ -150,8 +150,11 @@ public class DefaultAppEngineProjectServiceTest extends PlatformTestCase {
     }
 
     @Override
-    public Facet createFacet(@NotNull Module module, String name,
-        @NotNull FacetConfiguration configuration, @Nullable Facet underlyingFacet) {
+    public Facet createFacet(
+        @NotNull Module module,
+        String name,
+        @NotNull FacetConfiguration configuration,
+        @Nullable Facet underlyingFacet) {
       return new Facet(this, module, name, configuration, underlyingFacet);
     }
 
@@ -163,20 +166,16 @@ public class DefaultAppEngineProjectServiceTest extends PlatformTestCase {
     private FacetConfiguration createFacetConfiguration() {
       return new FacetConfiguration() {
         @Override
-        public FacetEditorTab[] createEditorTabs(FacetEditorContext editorContext,
-            FacetValidatorsManager validatorsManager) {
+        public FacetEditorTab[] createEditorTabs(
+            FacetEditorContext editorContext, FacetValidatorsManager validatorsManager) {
           return new FacetEditorTab[0];
         }
 
         @Override
-        public void readExternal(Element element) throws InvalidDataException {
-
-        }
+        public void readExternal(Element element) throws InvalidDataException {}
 
         @Override
-        public void writeExternal(Element element) throws WriteExternalException {
-
-        }
+        public void writeExternal(Element element) throws WriteExternalException {}
       };
     }
   }

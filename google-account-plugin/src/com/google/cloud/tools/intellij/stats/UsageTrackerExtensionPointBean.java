@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,11 +25,11 @@ import com.intellij.util.xmlb.annotations.Attribute;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Class that defines extensions points in plugin.xml, Extensions point will implement
- * {@link UsageTrackerProvider}
+ * Class that defines extensions points in plugin.xml, Extensions point will implement {@link
+ * UsageTrackerProvider}
  */
-public class UsageTrackerExtensionPointBean extends AbstractExtensionPointBean implements
-    KeyedLazyInstance<UsageTracker> {
+public class UsageTrackerExtensionPointBean extends AbstractExtensionPointBean
+    implements KeyedLazyInstance<UsageTracker> {
 
   // TODO : when changing the package root for this plugin, update this
   static final ExtensionPointName<UsageTracker> EP_NAME =
@@ -41,12 +41,13 @@ public class UsageTrackerExtensionPointBean extends AbstractExtensionPointBean i
   @Attribute("implementationClass")
   public String implementationClass;
 
-  private final LazyInstance<UsageTracker> handler = new LazyInstance<UsageTracker>() {
-    @Override
-    protected Class<UsageTracker> getInstanceClass() throws ClassNotFoundException {
-      return findClass(implementationClass);
-    }
-  };
+  private final LazyInstance<UsageTracker> handler =
+      new LazyInstance<UsageTracker>() {
+        @Override
+        protected Class<UsageTracker> getInstanceClass() throws ClassNotFoundException {
+          return findClass(implementationClass);
+        }
+      };
 
   @NotNull
   @Override

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,14 +41,6 @@ import com.intellij.ui.JBColor;
 import com.intellij.ui.components.JBCheckBox;
 import com.intellij.ui.components.JBLabel;
 
-import git4idea.actions.BasicAction;
-import git4idea.branch.GitBrancher;
-import git4idea.commands.GitCommand;
-import git4idea.commands.GitHandlerUtil;
-import git4idea.commands.GitLineHandler;
-import git4idea.i18n.GitBundle;
-import git4idea.repo.GitRepository;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -67,6 +59,14 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
+
+import git4idea.actions.BasicAction;
+import git4idea.branch.GitBrancher;
+import git4idea.commands.GitCommand;
+import git4idea.commands.GitHandlerUtil;
+import git4idea.commands.GitLineHandler;
+import git4idea.i18n.GitBundle;
+import git4idea.repo.GitRepository;
 
 /**
  * CloudAttachDialog shows a dialog allowing the user to select a target (module & version) and
@@ -92,11 +92,9 @@ public class CloudAttachDialog extends DialogWrapper {
   private JBLabel warningHeader;
   private JBLabel warningMessage;
 
-  /**
-   * Initializes the cloud debugger dialog.
-   */
-  public CloudAttachDialog(@NotNull Project project,
-      @VisibleForTesting ProjectDebuggeeBinding wireup) {
+  /** Initializes the cloud debugger dialog. */
+  public CloudAttachDialog(
+      @NotNull Project project, @VisibleForTesting ProjectDebuggeeBinding wireup) {
     super(project, true);
 
     this.project = project;
@@ -106,29 +104,33 @@ public class CloudAttachDialog extends DialogWrapper {
     setOKButtonText(GctBundle.getString("clouddebug.attach"));
     infoMessage.setVisible(true);
     syncStashCheckbox.setVisible(false);
-    syncStashCheckbox.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent event) {
-        if (syncStashCheckbox.isVisible()) {
-          warningHeader.setVisible(!syncStashCheckbox.isSelected());
-          warningMessage.setVisible(!syncStashCheckbox.isSelected());
-          // Show force attach text if the user chooses not to sync/stash
-          setOkText(!syncStashCheckbox.isSelected());
-        }
-      }
-    });
+    syncStashCheckbox.addActionListener(
+        new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent event) {
+            if (syncStashCheckbox.isVisible()) {
+              warningHeader.setVisible(!syncStashCheckbox.isSelected());
+              warningMessage.setVisible(!syncStashCheckbox.isSelected());
+              // Show force attach text if the user chooses not to sync/stash
+              setOkText(!syncStashCheckbox.isSelected());
+            }
+          }
+        });
 
     warningHeader.setVisible(false);
-    warningHeader.setFont(new Font(warningHeader.getFont().getName(), Font.BOLD,
-        warningHeader.getFont().getSize() - 1));
+    warningHeader.setFont(
+        new Font(
+            warningHeader.getFont().getName(), Font.BOLD, warningHeader.getFont().getSize() - 1));
     warningHeader.setForeground(JBColor.RED);
     warningMessage.setVisible(false);
-    warningMessage.setFont(new Font(warningMessage.getFont().getName(), Font.PLAIN,
-        warningHeader.getFont().getSize() - 1));
+    warningMessage.setFont(
+        new Font(
+            warningMessage.getFont().getName(), Font.PLAIN, warningHeader.getFont().getSize() - 1));
     warningMessage.setText(GctBundle.getString("clouddebug.sourcedoesnotmatch"));
 
-    infoMessage.setFont(new Font(warningMessage.getFont().getName(), Font.PLAIN,
-        warningHeader.getFont().getSize() - 1));
+    infoMessage.setFont(
+        new Font(
+            warningMessage.getFont().getName(), Font.PLAIN, warningHeader.getFont().getSize() - 1));
     Border paddingBorder = BorderFactory.createEmptyBorder(2, 0, 2, 0);
     infoMessage.setBorder(paddingBorder);
 
@@ -138,22 +140,24 @@ public class CloudAttachDialog extends DialogWrapper {
     }
     BasicAction.saveAll();
 
-    this.wireup = wireup == null
-        ? new ProjectDebuggeeBinding(elysiumProjectSelector, targetSelector, getOKAction())
-        : wireup;
+    this.wireup =
+        wireup == null
+            ? new ProjectDebuggeeBinding(elysiumProjectSelector, targetSelector, getOKAction())
+            : wireup;
     targetSelector.setEnabled(false);
-    targetSelector.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent event) {
-        if (targetSelector.isEnabled()) {
-          buildResult();
-          checkSyncStashState();
-        } else {
-          warningHeader.setVisible(false);
-          warningMessage.setVisible(false);
-        }
-      }
-    });
+    targetSelector.addActionListener(
+        new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent event) {
+            if (targetSelector.isEnabled()) {
+              buildResult();
+              checkSyncStashState();
+            } else {
+              warningHeader.setVisible(false);
+              warningMessage.setVisible(false);
+            }
+          }
+        });
 
     setOKActionEnabled(isContinued() || doValidate() == null);
   }
@@ -175,7 +179,7 @@ public class CloudAttachDialog extends DialogWrapper {
         syncOrStash();
       } else {
         buildResult();
-        close(OK_EXIT_CODE);  // We close before kicking off the update so it doesn't interfere with
+        close(OK_EXIT_CODE); // We close before kicking off the update so it doesn't interfere with
         // the output window coming to focus.
       }
     }
@@ -189,8 +193,8 @@ public class CloudAttachDialog extends DialogWrapper {
     }
 
     if (Strings.isNullOrEmpty(elysiumProjectSelector.getText())) {
-      return new ValidationInfo(GctBundle.getString("clouddebug.noprojectid"),
-          elysiumProjectSelector);
+      return new ValidationInfo(
+          GctBundle.getString("clouddebug.noprojectid"), elysiumProjectSelector);
     }
 
     // validation should run only after the query for debug targets has results
@@ -203,13 +207,13 @@ public class CloudAttachDialog extends DialogWrapper {
               ((ErrorHolder) targetSelector.getSelectedItem()).getErrorMessage(),
               elysiumProjectSelector);
         } else {
-          return new ValidationInfo(GctBundle.getString("clouddebug.nomodulesfound"),
-              elysiumProjectSelector);
+          return new ValidationInfo(
+              GctBundle.getString("clouddebug.nomodulesfound"), elysiumProjectSelector);
         }
       } else if (wireup.isCdbQueried()) {
         // We went to CDB and detected no debuggees.
-        return new ValidationInfo(GctBundle.getString("clouddebug.debug.targets.accessdenied"),
-            elysiumProjectSelector);
+        return new ValidationInfo(
+            GctBundle.getString("clouddebug.debug.targets.accessdenied"), elysiumProjectSelector);
       }
     }
 
@@ -217,8 +221,7 @@ public class CloudAttachDialog extends DialogWrapper {
     // assumption: either an ErrorHolder or one or more DebugTargets are added to the selector when
     //             the result is available
     if (targetSelector.getSelectedItem() == null && targetSelector.getItemCount() > 0) {
-      return new ValidationInfo(GctBundle.getString("clouddebug.nomodulesfound"),
-          targetSelector);
+      return new ValidationInfo(GctBundle.getString("clouddebug.nomodulesfound"), targetSelector);
     }
 
     return null;
@@ -265,25 +268,24 @@ public class CloudAttachDialog extends DialogWrapper {
 
   private void buildResult() {
     processResultState = wireup.buildResult(project);
-    ProjectRepositoryState repositoryState = ProjectRepositoryState.fromProcessState(
-        processResultState);
+    ProjectRepositoryState repositoryState =
+        ProjectRepositoryState.fromProcessState(processResultState);
     repositoryState.setStashMessage(stashMessage);
     repositoryState.setSourceRepository(sourceRepository);
     repositoryState.setOriginalBranchName(originalBranchName);
   }
 
-  /**
-   * Checks whether a stash or sync is needed based on the chosen target and local state.
-   */
+  /** Checks whether a stash or sync is needed based on the chosen target and local state. */
   private void checkSyncStashState() {
     if (processResultState == null) {
       LOG.error("unexpected result state during a check sync stash state");
       return;
     }
 
-    syncResult = projectRepositoryValidator == null
-        ? new ProjectRepositoryValidator(processResultState).checkSyncStashState()
-        : projectRepositoryValidator.checkSyncStashState();
+    syncResult =
+        projectRepositoryValidator == null
+            ? new ProjectRepositoryValidator(processResultState).checkSyncStashState()
+            : projectRepositoryValidator.checkSyncStashState();
 
     // reset state
     syncStashCheckbox.setVisible(false);
@@ -297,7 +299,8 @@ public class CloudAttachDialog extends DialogWrapper {
       syncStashCheckbox.setVisible(true);
       assert syncResult.getTargetSyncSha() != null;
       syncStashCheckbox.setText(
-          GctBundle.getString("clouddebug.stash.local.changes.and.sync",
+          GctBundle.getString(
+              "clouddebug.stash.local.changes.and.sync",
               syncResult.getTargetSyncSha().substring(0, 7)));
       syncStashCheckbox.setSelected(true);
     } else if (syncResult.needsStash()) {
@@ -321,8 +324,9 @@ public class CloudAttachDialog extends DialogWrapper {
       warningHeader.setVisible(true);
       warningMessage.setVisible(true);
       if (syncResult.getRepositoryType() != null) {
-        warningMessage.setText(GctBundle.getString("clouddebug.repositories.are.not.supported",
-            syncResult.getRepositoryType()));
+        warningMessage.setText(
+            GctBundle.getString(
+                "clouddebug.repositories.are.not.supported", syncResult.getRepositoryType()));
       } else {
         warningMessage.setText(GctBundle.getString("clouddebug.no.remote.repository"));
       }
@@ -333,13 +337,15 @@ public class CloudAttachDialog extends DialogWrapper {
 
   private void setOkText(boolean showForcedWording) {
     if (showForcedWording) {
-      setOKButtonText(isContinued() && targetMatchesCurrentState()
-          ? GctBundle.getString("clouddebug.continueanyway")
-          : GctBundle.getString("clouddebug.attach.anyway"));
+      setOKButtonText(
+          isContinued() && targetMatchesCurrentState()
+              ? GctBundle.getString("clouddebug.continueanyway")
+              : GctBundle.getString("clouddebug.attach.anyway"));
     } else {
-      setOKButtonText(isContinued() && targetMatchesCurrentState()
-          ? GctBundle.getString("clouddebug.continuesession")
-          : GctBundle.getString("clouddebug.attach"));
+      setOKButtonText(
+          isContinued() && targetMatchesCurrentState()
+              ? GctBundle.getString("clouddebug.continuesession")
+              : GctBundle.getString("clouddebug.attach"));
     }
   }
 
@@ -363,8 +369,8 @@ public class CloudAttachDialog extends DialogWrapper {
     return state != null
         && targetSelector != null
         && targetSelector.getSelectedItem() != null
-        && StringUtil
-        .equals(state.getDebuggeeId(), ((DebugTarget) targetSelector.getSelectedItem()).getId());
+        && StringUtil.equals(
+            state.getDebuggeeId(), ((DebugTarget) targetSelector.getSelectedItem()).getId());
   }
 
   private void refreshAndClose() {
@@ -383,27 +389,25 @@ public class CloudAttachDialog extends DialogWrapper {
       return false;
     }
 
-    final GitLineHandler handler = new GitLineHandler(project, sourceRepository.getRoot(),
-        GitCommand.STASH);
+    final GitLineHandler handler =
+        new GitLineHandler(project, sourceRepository.getRoot(), GitCommand.STASH);
     handler.addParameters("save");
     handler.addParameters("--keep-index");
-    String date = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT)
-        .format(new Date());
+    String date =
+        DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(new Date());
     stashMessage = "Cloud Debugger saved changes from branch " + originalBranchName + " at " + date;
     handler.addParameters(stashMessage);
     AccessToken token = DvcsUtil.workingTreeChangeStarted(project);
     try {
-      GitHandlerUtil.doSynchronously(handler, GitBundle.getString("stashing.title"),
-          handler.printableCommandLine());
+      GitHandlerUtil.doSynchronously(
+          handler, GitBundle.getString("stashing.title"), handler.printableCommandLine());
     } finally {
       DvcsUtil.workingTreeChangeFinished(project, token);
     }
     return true;
   }
 
-  /**
-   * Performs the actual sync/stash needed before attaching.
-   */
+  /** Performs the actual sync/stash needed before attaching. */
   private void syncOrStash() {
     // When the user edits a document in intelliJ, there are spurious updates to the timestamp of
     // the document for an unspecified amount of time (even though there are no real edits).
@@ -443,8 +447,7 @@ public class CloudAttachDialog extends DialogWrapper {
             public void run() {
               refreshAndClose();
             }
-          }
-      );
+          });
     } else {
       refreshAndClose();
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -96,8 +96,7 @@ public class UserSpecifiedPathDeploymentSource extends ModuleDeploymentSourceImp
   @NotNull
   @Override
   public DeploymentSourceType<?> getType() {
-    return DeploymentSourceType.EP_NAME.findExtension(
-        UserSpecifiedPathDeploymentSourceType.class);
+    return DeploymentSourceType.EP_NAME.findExtension(UserSpecifiedPathDeploymentSourceType.class);
   }
 
   @Override

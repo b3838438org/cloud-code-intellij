@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,6 @@ import com.google.cloud.tools.intellij.appengine.cloud.AppEngineDeploy;
 import com.google.cloud.tools.intellij.appengine.cloud.AppEngineDeploymentConfiguration;
 import com.google.cloud.tools.intellij.appengine.cloud.AppEngineFlexibleStage;
 import com.google.cloud.tools.intellij.appengine.cloud.AppEngineHelper;
-import com.google.cloud.tools.intellij.appengine.cloud.executor.AppEngineFlexibleDeployTask;
 
 import com.intellij.remoteServer.runtime.deployment.ServerRuntimeInstance.DeploymentOperationCallback;
 import com.intellij.remoteServer.runtime.log.LoggingHandler;
@@ -45,23 +44,17 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-/**
- * Unit tests for {@link AppEngineFlexibleDeployTask}
- */
+/** Unit tests for {@link AppEngineFlexibleDeployTask} */
 @RunWith(MockitoJUnitRunner.class)
 public class AppEngineFlexibleDeployTaskTest {
 
-  private AppEngineFlexibleDeployTask task;
-  @Mock
-  AppEngineDeploy deploy;
+  @Mock AppEngineDeploy deploy;
   @Mock DeploymentOperationCallback callback;
-  @Mock
-  AppEngineDeploymentConfiguration deploymentConfiguration;
-  @Mock
-  AppEngineFlexibleStage stage;
-  @Mock
-  AppEngineHelper helper;
+  @Mock AppEngineDeploymentConfiguration deploymentConfiguration;
+  @Mock AppEngineFlexibleStage stage;
+  @Mock AppEngineHelper helper;
   @Mock ProcessStartListener startListener;
+  private AppEngineFlexibleDeployTask task;
 
   @Before
   public void setUp() throws IOException {
@@ -81,7 +74,8 @@ public class AppEngineFlexibleDeployTaskTest {
     task.execute(startListener);
 
     verify(callback, times(1))
-        .errorOccurred("Failed to prepare credentials. Please make sure you are logged in with the correct account.");
+        .errorOccurred(
+            "Failed to prepare credentials. Please make sure you are logged in with the correct account.");
   }
 
   @Test
@@ -125,10 +119,11 @@ public class AppEngineFlexibleDeployTaskTest {
       task.execute(startListener);
     } catch (AssertionError ae) {
       verify(callback, times(1))
-          .errorOccurred("Deployment failed with an exception.\n"
-          + "Please make sure that you are using the latest version of the Google Cloud SDK.\n"
-          + "Run ''gcloud components update'' to update the SDK. "
-          + "(See: https://cloud.google.com/sdk/gcloud/reference/components/update.)");
+          .errorOccurred(
+              "Deployment failed with an exception.\n"
+                  + "Please make sure that you are using the latest version of the Google Cloud SDK.\n"
+                  + "Run ''gcloud components update'' to update the SDK. "
+                  + "(See: https://cloud.google.com/sdk/gcloud/reference/components/update.)");
       return;
     }
 

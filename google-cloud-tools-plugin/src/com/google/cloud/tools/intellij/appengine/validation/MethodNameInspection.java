@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -96,19 +96,20 @@ public class MethodNameInspection extends EndpointInspectionBase {
           return;
         }
 
-        if (!API_NAME_PATTERN.matcher(EndpointUtilities.collapseSequenceOfDots(nameValue))
+        if (!API_NAME_PATTERN
+            .matcher(EndpointUtilities.collapseSequenceOfDots(nameValue))
             .matches()) {
-          holder.registerProblem(memberValue,
+          holder.registerProblem(
+              memberValue,
               "Invalid method name: letters, digits, underscores and dots are acceptable "
-                  + "characters. Leading and trailing dots are prohibited.", new MyQuickFix());
+                  + "characters. Leading and trailing dots are prohibited.",
+              new MyQuickFix());
         }
       }
     };
   }
 
-  /**
-   * Quick fix for {@link MethodNameInspection} problems by providing a valid API method name.
-   */
+  /** Quick fix for {@link MethodNameInspection} problems by providing a valid API method name. */
   public class MyQuickFix implements LocalQuickFix {
 
     @NotNull
@@ -124,8 +125,8 @@ public class MethodNameInspection extends EndpointInspectionBase {
     }
 
     /**
-     * Provides a replacement API method name that matches the
-     * {@link MethodNameInspection.API_NAME_PATTERN}.
+     * Provides a replacement API method name that matches the {@link
+     * MethodNameInspection.API_NAME_PATTERN}.
      *
      * @param project {@link com.intellij.openapi.project.Project}
      * @param descriptor problem reported by the tool which provided this quick fix action
@@ -157,9 +158,7 @@ public class MethodNameInspection extends EndpointInspectionBase {
       lookupManager.showLookup(editor, LookupElementBuilder.create(variant));
     }
 
-    /**
-     * Returns a valid API method name. An empty string is valid.
-     */
+    /** Returns a valid API method name. An empty string is valid. */
     @VisibleForTesting
     public String getMethodNameSuggestions(String baseString) {
       if (baseString == null) {

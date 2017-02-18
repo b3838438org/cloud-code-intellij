@@ -1,11 +1,11 @@
 /*
- * Copyright 2000-2016 JetBrains s.r.o.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -74,51 +74,23 @@ import java.util.Set;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
-/**
- * @author nik
- */
+/** @author nik */
 public class AppEngineSupportProvider extends FrameworkSupportInModuleProvider {
 
-  private static final Logger LOG = Logger
-      .getInstance("#com.intellij.appengine.facet.AppEngineSupportProvider");
+  private static final Logger LOG =
+      Logger.getInstance("#com.intellij.appengine.facet.AppEngineSupportProvider");
 
   private static final CloudSdkService sdkService = CloudSdkService.getInstance();
 
-  @NotNull
-  @Override
-  public FrameworkTypeEx getFrameworkType() {
-    return AppEngineFrameworkType.getFrameworkType();
-  }
-
-  @Override
-  public List<FrameworkDependency> getDependenciesFrameworkIds() {
-    return AppEngineStandardWebIntegration.getInstance().getAppEngineFrameworkDependencies();
-  }
-
-  @Override
-  public boolean isEnabledForModuleType(@NotNull ModuleType moduleType) {
-    if (PlatformUtils.isIdeaUltimate()) {
-      return moduleType instanceof JavaModuleType;
-    } else {
-      return false;
-    }
-  }
-
-  @Override
-  public boolean isSupportAlreadyAdded(@NotNull Module module,
-      @NotNull FacetsProvider facetsProvider) {
-    return !facetsProvider.getFacetsByType(module, AppEngineStandardFacet.ID).isEmpty();
-  }
-
   @Nullable
-  public static VirtualFile createFileFromTemplate(final String templateName,
-      final VirtualFile parent, final String fileName) {
+  public static VirtualFile createFileFromTemplate(
+      final String templateName, final VirtualFile parent, final String fileName) {
     parent.refresh(false, false);
-    final FileTemplate template = FileTemplateManager.getDefaultInstance()
-        .getJ2eeTemplate(templateName);
+    final FileTemplate template =
+        FileTemplateManager.getDefaultInstance().getJ2eeTemplate(templateName);
     try {
-      final String text = template
-          .getText(FileTemplateManager.getDefaultInstance().getDefaultProperties());
+      final String text =
+          template.getText(FileTemplateManager.getDefaultInstance().getDefaultProperties());
       VirtualFile file = parent.findChild(fileName);
       if (file == null) {
         file = parent.createChildData(AppEngineSupportProvider.class, fileName);
@@ -131,37 +103,11 @@ public class AppEngineSupportProvider extends FrameworkSupportInModuleProvider {
     }
   }
 
-  private void addSupport(final Module module,
-      final ModifiableRootModel rootModel,
-      FrameworkSupportModel frameworkSupportModel,
-      Set<AppEngineStandardMavenLibrary> librariesToAdd) {
-    FacetType<AppEngineStandardFacet, AppEngineFacetConfiguration> facetType
-        = AppEngineStandardFacet.getFacetType();
-    AppEngineStandardFacet appEngineStandardFacet = FacetManager.getInstance(module)
-        .addFacet(facetType, facetType.getDefaultFacetName(), null);
-    AppEngineStandardWebIntegration webIntegration = AppEngineStandardWebIntegration.getInstance();
-    webIntegration.registerFrameworkInModel(frameworkSupportModel, appEngineStandardFacet);
-    final Artifact webArtifact = findOrCreateWebArtifact(appEngineStandardFacet);
-
-    final VirtualFile webDescriptorDir = webIntegration
-        .suggestParentDirectoryForAppEngineWebXml(module, rootModel);
-    if (webDescriptorDir != null) {
-      VirtualFile descriptor = createFileFromTemplate(
-          AppEngineTemplateGroupDescriptorFactory.APP_ENGINE_WEB_XML_TEMPLATE, webDescriptorDir,
-          AppEngineUtil.APP_ENGINE_WEB_XML_NAME);
-      if (descriptor != null) {
-        webIntegration.addDescriptor(webArtifact, module.getProject(), descriptor);
-      }
-    }
-
-    addMavenLibraries(librariesToAdd, module, rootModel, webArtifact);
-  }
-
   @NotNull
   static Artifact findOrCreateWebArtifact(AppEngineStandardFacet appEngineStandardFacet) {
     Module module = appEngineStandardFacet.getModule();
-    ArtifactType webArtifactType = AppEngineStandardWebIntegration.getInstance()
-        .getAppEngineWebArtifactType();
+    ArtifactType webArtifactType =
+        AppEngineStandardWebIntegration.getInstance().getAppEngineWebArtifactType();
     final Collection<Artifact> artifacts = ArtifactUtil.getArtifactsContainingModuleOutput(module);
     for (Artifact artifact : artifacts) {
       if (webArtifactType.equals(artifact.getArtifactType())) {
@@ -171,14 +117,17 @@ public class AppEngineSupportProvider extends FrameworkSupportInModuleProvider {
     ArtifactManager artifactManager = ArtifactManager.getInstance(module.getProject());
     PackagingElementFactory elementFactory = PackagingElementFactory.getInstance();
     ArtifactRootElement<?> root = elementFactory.createArtifactRootElement();
-    elementFactory.getOrCreateDirectory(root, "WEB-INF/classes")
+    elementFactory
+        .getOrCreateDirectory(root, "WEB-INF/classes")
         .addOrFindChild(elementFactory.createModuleOutput(module));
     return artifactManager.addArtifact(module.getName(), webArtifactType, root);
   }
 
   static void addMavenLibraries(
-      final Set<AppEngineStandardMavenLibrary> librariesToAdd, final Module module,
-      final ModifiableRootModel rootModel, final Artifact webArtifact) {
+      final Set<AppEngineStandardMavenLibrary> librariesToAdd,
+      final Module module,
+      final ModifiableRootModel rootModel,
+      final Artifact webArtifact) {
     new WriteAction() {
       @Override
       protected void run(@NotNull Result result) throws Throwable {
@@ -203,46 +152,112 @@ public class AppEngineSupportProvider extends FrameworkSupportInModuleProvider {
     }.execute();
   }
 
-  static void removeMavenLibraries(final Set<AppEngineStandardMavenLibrary> librariesToRemove,
-      final Module module) {
+  static void removeMavenLibraries(
+      final Set<AppEngineStandardMavenLibrary> librariesToRemove, final Module module) {
     final ModuleRootManager manager = ModuleRootManager.getInstance(module);
     final ModifiableRootModel model = manager.getModifiableModel();
     final LibraryTable libraryTable = ProjectLibraryTable.getInstance(module.getProject());
 
-    ApplicationManager.getApplication().invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        new WriteAction() {
-          @Override
-          protected void run(@NotNull Result result) throws Throwable {
-            for (AppEngineStandardMavenLibrary libraryToRemove : librariesToRemove) {
-              final String displayName = AppEngineStandardMavenLibrary
-                  .toMavenDisplayVersion(libraryToRemove.getLibraryProperties());
-              final Library library = libraryTable.getLibraryByName(displayName);
-              if (library != null) {
-                libraryTable.removeLibrary(library);
+    ApplicationManager.getApplication()
+        .invokeLater(
+            new Runnable() {
+              @Override
+              public void run() {
+                new WriteAction() {
+                  @Override
+                  protected void run(@NotNull Result result) throws Throwable {
+                    for (AppEngineStandardMavenLibrary libraryToRemove : librariesToRemove) {
+                      final String displayName =
+                          AppEngineStandardMavenLibrary.toMavenDisplayVersion(
+                              libraryToRemove.getLibraryProperties());
+                      final Library library = libraryTable.getLibraryByName(displayName);
+                      if (library != null) {
+                        libraryTable.removeLibrary(library);
 
-                for (OrderEntry orderEntry : model.getOrderEntries()) {
-                  if (orderEntry.getPresentableName().equals(library.getName())) {
-                    model.removeOrderEntry(orderEntry);
+                        for (OrderEntry orderEntry : model.getOrderEntries()) {
+                          if (orderEntry.getPresentableName().equals(library.getName())) {
+                            model.removeOrderEntry(orderEntry);
+                          }
+                        }
+                      }
+                    }
+                    model.commit();
                   }
-                }
-
+                }.execute();
               }
-            }
-            model.commit();
-          }
-        }.execute();
-      }
-    }, ModalityState.NON_MODAL);
+            },
+            ModalityState.NON_MODAL);
   }
 
   static Library loadMavenLibrary(final Module module, AppEngineStandardMavenLibrary library) {
     RepositoryLibraryProperties libraryProperties = library.getLibraryProperties();
 
-    return MavenRepositoryLibraryDownloader.getInstance().downloadLibrary(module,
-        RepositoryLibraryDescription.findDescription(libraryProperties), libraryProperties,
-        libraryProperties.getVersion());
+    return MavenRepositoryLibraryDownloader.getInstance()
+        .downloadLibrary(
+            module,
+            RepositoryLibraryDescription.findDescription(libraryProperties),
+            libraryProperties,
+            libraryProperties.getVersion());
+  }
+
+  @TestOnly
+  public static void setSdkPath(FrameworkSupportInModuleConfigurable configurable, String path) {
+    ((AppEngineSupportConfigurable) configurable).cloudSdkPanel.setCloudSdkDirectoryText(path);
+  }
+
+  @NotNull
+  @Override
+  public FrameworkTypeEx getFrameworkType() {
+    return AppEngineFrameworkType.getFrameworkType();
+  }
+
+  @Override
+  public List<FrameworkDependency> getDependenciesFrameworkIds() {
+    return AppEngineStandardWebIntegration.getInstance().getAppEngineFrameworkDependencies();
+  }
+
+  @Override
+  public boolean isEnabledForModuleType(@NotNull ModuleType moduleType) {
+    if (PlatformUtils.isIdeaUltimate()) {
+      return moduleType instanceof JavaModuleType;
+    } else {
+      return false;
+    }
+  }
+
+  @Override
+  public boolean isSupportAlreadyAdded(
+      @NotNull Module module, @NotNull FacetsProvider facetsProvider) {
+    return !facetsProvider.getFacetsByType(module, AppEngineStandardFacet.ID).isEmpty();
+  }
+
+  private void addSupport(
+      final Module module,
+      final ModifiableRootModel rootModel,
+      FrameworkSupportModel frameworkSupportModel,
+      Set<AppEngineStandardMavenLibrary> librariesToAdd) {
+    FacetType<AppEngineStandardFacet, AppEngineFacetConfiguration> facetType =
+        AppEngineStandardFacet.getFacetType();
+    AppEngineStandardFacet appEngineStandardFacet =
+        FacetManager.getInstance(module).addFacet(facetType, facetType.getDefaultFacetName(), null);
+    AppEngineStandardWebIntegration webIntegration = AppEngineStandardWebIntegration.getInstance();
+    webIntegration.registerFrameworkInModel(frameworkSupportModel, appEngineStandardFacet);
+    final Artifact webArtifact = findOrCreateWebArtifact(appEngineStandardFacet);
+
+    final VirtualFile webDescriptorDir =
+        webIntegration.suggestParentDirectoryForAppEngineWebXml(module, rootModel);
+    if (webDescriptorDir != null) {
+      VirtualFile descriptor =
+          createFileFromTemplate(
+              AppEngineTemplateGroupDescriptorFactory.APP_ENGINE_WEB_XML_TEMPLATE,
+              webDescriptorDir,
+              AppEngineUtil.APP_ENGINE_WEB_XML_NAME);
+      if (descriptor != null) {
+        webIntegration.addDescriptor(webArtifact, module.getProject(), descriptor);
+      }
+    }
+
+    addMavenLibraries(librariesToAdd, module, rootModel, webArtifact);
   }
 
   @NotNull
@@ -252,14 +267,9 @@ public class AppEngineSupportProvider extends FrameworkSupportInModuleProvider {
     return new AppEngineSupportConfigurable(model);
   }
 
-  @TestOnly
-  public static void setSdkPath(FrameworkSupportInModuleConfigurable configurable, String path) {
-    ((AppEngineSupportConfigurable) configurable).cloudSdkPanel.setCloudSdkDirectoryText(path);
-  }
-
   @VisibleForTesting
-  public class AppEngineSupportConfigurable extends FrameworkSupportInModuleConfigurable implements
-      FrameworkSupportModelListener {
+  public class AppEngineSupportConfigurable extends FrameworkSupportInModuleConfigurable
+      implements FrameworkSupportModelListener {
 
     private final FrameworkSupportModel frameworkSupportModel;
     private JPanel mainPanel;
@@ -272,16 +282,13 @@ public class AppEngineSupportProvider extends FrameworkSupportInModuleProvider {
     }
 
     @Override
-    public void frameworkSelected(@NotNull FrameworkSupportProvider provider) {
-    }
+    public void frameworkSelected(@NotNull FrameworkSupportProvider provider) {}
 
     @Override
-    public void frameworkUnselected(@NotNull FrameworkSupportProvider provider) {
-    }
+    public void frameworkUnselected(@NotNull FrameworkSupportProvider provider) {}
 
     @Override
-    public void wizardStepUpdated() {
-    }
+    public void wizardStepUpdated() {}
 
     @Override
     public void onFrameworkSelectionChanged(boolean selected) {
@@ -291,28 +298,31 @@ public class AppEngineSupportProvider extends FrameworkSupportInModuleProvider {
     }
 
     @Override
-    public void addSupport(@NotNull Module module,
+    public void addSupport(
+        @NotNull Module module,
         @NotNull ModifiableRootModel rootModel,
         @NotNull ModifiableModelsProvider modifiableModelsProvider) {
-      if (!sdkService.validateCloudSdk(cloudSdkPanel.getCloudSdkDirectoryText())
+      if (!sdkService
+          .validateCloudSdk(cloudSdkPanel.getCloudSdkDirectoryText())
           .contains(CloudSdkValidationResult.MALFORMED_PATH)) {
         sdkService.setSdkHomePath(cloudSdkPanel.getCloudSdkDirectoryText());
       }
 
-      AppEngineSupportProvider.this
-          .addSupport(module, rootModel, frameworkSupportModel,
-              appEngineStandardLibraryPanel.getSelectedLibraries());
+      AppEngineSupportProvider.this.addSupport(
+          module,
+          rootModel,
+          frameworkSupportModel,
+          appEngineStandardLibraryPanel.getSelectedLibraries());
 
-      AppEngineStandardWebIntegration.getInstance().setupRunConfigurations(
-          AppEngineUtil.findOneAppEngineStandardArtifact(module),
-          rootModel.getProject(),
-          null /*existingConfiguration*/);
+      AppEngineStandardWebIntegration.getInstance()
+          .setupRunConfigurations(
+              AppEngineUtil.findOneAppEngineStandardArtifact(module),
+              rootModel.getProject(),
+              null /*existingConfiguration*/);
 
       // Called when creating a new App Engine module from the 'new project' or 'new module' wizards
       // or upon adding App Engine 'Framework Support' to an existing module.
-      UsageTrackerProvider.getInstance()
-          .trackEvent(GctTracking.APP_ENGINE_ADD_SUPPORT)
-          .ping();
+      UsageTrackerProvider.getInstance().trackEvent(GctTracking.APP_ENGINE_ADD_SUPPORT).ping();
     }
 
     @Nullable

@@ -1,11 +1,11 @@
 /*
- * Copyright 2000-2016 JetBrains s.r.o.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -32,11 +32,9 @@ import com.intellij.util.indexing.FileContent;
 
 import org.jetbrains.annotations.NotNull;
 
-/**
- * @author nik
- */
-public class AppEngineFrameworkDetector extends
-    FacetBasedFrameworkDetector<AppEngineStandardFacet, AppEngineFacetConfiguration> {
+/** @author nik */
+public class AppEngineFrameworkDetector
+    extends FacetBasedFrameworkDetector<AppEngineStandardFacet, AppEngineFacetConfiguration> {
 
   public AppEngineFrameworkDetector() {
     super("appengine-java");
@@ -44,10 +42,11 @@ public class AppEngineFrameworkDetector extends
 
   @Override
   public void setupFacet(@NotNull AppEngineStandardFacet facet, ModifiableRootModel model) {
-    AppEngineStandardWebIntegration.getInstance().setupRunConfigurations(
-        AppEngineUtil.findOneAppEngineStandardArtifact(facet.getModule()),
-        model.getProject(),
-        null /*existingConfiguration*/);
+    AppEngineStandardWebIntegration.getInstance()
+        .setupRunConfigurations(
+            AppEngineUtil.findOneAppEngineStandardArtifact(facet.getModule()),
+            model.getProject(),
+            null /*existingConfiguration*/);
 
     UsageTrackerProvider.getInstance()
         .trackEvent(GctTracking.APP_ENGINE_ADD_STANDARD_FACET)
@@ -74,7 +73,8 @@ public class AppEngineFrameworkDetector extends
   @NotNull
   @Override
   public ElementPattern<FileContent> createSuitableFilePattern() {
-    return FileContentPattern.fileContent().withName(AppEngineUtil.APP_ENGINE_WEB_XML_NAME)
+    return FileContentPattern.fileContent()
+        .withName(AppEngineUtil.APP_ENGINE_WEB_XML_NAME)
         .xmlWithRootTag("appengine-web-app");
   }
 }

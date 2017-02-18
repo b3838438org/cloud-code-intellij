@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,180 +47,22 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Inspection to check that REST signatures in an Endpoint class are unique.
- */
+/** Inspection to check that REST signatures in an Endpoint class are unique. */
 public class RestSignatureInspection extends EndpointInspectionBase {
 
-  public enum RestMethod {
-    LIST("list", "GET") {
-      /**
-       * If the return type of {@code method} is a parameterized collection,
-       * this function constructs the resource name from the parameterized parameters
-       * of the return type else it returns {@code null}.
-       *
-       * @param method the method in which the resource name will be generated from
-       * @return the guessed resource name
-       */
-      @Override
-      @Nullable
-      public String guessResourceName(PsiMethod method) {
-        Project project = getProject(method);
-        if (project == null) {
-          return null;
-        }
-
-        PsiType returnType = method.getReturnType();
-        if (isValidCollectionType(project, returnType)) {
-          assert (returnType instanceof PsiClassType);
-          PsiClassType classType = (PsiClassType) returnType;
-          PsiType[] typeParams = classType.getParameters();
-
-          // TODO: Add inspection to verify that the the type parameter is specified
-          // for paramerterized types, since trying to generate client libs without one generates
-          // a : "Object type T not supported"
-          return typeParams.length > 0 ? getSimpleName(project, typeParams[0]).toLowerCase() : null;
-        }
-        return null;
-      }
-
-      private boolean isValidCollectionType(Project project, PsiType type) {
-        // Check if type is a Collection
-        if (PsiUtils.isParameterizedType(type)) {
-          PsiClassType collectionType =
-              JavaPsiFacade.getElementFactory(project)
-                  .createTypeByFQClassName("java.util.Collection");
-          PsiClassType collectionResponseType = JavaPsiFacade.getElementFactory(project)
-              .createTypeByFQClassName("com.google.api.server.spi.response.CollectionResponse");
-
-          return collectionType.isAssignableFrom(type) || collectionResponseType
-              .isAssignableFrom(type);
-        }
-        return false;
-      }
-    },
-    GET("get", "GET"),
-    INSERT("insert", "POST"),
-    UPDATE("update", "PUT"),
-    DELETE("delete", "DELETE") {
-      /**
-       * Returns {@code null} if the length of the name of {@code method} is
-       * shorter or equal to the current RestMethod's prefix. Otherwise returns the substring
-       * of the name of {@code method} beginning at the length of the current RestMethod's
-       * prefix.
-       */
-      @Override
-      public String guessResourceName(PsiMethod method) {
-        String methodName = method.getName();
-        return methodNamePrefix.length() >= methodName.length() ? null :
-            methodName.substring(methodNamePrefix.length()).toLowerCase();
-      }
-    },
-    REMOVE("remove", "DELETE") {
-      /**
-       * Returns {@code null} if the length of the name of {@code method} is
-       * shorter or equal to the current RestMethod's prefix. Otherwise returns the substring
-       * of the name of {@code method} beginning at the length of the current RestMethod's
-       * prefix.
-       */
-      @Override
-      public String guessResourceName(PsiMethod method) {
-        String methodName = method.getName();
-        return methodNamePrefix.length() >= methodName.length() ? null :
-            methodName.substring(methodNamePrefix.length()).toLowerCase();
-      }
-    },
-    DEFAULT("", "POST") {
-      @Override
-      @Nullable
-      public String guessResourceName(PsiMethod method) {
-        return null;
-      }
-    };
-
-    protected final String methodNamePrefix;
-    private final String httpMethod;
-
-    /**
-     * Specifies a default REST method prefix, as well as what HTTP method it should use by
-     * default.
-     *
-     * @param methodNamePrefix a method name prefix
-     * @param httpMethod the default HTTP method for this prefix
-     */
-    RestMethod(String methodNamePrefix, String httpMethod) {
-      this.methodNamePrefix = methodNamePrefix;
-      this.httpMethod = httpMethod;
+  /**
+   * Returns the project associated with {@code method} or null if it cannot retrieve the project.
+   */
+  @Nullable
+  private static Project getProject(PsiMethod method) {
+    Project project;
+    try {
+      project = method.getContainingFile().getProject();
+    } catch (PsiInvalidElementAccessException ex) {
+      LOG.error("Error getting project with parameter " + method.getText(), ex);
+      return null;
     }
-
-    /**
-     * Gets the method name prefix for this instance.
-     *
-     * @return the method name prefix
-     */
-    public String getMethodNamePrefix() {
-      return this.methodNamePrefix;
-    }
-
-    /**
-     * Gets the default HTTP method for this instance.
-     *
-     * @return The HTTP method.
-     */
-    public String getHttpMethod() {
-      return this.httpMethod;
-    }
-
-    /**
-     * Generates a resource name from either {@code method}'s name or its return type.
-     *
-     * @param method the method in which the resource name will be generated from
-     * @return the guessed resource name
-     */
-    @Nullable
-    public String guessResourceName(PsiMethod method) {
-      Project project = getProject(method);
-      if (project == null) {
-        return null;
-      }
-
-      String simpleName = getSimpleName(project, method.getReturnType());
-      return simpleName == null ? null : simpleName.toLowerCase();
-    }
-
-    @Nullable
-    private static String getSimpleName(Project project, PsiType type) {
-      PsiClassType collectionType =
-          JavaPsiFacade.getElementFactory(project).createTypeByFQClassName("java.util.Collection");
-
-      if (type == null) {
-        return null;
-      } else if (type instanceof PsiArrayType) {
-        PsiType arrayComponentType = ((PsiArrayType) type).getComponentType();
-        return getSimpleName(project, arrayComponentType) + "collection";
-
-      } else if (collectionType.isAssignableFrom(type)) {
-        assert (type instanceof PsiClassType);
-        PsiClassType classType = (PsiClassType) type;
-        PsiType[] typeParams = classType.getParameters();
-        return typeParams.length > 0 ? getSimpleName(project, typeParams[0]) + "collection" : null;
-      } else if (PsiUtils.isParameterizedType(type)) {
-        assert (type instanceof PsiClassType);
-        StringBuilder builder = new StringBuilder();
-        PsiClassType classType = (PsiClassType) type;
-        builder.append(getSimpleName(project, classType.rawType()));
-
-        PsiType[] typeParams = classType.getParameters();
-        for (PsiType psiType : typeParams) {
-          builder.append('_');
-          builder.append(getSimpleName(project, psiType));
-        }
-        return builder.toString();
-
-      } else {
-        return type.getPresentableText();
-      }
-    }
+    return project;
   }
 
   @Override
@@ -229,14 +71,12 @@ public class RestSignatureInspection extends EndpointInspectionBase {
     return EndpointBundle.message("unique.rest.signature.description");
   }
 
-
   @Nls
   @NotNull
   @Override
   public String getDisplayName() {
     return EndpointBundle.message("unique.rest.signature.name");
   }
-
 
   @NotNull
   @Override
@@ -266,8 +106,8 @@ public class RestSignatureInspection extends EndpointInspectionBase {
         }
       }
 
-      private void validateRestSignatureUnique(PsiMethod psiMethod,
-          Map<String, PsiMethod> restfulSignatures) {
+      private void validateRestSignatureUnique(
+          PsiMethod psiMethod, Map<String, PsiMethod> restfulSignatures) {
         // Check if method public or non-static
         if (!EndpointUtilities.isApiMethod(psiMethod)) {
           return;
@@ -282,7 +122,8 @@ public class RestSignatureInspection extends EndpointInspectionBase {
         if (seenMethod == null) {
           restfulSignatures.put(restSignature, psiMethod);
         } else {
-          holder.registerProblem(psiMethod,
+          holder.registerProblem(
+              psiMethod,
               getErrorMessage(restSignature, psiMethod.getName(), seenMethod.getName()),
               LocalQuickFix.EMPTY_ARRAY);
         }
@@ -298,8 +139,9 @@ public class RestSignatureInspection extends EndpointInspectionBase {
    * @return the Rest Signature of psiMethod
    */
   public String getRestfulSignature(PsiMethod psiMethod) {
-    return getHttpMethod(psiMethod) + " " + getPath(psiMethod)
-        .replaceAll("\\{([^\\}]*)\\}", "\\{\\}");
+    return getHttpMethod(psiMethod)
+        + " "
+        + getPath(psiMethod).replaceAll("\\{([^\\}]*)\\}", "\\{\\}");
   }
 
   /**
@@ -317,8 +159,9 @@ public class RestSignatureInspection extends EndpointInspectionBase {
     // Check if the httpMethod was specified by uses in @ApiMethod's httpMethod attribute
     for (PsiAnnotation annotation : modifierList.getAnnotations()) {
       try {
-        httpMethod = getAttributeFromAnnotation(annotation,
-            GctConstants.APP_ENGINE_ANNOTATION_API_METHOD, "httpMethod");
+        httpMethod =
+            getAttributeFromAnnotation(
+                annotation, GctConstants.APP_ENGINE_ANNOTATION_API_METHOD, "httpMethod");
       } catch (InvalidAnnotationException ex) {
         // do nothing
       } catch (MissingAttributeException ex) {
@@ -348,8 +191,9 @@ public class RestSignatureInspection extends EndpointInspectionBase {
     // Check if the httpMethod was specified by user in @ApiMethod's httpMethod attribute
     for (PsiAnnotation annotation : modifierList.getAnnotations()) {
       try {
-        path = getAttributeFromAnnotation(annotation, GctConstants.APP_ENGINE_ANNOTATION_API_METHOD,
-            "path");
+        path =
+            getAttributeFromAnnotation(
+                annotation, GctConstants.APP_ENGINE_ANNOTATION_API_METHOD, "path");
       } catch (InvalidAnnotationException ex) {
         // do nothing
       } catch (MissingAttributeException ex) {
@@ -429,8 +273,9 @@ public class RestSignatureInspection extends EndpointInspectionBase {
     // Get @ApiClass's resource attribute if it exists
     for (PsiAnnotation annotation : modifierList.getAnnotations()) {
       try {
-        resource = getAttributeFromAnnotation(annotation,
-            GctConstants.APP_ENGINE_ANNOTATION_API_CLASS, "resource");
+        resource =
+            getAttributeFromAnnotation(
+                annotation, GctConstants.APP_ENGINE_ANNOTATION_API_CLASS, "resource");
       } catch (InvalidAnnotationException ex) {
         // do nothing
       } catch (MissingAttributeException ex) {
@@ -446,8 +291,9 @@ public class RestSignatureInspection extends EndpointInspectionBase {
     // Get @Api's resource attribute if it exists
     for (PsiAnnotation annotation : modifierList.getAnnotations()) {
       try {
-        resource = getAttributeFromAnnotation(annotation, GctConstants.APP_ENGINE_ANNOTATION_API,
-            "resource");
+        resource =
+            getAttributeFromAnnotation(
+                annotation, GctConstants.APP_ENGINE_ANNOTATION_API, "resource");
       } catch (InvalidAnnotationException ex) {
         // do nothing
       } catch (MissingAttributeException ex) {
@@ -467,8 +313,9 @@ public class RestSignatureInspection extends EndpointInspectionBase {
     return null;
   }
 
-  private String getAttributeFromAnnotation(PsiAnnotation annotation, String annotationType,
-      final String attribute) throws InvalidAnnotationException, MissingAttributeException {
+  private String getAttributeFromAnnotation(
+      PsiAnnotation annotation, String annotationType, final String attribute)
+      throws InvalidAnnotationException, MissingAttributeException {
 
     String annotationQualifiedName = annotation.getQualifiedName();
     if (annotationQualifiedName == null) {
@@ -489,13 +336,12 @@ public class RestSignatureInspection extends EndpointInspectionBase {
   }
 
   private String getErrorMessage(String restSignature, String method1, String method2) {
-    return String.format("Multiple methods with same rest path \"%s\": \"%s\" and \"%s\"",
+    return String.format(
+        "Multiple methods with same rest path \"%s\": \"%s\" and \"%s\"",
         restSignature, method1, method2);
   }
 
-  /**
-   * Guesses a resource name based off the method name or return type.
-   */
+  /** Guesses a resource name based off the method name or return type. */
   @Nullable
   private String guessResourceName(PsiMethod method) {
     // Check if return type is void
@@ -518,7 +364,9 @@ public class RestSignatureInspection extends EndpointInspectionBase {
     StringBuilder path = new StringBuilder();
     EndpointPsiElementVisitor elementVisitor = new EndpointPsiElementVisitor();
     List<String> annotions =
-        Arrays.asList(GctConstants.APP_ENGINE_ANNOTATION_NULLABLE, "javax.annotation.Nullable",
+        Arrays.asList(
+            GctConstants.APP_ENGINE_ANNOTATION_NULLABLE,
+            "javax.annotation.Nullable",
             GctConstants.APP_ENGINE_ANNOTATION_DEFAULT_VALUE);
 
     for (PsiParameter param : method.getParameterList().getParameters()) {
@@ -541,18 +389,174 @@ public class RestSignatureInspection extends EndpointInspectionBase {
     return path.toString();
   }
 
-  /**
-   * Returns the project associated with {@code method} or null if it cannot retrieve the project.
-   */
-  @Nullable
-  private static Project getProject(PsiMethod method) {
-    Project project;
-    try {
-      project = method.getContainingFile().getProject();
-    } catch (PsiInvalidElementAccessException ex) {
-      LOG.error("Error getting project with parameter " + method.getText(), ex);
-      return null;
+  public enum RestMethod {
+    LIST("list", "GET") {
+      /**
+       * If the return type of {@code method} is a parameterized collection, this function
+       * constructs the resource name from the parameterized parameters of the return type else it
+       * returns {@code null}.
+       *
+       * @param method the method in which the resource name will be generated from
+       * @return the guessed resource name
+       */
+      @Override
+      @Nullable
+      public String guessResourceName(PsiMethod method) {
+        Project project = getProject(method);
+        if (project == null) {
+          return null;
+        }
+
+        PsiType returnType = method.getReturnType();
+        if (isValidCollectionType(project, returnType)) {
+          assert (returnType instanceof PsiClassType);
+          PsiClassType classType = (PsiClassType) returnType;
+          PsiType[] typeParams = classType.getParameters();
+
+          // TODO: Add inspection to verify that the the type parameter is specified
+          // for paramerterized types, since trying to generate client libs without one generates
+          // a : "Object type T not supported"
+          return typeParams.length > 0 ? getSimpleName(project, typeParams[0]).toLowerCase() : null;
+        }
+        return null;
+      }
+
+      private boolean isValidCollectionType(Project project, PsiType type) {
+        // Check if type is a Collection
+        if (PsiUtils.isParameterizedType(type)) {
+          PsiClassType collectionType =
+              JavaPsiFacade.getElementFactory(project)
+                  .createTypeByFQClassName("java.util.Collection");
+          PsiClassType collectionResponseType =
+              JavaPsiFacade.getElementFactory(project)
+                  .createTypeByFQClassName("com.google.api.server.spi.response.CollectionResponse");
+
+          return collectionType.isAssignableFrom(type)
+              || collectionResponseType.isAssignableFrom(type);
+        }
+        return false;
+      }
+    },
+    GET("get", "GET"),
+    INSERT("insert", "POST"),
+    UPDATE("update", "PUT"),
+    DELETE("delete", "DELETE") {
+      /**
+       * Returns {@code null} if the length of the name of {@code method} is shorter or equal to the
+       * current RestMethod's prefix. Otherwise returns the substring of the name of {@code method}
+       * beginning at the length of the current RestMethod's prefix.
+       */
+      @Override
+      public String guessResourceName(PsiMethod method) {
+        String methodName = method.getName();
+        return methodNamePrefix.length() >= methodName.length()
+            ? null
+            : methodName.substring(methodNamePrefix.length()).toLowerCase();
+      }
+    },
+    REMOVE("remove", "DELETE") {
+      /**
+       * Returns {@code null} if the length of the name of {@code method} is shorter or equal to the
+       * current RestMethod's prefix. Otherwise returns the substring of the name of {@code method}
+       * beginning at the length of the current RestMethod's prefix.
+       */
+      @Override
+      public String guessResourceName(PsiMethod method) {
+        String methodName = method.getName();
+        return methodNamePrefix.length() >= methodName.length()
+            ? null
+            : methodName.substring(methodNamePrefix.length()).toLowerCase();
+      }
+    },
+    DEFAULT("", "POST") {
+      @Override
+      @Nullable
+      public String guessResourceName(PsiMethod method) {
+        return null;
+      }
+    };
+
+    protected final String methodNamePrefix;
+    private final String httpMethod;
+
+    /**
+     * Specifies a default REST method prefix, as well as what HTTP method it should use by default.
+     *
+     * @param methodNamePrefix a method name prefix
+     * @param httpMethod the default HTTP method for this prefix
+     */
+    RestMethod(String methodNamePrefix, String httpMethod) {
+      this.methodNamePrefix = methodNamePrefix;
+      this.httpMethod = httpMethod;
     }
-    return project;
+
+    @Nullable
+    private static String getSimpleName(Project project, PsiType type) {
+      PsiClassType collectionType =
+          JavaPsiFacade.getElementFactory(project).createTypeByFQClassName("java.util.Collection");
+
+      if (type == null) {
+        return null;
+      } else if (type instanceof PsiArrayType) {
+        PsiType arrayComponentType = ((PsiArrayType) type).getComponentType();
+        return getSimpleName(project, arrayComponentType) + "collection";
+
+      } else if (collectionType.isAssignableFrom(type)) {
+        assert (type instanceof PsiClassType);
+        PsiClassType classType = (PsiClassType) type;
+        PsiType[] typeParams = classType.getParameters();
+        return typeParams.length > 0 ? getSimpleName(project, typeParams[0]) + "collection" : null;
+      } else if (PsiUtils.isParameterizedType(type)) {
+        assert (type instanceof PsiClassType);
+        StringBuilder builder = new StringBuilder();
+        PsiClassType classType = (PsiClassType) type;
+        builder.append(getSimpleName(project, classType.rawType()));
+
+        PsiType[] typeParams = classType.getParameters();
+        for (PsiType psiType : typeParams) {
+          builder.append('_');
+          builder.append(getSimpleName(project, psiType));
+        }
+        return builder.toString();
+
+      } else {
+        return type.getPresentableText();
+      }
+    }
+
+    /**
+     * Gets the method name prefix for this instance.
+     *
+     * @return the method name prefix
+     */
+    public String getMethodNamePrefix() {
+      return this.methodNamePrefix;
+    }
+
+    /**
+     * Gets the default HTTP method for this instance.
+     *
+     * @return The HTTP method.
+     */
+    public String getHttpMethod() {
+      return this.httpMethod;
+    }
+
+    /**
+     * Generates a resource name from either {@code method}'s name or its return type.
+     *
+     * @param method the method in which the resource name will be generated from
+     * @return the guessed resource name
+     */
+    @Nullable
+    public String guessResourceName(PsiMethod method) {
+      Project project = getProject(method);
+      if (project == null) {
+        return null;
+      }
+
+      String simpleName = getSimpleName(project, method.getReturnType());
+      return simpleName == null ? null : simpleName.toLowerCase();
+    }
   }
 }

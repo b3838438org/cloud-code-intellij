@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,19 +23,37 @@ import com.google.api.services.clouddebugger.v2.model.SourceLocation;
 import java.util.Comparator;
 import java.util.Date;
 
-/**
- * BreakpointComparer is a comparer used to sort breakpoints in the historical snapshot list.
- */
+/** BreakpointComparer is a comparer used to sort breakpoints in the historical snapshot list. */
 public class BreakpointComparer implements Comparator<Breakpoint> {
 
   private static final BreakpointComparer DEFAULT_INSTANCE = new BreakpointComparer();
   private static final Date MINIMUM_DATE = new Date(Long.MIN_VALUE);
 
-  private BreakpointComparer() {
-  }
+  private BreakpointComparer() {}
 
   public static BreakpointComparer getDefaultInstance() {
     return DEFAULT_INSTANCE;
+  }
+
+  private static boolean isSourceLocationValid(SourceLocation sourceLocation) {
+    if (sourceLocation == null) {
+      return false;
+    }
+    if (Strings.isNullOrEmpty(sourceLocation.getPath())) {
+      return false;
+    }
+    if (sourceLocation.getLine() == null) {
+      return false;
+    }
+    return true;
+  }
+
+  private static int toIntValue(Integer integer) {
+    return integer != null ? integer.intValue() : 0;
+  }
+
+  private static long toLongValue(Long longValue) {
+    return longValue != null ? longValue.longValue() : 0;
   }
 
   @SuppressWarnings("ConstantConditions")
@@ -84,26 +102,5 @@ public class BreakpointComparer implements Comparator<Breakpoint> {
       d2 = MINIMUM_DATE;
     }
     return d2.compareTo(d1);
-  }
-
-  private static boolean isSourceLocationValid(SourceLocation sourceLocation) {
-    if (sourceLocation == null) {
-      return false;
-    }
-    if (Strings.isNullOrEmpty(sourceLocation.getPath())) {
-      return false;
-    }
-    if (sourceLocation.getLine() == null) {
-      return false;
-    }
-    return true;
-  }
-
-  private static int toIntValue(Integer integer) {
-    return integer != null ? integer.intValue() : 0;
-  }
-
-  private static long toLongValue(Long longValue) {
-    return longValue != null ? longValue.longValue() : 0;
   }
 }

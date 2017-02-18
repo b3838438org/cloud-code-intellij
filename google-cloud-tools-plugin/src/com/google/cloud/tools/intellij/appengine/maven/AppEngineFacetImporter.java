@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,22 +39,23 @@ import org.jetbrains.idea.maven.project.MavenProjectsTree;
 import java.util.List;
 import java.util.Map;
 
-/**
- * @author nik
- */
+/** @author nik */
 // TODO update this to use the new maven plugin and sdk
-public class AppEngineFacetImporter extends
-    FacetImporter<AppEngineStandardFacet, AppEngineFacetConfiguration, AppEngineStandardFacetType> {
+public class AppEngineFacetImporter
+    extends FacetImporter<
+        AppEngineStandardFacet, AppEngineFacetConfiguration, AppEngineStandardFacetType> {
 
   public AppEngineFacetImporter() {
-    super("com.google.appengine", "appengine-maven-plugin",
+    super(
+        "com.google.appengine",
+        "appengine-maven-plugin",
         FacetType.findInstance(AppEngineStandardFacetType.class));
   }
 
   @Nullable
   private String getVersion(MavenProject project) {
-    for (MavenArtifact artifact : project
-        .findDependencies("com.google.appengine", "appengine-api-1.0-sdk")) {
+    for (MavenArtifact artifact :
+        project.findDependencies("com.google.appengine", "appengine-api-1.0-sdk")) {
       String artifactVersion = artifact.getVersion();
       if (artifactVersion != null) {
         return artifactVersion;
@@ -65,12 +66,11 @@ public class AppEngineFacetImporter extends
   }
 
   @Override
-  protected void setupFacet(AppEngineStandardFacet facet, MavenProject mavenProject) {
-
-  }
+  protected void setupFacet(AppEngineStandardFacet facet, MavenProject mavenProject) {}
 
   @Override
-  protected void reimportFacet(IdeModifiableModelsProvider modelsProvider,
+  protected void reimportFacet(
+      IdeModifiableModelsProvider modelsProvider,
       Module module,
       MavenRootModelAdapter rootModel,
       AppEngineStandardFacet facet,
@@ -83,12 +83,11 @@ public class AppEngineFacetImporter extends
     if (version != null) {
       AppEngineStandardWebIntegration.getInstance().setupDevServer();
       final String artifactName = module.getName() + ":war exploded";
-      final Artifact webArtifact = modelsProvider.getModifiableArtifactModel()
-          .findArtifact(artifactName);
-      AppEngineStandardWebIntegration.getInstance().setupRunConfigurations(
-          webArtifact,
-          module.getProject(),
-          null /* existingConfiguration */);
+      final Artifact webArtifact =
+          modelsProvider.getModifiableArtifactModel().findArtifact(artifactName);
+      AppEngineStandardWebIntegration.getInstance()
+          .setupRunConfigurations(
+              webArtifact, module.getProject(), null /* existingConfiguration */);
     }
   }
 }

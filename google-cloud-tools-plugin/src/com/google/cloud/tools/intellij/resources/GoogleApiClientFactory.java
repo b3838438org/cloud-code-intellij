@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,9 +24,7 @@ import com.intellij.openapi.components.ServiceManager;
 
 import org.jetbrains.annotations.Nullable;
 
-/**
- * Factory class for creating instances of Google API clients.
- */
+/** Factory class for creating instances of Google API clients. */
 public abstract class GoogleApiClientFactory {
 
   public static GoogleApiClientFactory getInstance() {
@@ -35,16 +33,17 @@ public abstract class GoogleApiClientFactory {
 
   /**
    * Creates a new instance of a {@link CloudResourceManager} client
+   *
    * @param httpRequestInitializer optional HttpRequestInitializer
    */
-  public abstract CloudResourceManager getCloudResourceManagerClient(@Nullable HttpRequestInitializer
-      httpRequestInitializer);
+  public abstract CloudResourceManager getCloudResourceManagerClient(
+      @Nullable HttpRequestInitializer httpRequestInitializer);
 
   /**
    * Creates a new instance of a {@link Appengine} client
+   *
    * @param httpRequestInitializer optional HttpRequestInitializer
    */
-  public abstract Appengine getAppEngineApiClient(@Nullable HttpRequestInitializer
-      httpRequestInitializer);
-
+  public abstract Appengine getAppEngineApiClient(
+      @Nullable HttpRequestInitializer httpRequestInitializer);
 }

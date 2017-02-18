@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,16 +35,13 @@ import java.io.IOException;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextPane;
-import javax.swing.border.EmptyBorder;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkEvent.EventType;
 import javax.swing.event.HyperlinkListener;
 
 import git4idea.DialogManager;
 
-/**
- * A {@link JPanel} that displays contextual information about an App Engine Application.
- */
+/** A {@link JPanel} that displays contextual information about an App Engine Application. */
 public class AppEngineApplicationInfoPanel extends JPanel {
 
   private static final String HTML_OPEN_TAG = "<html><font face='sans' size='-1'>";
@@ -60,7 +57,7 @@ public class AppEngineApplicationInfoPanel extends JPanel {
   // Start in a friendly state before we know whether the application is truly valid.
   private boolean isApplicationValid = true;
 
-  private CreateApplicationLinkListener  currentLinkListener;
+  private CreateApplicationLinkListener currentLinkListener;
 
   public AppEngineApplicationInfoPanel() {
     super(new BorderLayout(COMPONENTS_HORIZONTAL_PADDING, COMPONENTS_VERTICAL_PADDING));
@@ -82,24 +79,28 @@ public class AppEngineApplicationInfoPanel extends JPanel {
    * @param projectId the ID of the project whose application info to display
    * @param credential the Credential to use to make any required API calls
    */
+  @SuppressWarnings("FutureReturnValueIgnored")
   public void refresh(final String projectId, final Credential credential) {
-    ApplicationManager.getApplication().executeOnPooledThread(() -> {
-      try {
-        Application application =
-            AppEngineAdminService.getInstance().getApplicationForProjectId(projectId, credential);
+    ApplicationManager.getApplication()
+        .executeOnPooledThread(
+            () -> {
+              try {
+                Application application =
+                    AppEngineAdminService.getInstance()
+                        .getApplicationForProjectId(projectId, credential);
 
-        if (application != null) {
-          setMessage(application.getLocationId(), false);
-          isApplicationValid = true;
-        } else {
-          setCreateApplicationMessage(projectId, credential);
-          isApplicationValid = false;
-        }
-      } catch (IOException | GoogleApiException e) {
-        setMessage(GctBundle.message("appengine.application.region.fetch.error"), true);
-        isApplicationValid = false;
-      }
-    });
+                if (application != null) {
+                  setMessage(application.getLocationId(), false);
+                  isApplicationValid = true;
+                } else {
+                  setCreateApplicationMessage(projectId, credential);
+                  isApplicationValid = false;
+                }
+              } catch (IOException | GoogleApiException e) {
+                setMessage(GctBundle.message("appengine.application.region.fetch.error"), true);
+                isApplicationValid = false;
+              }
+            });
   }
 
   /**
@@ -111,12 +112,14 @@ public class AppEngineApplicationInfoPanel extends JPanel {
   }
 
   private void setMessage(String message, boolean isError) {
-    ApplicationManager.getApplication().invokeLater(() -> {
-      errorIcon.setVisible(false);
-      messageText.setText(HTML_OPEN_TAG + message + HTML_CLOSE_TAG);
-      messageText.setForeground(isError ? JBColor.red : JBColor.black);
-
-    }, ModalityState.stateForComponent(this));
+    ApplicationManager.getApplication()
+        .invokeLater(
+            () -> {
+              errorIcon.setVisible(false);
+              messageText.setText(HTML_OPEN_TAG + message + HTML_CLOSE_TAG);
+              messageText.setForeground(isError ? JBColor.red : JBColor.black);
+            },
+            ModalityState.stateForComponent(this));
   }
 
   private void setCreateApplicationMessage(String projectId, Credential credential) {
@@ -128,20 +131,27 @@ public class AppEngineApplicationInfoPanel extends JPanel {
     currentLinkListener = new CreateApplicationLinkListener(projectId, credential);
     messageText.addHyperlinkListener(currentLinkListener);
 
-    ApplicationManager.getApplication().invokeLater(() -> {
-      String message = GctBundle.message("appengine.application.not.exist") + " "
-          + GctBundle.message("appengine.application.create",
-          CREATE_APPLICATION_HREF_OPEN_TAG, HREF_CLOSE_TAG);
+    ApplicationManager.getApplication()
+        .invokeLater(
+            () -> {
+              String message =
+                  GctBundle.message("appengine.application.not.exist")
+                      + " "
+                      + GctBundle.message(
+                          "appengine.application.create",
+                          CREATE_APPLICATION_HREF_OPEN_TAG,
+                          HREF_CLOSE_TAG);
 
-      messageText.setText(HTML_OPEN_TAG + message + HTML_CLOSE_TAG);
-      messageText.setForeground(JBColor.red);
-      errorIcon.setVisible(true);
-    }, ModalityState.stateForComponent(this));
+              messageText.setText(HTML_OPEN_TAG + message + HTML_CLOSE_TAG);
+              messageText.setForeground(JBColor.red);
+              errorIcon.setVisible(true);
+            },
+            ModalityState.stateForComponent(this));
   }
 
   /**
-   * Implementation of {@link HyperlinkListener} that opens a
-   * {@link AppEngineApplicationCreateDialog} when the link is clicked.
+   * Implementation of {@link HyperlinkListener} that opens a {@link
+   * AppEngineApplicationCreateDialog} when the link is clicked.
    */
   private class CreateApplicationLinkListener implements HyperlinkListener {
 
@@ -157,8 +167,9 @@ public class AppEngineApplicationInfoPanel extends JPanel {
     public void hyperlinkUpdate(HyperlinkEvent e) {
       if (e.getEventType() == EventType.ACTIVATED) {
         // construct and show the application creation dialog
-        AppEngineApplicationCreateDialog applicationDialog = new AppEngineApplicationCreateDialog(
-            AppEngineApplicationInfoPanel.this, projectId, credential);
+        AppEngineApplicationCreateDialog applicationDialog =
+            new AppEngineApplicationCreateDialog(
+                AppEngineApplicationInfoPanel.this, projectId, credential);
         DialogManager.show(applicationDialog);
         applicationDialog.getDisposable().dispose();
 

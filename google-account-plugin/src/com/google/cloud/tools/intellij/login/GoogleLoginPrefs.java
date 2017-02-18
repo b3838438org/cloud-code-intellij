@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,9 +41,9 @@ import java.util.prefs.Preferences;
 // TODO: see if PersistentStateComponent is a better way to store settings
 public class GoogleLoginPrefs {
 
+  public static final Logger LOG = Logger.getInstance(GoogleLoginPrefs.class);
   // Delimiter for the list of scopes.
   private static final String DELIMITER = " ";
-  private static String PREFERENCES_PATH = "/com/google/gct/login";
   private static final String OAUTH_DATA_EMAIL_KEY = "credentials_email";
   private static final String OAUTH_DATA_REFRESH_TOKEN_KEY = "credentials_refresh_token";
   private static final String ICON_ONLY_KEY = "icon_only";
@@ -51,8 +51,7 @@ public class GoogleLoginPrefs {
   private static final String OAUTH_SCOPES_KEY = "oauth_scopes";
   private static final String USERS = "all_users";
   private static final String ACTIVE_USER = "active_user";
-
-  public static final Logger LOG = Logger.getInstance(GoogleLoginPrefs.class);
+  private static String PREFERENCES_PATH = "/com/google/gct/login";
 
   /**
    * Stores the specified {@link OAuthData} object for the active user persistently.
@@ -65,13 +64,14 @@ public class GoogleLoginPrefs {
     if (userEmail != null) {
       Preferences prefs = getPrefs();
 
-      prefs.put(getCustomUserKey(OAUTH_DATA_REFRESH_TOKEN_KEY, userEmail),
-          credentials.getRefreshToken());
+      prefs.put(
+          getCustomUserKey(OAUTH_DATA_REFRESH_TOKEN_KEY, userEmail), credentials.getRefreshToken());
 
       // we save the scopes so that if the user updates the plugin and the
       // scopes change, we can force the plugin to log out.
       Joiner joiner = Joiner.on(DELIMITER);
-      prefs.put(getCustomUserKey(OAUTH_SCOPES_KEY, userEmail),
+      prefs.put(
+          getCustomUserKey(OAUTH_SCOPES_KEY, userEmail),
           joiner.join(credentials.getStoredScopes()));
 
       prefs.put(getCustomUserKey(OAUTH_DATA_EMAIL_KEY, userEmail), userEmail);
@@ -86,7 +86,7 @@ public class GoogleLoginPrefs {
    * Retrieves the persistently stored {@link OAuthData} object for the active user, if any.
    *
    * @return the persistently stored {@code OAuthData} object for the active user if it exists or an
-   * {@code OAuthData} object all of whose getters return {@code null} .
+   *     {@code OAuthData} object all of whose getters return {@code null} .
    */
   public static OAuthData loadOAuthData() {
     String refreshToken = null;
@@ -109,9 +109,7 @@ public class GoogleLoginPrefs {
     return new OAuthData(null, refreshToken, storedEmail, storedScopes, 0);
   }
 
-  /**
-   * Clears the persistently stored {@link OAuthData} object for the active user, if any.
-   */
+  /** Clears the persistently stored {@link OAuthData} object for the active user, if any. */
   public static void clearStoredOAuthData() {
     CredentialedUser activeUser = Services.getLoginService().getActiveUser();
     if (activeUser == null) {
@@ -127,8 +125,7 @@ public class GoogleLoginPrefs {
   }
 
   /**
-   * Stores the specified preference of the active user to display only the icon in the login
-   * panel.
+   * Stores the specified preference of the active user to display only the icon in the login panel.
    *
    * @param logoutOnExit the preference of the active user to display only the icon in the login
    *     panel.
@@ -193,18 +190,14 @@ public class GoogleLoginPrefs {
     flushPrefs(prefs);
   }
 
-  /**
-   * Clears the persistently stored active user.
-   */
+  /** Clears the persistently stored active user. */
   public static void removeActiveUser() {
     Preferences prefs = getPrefs();
     prefs.remove(ACTIVE_USER);
     flushPrefs(prefs);
   }
 
-  /**
-   * Clears all persistently stored users. There is no active user after this.
-   */
+  /** Clears all persistently stored users. There is no active user after this. */
   public static void removeAllUsers() {
     Preferences prefs = getPrefs();
     prefs.remove(USERS);

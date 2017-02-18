@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,8 +38,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Inspection to check that parameter types do not contain multiple levels of collections or
- * arrays.
+ * Inspection to check that parameter types do not contain multiple levels of collections or arrays.
  */
 public class MethodParameterTypeInspection extends EndpointInspectionBase {
   // TODO: check if class has a transformer and add check that only parameter and entity types
@@ -100,7 +99,7 @@ public class MethodParameterTypeInspection extends EndpointInspectionBase {
    * subtypes. Returns true otherwise.
    *
    * @param type The PsiType been validated.
-   * @param project The project that has the PsiElement associated with  <code>type</code>.
+   * @param project The project that has the PsiElement associated with <code>type</code>.
    */
   public boolean isValidInnerArrayType(PsiType type, Project project) {
     if (type instanceof PsiArrayType) {
@@ -108,8 +107,8 @@ public class MethodParameterTypeInspection extends EndpointInspectionBase {
     }
 
     // Check if type is a Collection
-    PsiClassType collectionType = JavaPsiFacade.getElementFactory(project)
-        .createTypeByFQClassName("java.util.Collection");
+    PsiClassType collectionType =
+        JavaPsiFacade.getElementFactory(project).createTypeByFQClassName("java.util.Collection");
     if (collectionType.isAssignableFrom(type)) {
       return false;
     }
@@ -152,7 +151,8 @@ public class MethodParameterTypeInspection extends EndpointInspectionBase {
         }
 
         if (!isValidArrayOrPrimitiveType(psiParameter.getType(), project)) {
-          holder.registerProblem(psiParameter,
+          holder.registerProblem(
+              psiParameter,
               "Illegal nested collection type " + psiParameter.getType().getPresentableText() + ".",
               LocalQuickFix.EMPTY_ARRAY);
         }
@@ -160,4 +160,3 @@ public class MethodParameterTypeInspection extends EndpointInspectionBase {
     };
   }
 }
-

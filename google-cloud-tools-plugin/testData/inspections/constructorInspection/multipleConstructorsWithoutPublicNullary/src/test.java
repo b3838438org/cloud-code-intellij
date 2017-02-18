@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,9 @@ import com.google.api.server.spi.config.Api;
 
 @Api
 public class Foo {
-  private Foo (String boo) {}
-  public Foo (String boo1, String boo2) {}
-  public Foo (Boolean hasBoo) {}
+  private Foo(String boo) {}
+
+  public Foo(String boo1, String boo2) {}
+
+  public Foo(Boolean hasBoo) {}
 }

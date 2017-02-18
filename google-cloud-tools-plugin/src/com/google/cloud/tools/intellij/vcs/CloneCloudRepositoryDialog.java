@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,13 +49,11 @@ import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-/**
- * The dialog that prompts the user to download (git clone) from a GCP project.
- */
+/** The dialog that prompts the user to download (git clone) from a GCP project. */
 public class CloneCloudRepositoryDialog extends DialogWrapper {
 
   private static final String INVALID_FILENAME_CHARS = "[/\\\\?%*:|\"<>]";
-
+  @NotNull private final Project project;
   private JPanel rootPanel;
   private ProjectSelector projectSelector;
   private TextFieldWithBrowseButton parentDirectory;
@@ -63,11 +61,7 @@ public class CloneCloudRepositoryDialog extends DialogWrapper {
   private JLabel parentDirectoryLabel;
   private RepositorySelector repositorySelector;
   private JLabel directoryNameLabel;
-
-  @NotNull
-  private String defaultDirectoryName = "";
-  @NotNull
-  private final Project project;
+  @NotNull private String defaultDirectoryName = "";
 
   public CloneCloudRepositoryDialog(@NotNull Project project) {
     super(project, true);
@@ -106,30 +100,34 @@ public class CloneCloudRepositoryDialog extends DialogWrapper {
     fcd.setTitle(GctBundle.message("clonefromgcp.destination.directory.title"));
     fcd.setDescription(GctBundle.message("clonefromgcp.destination.directory.description"));
     fcd.setHideIgnored(false);
-    parentDirectory.addActionListener(new ComponentWithBrowseButton
-          .BrowseFolderActionListener<JTextField>(
-          fcd.getTitle(), fcd.getDescription(), parentDirectory,
-          project, fcd, TextComponentAccessor.TEXT_FIELD_WHOLE_TEXT) {
-        @Override
-        protected VirtualFile getInitialFile() {
-          String text = getComponentText();
-          if (text.length() == 0) {
-            VirtualFile file = project.getBaseDir();
-            if (file != null) {
-              return file;
+    parentDirectory.addActionListener(
+        new ComponentWithBrowseButton.BrowseFolderActionListener<JTextField>(
+            fcd.getTitle(),
+            fcd.getDescription(),
+            parentDirectory,
+            project,
+            fcd,
+            TextComponentAccessor.TEXT_FIELD_WHOLE_TEXT) {
+          @Override
+          protected VirtualFile getInitialFile() {
+            String text = getComponentText();
+            if (text.length() == 0) {
+              VirtualFile file = project.getBaseDir();
+              if (file != null) {
+                return file;
+              }
             }
+            return super.getInitialFile();
           }
-          return super.getInitialFile();
-        }
-      }
-    );
+        });
 
-    final DocumentListener updateOkButtonListener = new DocumentAdapter() {
-      @Override
-      protected void textChanged(DocumentEvent event) {
-        updateButtons();
-      }
-    };
+    final DocumentListener updateOkButtonListener =
+        new DocumentAdapter() {
+          @Override
+          protected void textChanged(DocumentEvent event) {
+            updateButtons();
+          }
+        };
     parentDirectory.getChildComponent().getDocument().addDocumentListener(updateOkButtonListener);
     parentDirectory.setText(ProjectUtil.getBaseDir());
     directoryName.getDocument().addDocumentListener(updateOkButtonListener);
@@ -147,9 +145,7 @@ public class CloneCloudRepositoryDialog extends DialogWrapper {
     return "reference.VersionControl.Git.CloneRepository";
   }
 
-  /**
-   * Check fields and display error in the wrapper if there is a problem.
-   */
+  /** Check fields and display error in the wrapper if there is a problem. */
   private void updateButtons() {
     if (!StringUtil.isEmpty(projectSelector.getText())
         && projectSelector.getSelectedUser() == null) {
@@ -165,7 +161,7 @@ public class CloneCloudRepositoryDialog extends DialogWrapper {
       return;
     }
 
-    if(projectSelector.getSelectedUser() == null
+    if (projectSelector.getSelectedUser() == null
         || StringUtil.isEmpty(repositorySelector.getSelectedRepository())) {
       setErrorText(null);
       setOKActionEnabled(false);
@@ -209,45 +205,55 @@ public class CloneCloudRepositoryDialog extends DialogWrapper {
       return null;
     }
 
-    return GcpHttpAuthDataProvider.getGcpUrl(projectSelector.getText(),
-        repositorySelector.getText());
+    return GcpHttpAuthDataProvider.getGcpUrl(
+        projectSelector.getText(), repositorySelector.getText());
   }
 
   private void createUIComponents() {
     projectSelector = new ProjectSelector();
     projectSelector.setMinimumSize(new Dimension(300, 0));
-    projectSelector.getDocument().addDocumentListener(new DocumentAdapter() {
-      @Override
-      protected void textChanged(DocumentEvent event) {
-        if (defaultDirectoryName.equals(directoryName.getText())
-            || directoryName.getText().length() == 0) {
-          // modify field if it was unmodified or blank
-          String projectDescription = projectSelector.getProjectDescription();
-          if (!Strings.isNullOrEmpty(projectDescription)) {
-            defaultDirectoryName = projectDescription.replaceAll(INVALID_FILENAME_CHARS, "");
-            defaultDirectoryName = defaultDirectoryName.replaceAll("\\s", "");
-          } else {
-            defaultDirectoryName = "";
-          }
+    projectSelector
+        .getDocument()
+        .addDocumentListener(
+            new DocumentAdapter() {
+              @Override
+              protected void textChanged(DocumentEvent event) {
+                if (defaultDirectoryName.equals(directoryName.getText())
+                    || directoryName.getText().length() == 0) {
+                  // modify field if it was unmodified or blank
+                  String projectDescription = projectSelector.getProjectDescription();
+                  if (!Strings.isNullOrEmpty(projectDescription)) {
+                    defaultDirectoryName =
+                        projectDescription.replaceAll(INVALID_FILENAME_CHARS, "");
+                    defaultDirectoryName = defaultDirectoryName.replaceAll("\\s", "");
+                  } else {
+                    defaultDirectoryName = "";
+                  }
 
-          directoryName.setText(defaultDirectoryName);
-        }
-        repositorySelector.setCloudProject(projectSelector.getText());
-        repositorySelector.setUser(projectSelector.getSelectedUser());
-        repositorySelector.setText("");
-        repositorySelector.loadRepositories();
-        updateButtons();
-      }
-    });
-    repositorySelector = new RepositorySelector(projectSelector.getText(),
-        projectSelector.getSelectedUser(), false /*canCreateRepository*/);
+                  directoryName.setText(defaultDirectoryName);
+                }
+                repositorySelector.setCloudProject(projectSelector.getText());
+                repositorySelector.setUser(projectSelector.getSelectedUser());
+                repositorySelector.setText("");
+                repositorySelector.loadRepositories();
+                updateButtons();
+              }
+            });
+    repositorySelector =
+        new RepositorySelector(
+            projectSelector.getText(),
+            projectSelector.getSelectedUser(),
+            false /*canCreateRepository*/);
 
-    repositorySelector.getDocument().addDocumentListener(new DocumentAdapter() {
-      @Override
-      protected void textChanged(DocumentEvent event) {
-        updateButtons();
-      }
-    });
+    repositorySelector
+        .getDocument()
+        .addDocumentListener(
+            new DocumentAdapter() {
+              @Override
+              protected void textChanged(DocumentEvent event) {
+                updateButtons();
+              }
+            });
   }
 
   @Nullable
@@ -261,9 +267,7 @@ public class CloneCloudRepositoryDialog extends DialogWrapper {
     return rootPanel;
   }
 
-  /**
-   * Default dialog state.
-   */
+  /** Default dialog state. */
   private void paintSelectionOk() {
     parentDirectoryLabel.setForeground(Color.BLACK);
     directoryNameLabel.setForeground(Color.BLACK);
@@ -271,17 +275,15 @@ public class CloneCloudRepositoryDialog extends DialogWrapper {
 
   /**
    * Activates when a user selection of parent directory is incorrect.
-   * <p></p>
-   * Paints the "Parent Directory" label and textbox background red.
+   *
+   * <p>Paints the "Parent Directory" label and textbox background red.
    */
   private void paintParentDirectorySelectionError() {
     paintSelectionOk();
     parentDirectoryLabel.setForeground(Color.RED);
   }
 
-  /**
-   * Paints the directory selector red when in error.
-   */
+  /** Paints the directory selector red when in error. */
   private void paintDirectorySelectionError() {
     paintSelectionOk();
     directoryNameLabel.setForeground(Color.RED);

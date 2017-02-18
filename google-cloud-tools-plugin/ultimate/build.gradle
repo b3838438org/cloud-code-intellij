@@ -1,11 +1,11 @@
 /*
- * Copyright 2000-2016 JetBrains s.r.o.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -35,7 +35,7 @@ compileJava.dependsOn project(':google-cloud-tools-plugin').tasks.getByName("com
 dependencies {
     compile files(project(':google-cloud-tools-plugin').sourceSets.main.output)
     compile files("${System.properties['java.home']}/../lib/tools.jar")
-    compile ('com.google.cloud.tools:appengine-plugins-core:' + toolsLibVersion) {
+    compile('com.google.cloud.tools:appengine-plugins-core:' + toolsLibVersion) {
         exclude group: 'com.google.guava', module: 'guava'
     }
     testCompile project(path: ':google-account-plugin')

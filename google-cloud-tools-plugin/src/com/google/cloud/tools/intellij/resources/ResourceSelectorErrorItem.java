@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,9 +26,7 @@ import java.awt.Font;
 import javax.swing.BorderFactory;
 import javax.swing.SwingConstants;
 
-/**
- * UI for the node that displays error information if a resource manager call fails.
- */
+/** UI for the node that displays error information if a resource manager call fails. */
 public class ResourceSelectorErrorItem extends JBLabel {
 
   public ResourceSelectorErrorItem(@NotNull Color errorForeground) {

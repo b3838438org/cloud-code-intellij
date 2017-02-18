@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,9 +37,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Arrays;
 import java.util.Map;
 
-/**
- * Runs a Google App Engine Standard app locally with devappserver, through the tools lib.
- */
+/** Runs a Google App Engine Standard app locally with devappserver, through the tools lib. */
 public class CloudSdkStartupPolicy implements ExecutableObjectStartupPolicy {
 
   // The startup process handler is kept so the process can be explicitly terminated, since we're
@@ -96,8 +94,9 @@ public class CloudSdkStartupPolicy implements ExecutableObjectStartupPolicy {
             executor.run();
 
             Process devappserverProcess = executor.getProcess();
-            startupProcessHandler = new OSProcessHandler(devappserverProcess,
-                GctBundle.getString("appengine.run.startupscript"));
+            startupProcessHandler =
+                new OSProcessHandler(
+                    devappserverProcess, GctBundle.getString("appengine.run.startupscript"));
             return startupProcessHandler;
           }
         };

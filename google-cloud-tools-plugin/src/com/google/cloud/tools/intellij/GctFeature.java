@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,7 +57,9 @@ public enum GctFeature implements Feature {
    * @param systemFlagName a Java system property name that would be read for the flag value
    */
   GctFeature(
-      ImmutableSet<IntelliJPlatform> supportedPlatforms, String resourceFlagName, String systemFlagName) {
+      ImmutableSet<IntelliJPlatform> supportedPlatforms,
+      String resourceFlagName,
+      String systemFlagName) {
     this.supportedPlatforms = supportedPlatforms;
     this.resourceFlagName = resourceFlagName;
     this.systemFlagName = systemFlagName;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,12 +17,14 @@
 package com.google.cloud.tools.intellij.feedback;
 
 import com.intellij.CommonBundle;
-import java.lang.ref.Reference;
-import java.lang.ref.SoftReference;
-import java.util.ResourceBundle;
+
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.PropertyKey;
+
+import java.lang.ref.Reference;
+import java.lang.ref.SoftReference;
+import java.util.ResourceBundle;
 
 /** Resource bundle for messages related to Google Feedback error reporting. */
 public class ErrorReporterBundle {

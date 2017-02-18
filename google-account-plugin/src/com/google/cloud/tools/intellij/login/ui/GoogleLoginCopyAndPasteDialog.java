@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,22 +49,20 @@ import javax.swing.JTextField;
 public class GoogleLoginCopyAndPasteDialog extends DialogWrapper {
 
   private static final String TITLE = AccountMessageBundle.message("login.copyandpaste.title.text");
-  private static final String SUB_TITLE_1 = AccountMessageBundle
-      .message("login.copyandpaste.subtitle.1.text");
-  private static final String SUB_TITLE_2 = AccountMessageBundle
-      .message("login.copyandpaste.subtitle.2.text");
-  private static final String ERROR_MESSAGE = AccountMessageBundle
-      .message("login.copyandpaste.error.message.text");
+  private static final String SUB_TITLE_1 =
+      AccountMessageBundle.message("login.copyandpaste.subtitle.1.text");
+  private static final String SUB_TITLE_2 =
+      AccountMessageBundle.message("login.copyandpaste.subtitle.2.text");
+  private static final String ERROR_MESSAGE =
+      AccountMessageBundle.message("login.copyandpaste.error.message.text");
 
   private String verificationCode = "";
   private String urlString;
   private JTextField codeTextField;
 
-  /**
-   * Initialize the verification code dialog.
-   */
-  public GoogleLoginCopyAndPasteDialog(JComponent parent,
-      GoogleAuthorizationCodeRequestUrl requestUrl, String message) {
+  /** Initialize the verification code dialog. */
+  public GoogleLoginCopyAndPasteDialog(
+      JComponent parent, GoogleAuthorizationCodeRequestUrl requestUrl, String message) {
     super(parent, true);
     urlString = requestUrl.build();
 
@@ -92,8 +90,8 @@ public class GoogleLoginCopyAndPasteDialog extends DialogWrapper {
     JPanel urlPanel = new JPanel(new BorderLayout());
     urlPanel.setLayout(new BoxLayout(urlPanel, BoxLayout.LINE_AXIS));
 
-    JLabel urlLabel = new JLabel(
-        AccountMessageBundle.message("login.copyandpaste.login.url.label.text"));
+    JLabel urlLabel =
+        new JLabel(AccountMessageBundle.message("login.copyandpaste.login.url.label.text"));
     JTextField urlTextField = createUrlText();
 
     // Add the verification code label and text box
@@ -106,8 +104,8 @@ public class GoogleLoginCopyAndPasteDialog extends DialogWrapper {
     urlPanel.add(urlLabel);
     urlPanel.add(urlTextField);
 
-    JLabel codeLabel = new JLabel(
-        AccountMessageBundle.message("login.copyandpaste.verification.code.label.text"));
+    JLabel codeLabel =
+        new JLabel(AccountMessageBundle.message("login.copyandpaste.verification.code.label.text"));
     codeLabel.setLabelFor(codeTextField);
     codePanel.add(codeLabel);
     codePanel.add(codeTextField);
@@ -125,13 +123,14 @@ public class GoogleLoginCopyAndPasteDialog extends DialogWrapper {
   @Override
   @NotNull
   protected Action getOKAction() {
-    myOKAction = new OkAction() {
-      @Override
-      public void actionPerformed(ActionEvent event) {
-        super.actionPerformed(event);
-        verificationCode = codeTextField.getText();
-      }
-    };
+    myOKAction =
+        new OkAction() {
+          @Override
+          public void actionPerformed(ActionEvent event) {
+            super.actionPerformed(event);
+            verificationCode = codeTextField.getText();
+          }
+        };
     return myOKAction;
   }
 
@@ -144,12 +143,10 @@ public class GoogleLoginCopyAndPasteDialog extends DialogWrapper {
     return null;
   }
 
-
   @NotNull
   public String getVerificationCode() {
     return verificationCode;
   }
-
 
   private JTextField createUrlText() {
     final JTextField urlTextField = new JTextField(urlString);
@@ -162,19 +159,19 @@ public class GoogleLoginCopyAndPasteDialog extends DialogWrapper {
     urlTextField.add(popup);
     urlTextField.setComponentPopupMenu(popup);
 
-    JMenuItem copyMenu = new JMenuItem(
-        AccountMessageBundle.message("login.copyandpaste.url.copy.text"));
-    copyMenu.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent event) {
-        urlTextField.copy();
-      }
-    });
+    JMenuItem copyMenu =
+        new JMenuItem(AccountMessageBundle.message("login.copyandpaste.url.copy.text"));
+    copyMenu.addActionListener(
+        new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent event) {
+            urlTextField.copy();
+          }
+        });
 
     popup.add(copyMenu);
     return urlTextField;
   }
-
 
   private void createCodeText() {
     codeTextField = new JTextField();
@@ -184,16 +181,16 @@ public class GoogleLoginCopyAndPasteDialog extends DialogWrapper {
     codeTextField.add(popup);
     codeTextField.setComponentPopupMenu(popup);
 
-    JMenuItem copyMenu = new JMenuItem(
-        AccountMessageBundle.message("login.copyandpaste.url.paste.text"));
-    copyMenu.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent event) {
-        codeTextField.paste();
-      }
-    });
+    JMenuItem copyMenu =
+        new JMenuItem(AccountMessageBundle.message("login.copyandpaste.url.paste.text"));
+    copyMenu.addActionListener(
+        new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent event) {
+            codeTextField.paste();
+          }
+        });
 
     popup.add(copyMenu);
   }
-
 }

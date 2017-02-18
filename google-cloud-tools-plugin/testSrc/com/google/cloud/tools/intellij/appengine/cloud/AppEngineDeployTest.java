@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,31 +25,28 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
-/**
- * Unit tests for {@link AppEngineDeploy}
- */
+/** Unit tests for {@link AppEngineDeploy} */
 @RunWith(MockitoJUnitRunner.class)
 public class AppEngineDeployTest {
 
   @Test
   public void testDeployOutputJsonParsingOneVersion() {
     String jsonOutput =
-        "{\n" +
-            "  \"configs\": [],\n" +
-            "  \"versions\": [\n" +
-            "    {\n" +
-            "      \"id\": \"20160429t112518\",\n" +
-            "      \"last_deployed_time\": null,\n" +
-            "      \"project\": \"some-project\",\n" +
-            "      \"service\": \"default\",\n" +
-            "      \"traffic_split\": null,\n" +
-            "      \"version\": null\n" +
-            "    }\n" +
-            "  ]\n" +
-            "}\n";
+        "{\n"
+            + "  \"configs\": [],\n"
+            + "  \"versions\": [\n"
+            + "    {\n"
+            + "      \"id\": \"20160429t112518\",\n"
+            + "      \"last_deployed_time\": null,\n"
+            + "      \"project\": \"some-project\",\n"
+            + "      \"service\": \"default\",\n"
+            + "      \"traffic_split\": null,\n"
+            + "      \"version\": null\n"
+            + "    }\n"
+            + "  ]\n"
+            + "}\n";
 
-    AppEngineDeploy.DeployOutput deployOutput =
-        AppEngineDeploy.parseDeployOutput(jsonOutput);
+    AppEngineDeploy.DeployOutput deployOutput = AppEngineDeploy.parseDeployOutput(jsonOutput);
     assertEquals(deployOutput.getVersion(), "20160429t112518");
     assertEquals(deployOutput.getService(), "default");
   }
@@ -57,27 +54,27 @@ public class AppEngineDeployTest {
   @Test
   public void testDeployOutputJsonParsingTwoVersions() {
     String jsonOutput =
-        "{\n" +
-            "  \"configs\": [],\n" +
-            "  \"versions\": [\n" +
-            "    {\n" +
-            "      \"id\": \"20160429t112518\",\n" +
-            "      \"last_deployed_time\": null,\n" +
-            "      \"project\": \"some-project\",\n" +
-            "      \"service\": \"default\",\n" +
-            "      \"traffic_split\": null,\n" +
-            "      \"version\": null\n" +
-            "    },\n" +
-            "    {\n" +
-            "      \"id\": \"20160429t112518\",\n" +
-            "      \"last_deployed_time\": null,\n" +
-            "      \"project\": \"some-project\",\n" +
-            "      \"service\": \"default\",\n" +
-            "      \"traffic_split\": null,\n" +
-            "      \"version\": null\n" +
-            "    }\n" +
-            "  ]\n" +
-            "}\n";
+        "{\n"
+            + "  \"configs\": [],\n"
+            + "  \"versions\": [\n"
+            + "    {\n"
+            + "      \"id\": \"20160429t112518\",\n"
+            + "      \"last_deployed_time\": null,\n"
+            + "      \"project\": \"some-project\",\n"
+            + "      \"service\": \"default\",\n"
+            + "      \"traffic_split\": null,\n"
+            + "      \"version\": null\n"
+            + "    },\n"
+            + "    {\n"
+            + "      \"id\": \"20160429t112518\",\n"
+            + "      \"last_deployed_time\": null,\n"
+            + "      \"project\": \"some-project\",\n"
+            + "      \"service\": \"default\",\n"
+            + "      \"traffic_split\": null,\n"
+            + "      \"version\": null\n"
+            + "    }\n"
+            + "  ]\n"
+            + "}\n";
 
     try {
       AppEngineDeploy.parseDeployOutput(jsonOutput);
@@ -90,9 +87,7 @@ public class AppEngineDeployTest {
   @Test
   public void testDeployOutputJsonParsingOldFormat() {
     String jsonOutput =
-        "{\n" +
-            "  \"default\": \"https://springboot-maven-project.appspot.com\"\n" +
-            "}\n";
+        "{\n" + "  \"default\": \"https://springboot-maven-project.appspot.com\"\n" + "}\n";
 
     try {
       AppEngineDeploy.parseDeployOutput(jsonOutput);

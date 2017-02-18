@@ -1,11 +1,11 @@
 /*
- * Copyright 2000-2016 JetBrains s.r.o.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -42,18 +42,16 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * @author nik.
- */
+/** @author nik. */
 public class AppEngineStandardCommunityWebIntegration extends AppEngineStandardWebIntegration {
 
-  private static final Logger LOG
-      = Logger.getInstance(AppEngineStandardCommunityWebIntegration.class);
+  private static final Logger LOG =
+      Logger.getInstance(AppEngineStandardCommunityWebIntegration.class);
 
   @Nullable
   @Override
-  public VirtualFile suggestParentDirectoryForAppEngineWebXml(@NotNull Module module,
-      @NotNull ModifiableRootModel rootModel) {
+  public VirtualFile suggestParentDirectoryForAppEngineWebXml(
+      @NotNull Module module, @NotNull ModifiableRootModel rootModel) {
     final VirtualFile root = ArrayUtil.getFirstElement(rootModel.getContentRoots());
     if (root != null) {
       try {
@@ -91,34 +89,38 @@ public class AppEngineStandardCommunityWebIntegration extends AppEngineStandardW
   }
 
   @Override
-  public void setupJpaSupport(@NotNull Module module, @NotNull VirtualFile persistenceXml) {
-  }
+  public void setupJpaSupport(@NotNull Module module, @NotNull VirtualFile persistenceXml) {}
 
   @Override
-  public void setupDevServer() {
-  }
+  public void setupDevServer() {}
 
   @Override
-  public void addDevServerToModuleDependencies(@NotNull ModifiableRootModel rootModel) {
-  }
+  public void addDevServerToModuleDependencies(@NotNull ModifiableRootModel rootModel) {}
 
   @Override
-  public void addLibraryToArtifact(@NotNull Library library, @NotNull Artifact artifact,
-      @NotNull Project project) {
+  public void addLibraryToArtifact(
+      @NotNull Library library, @NotNull Artifact artifact, @NotNull Project project) {
     final ArtifactManager artifactManager = ArtifactManager.getInstance(project);
-    for (PackagingElement<?> element : PackagingElementFactory.getInstance()
-        .createLibraryElements(library)) {
-      final String dir = element.getFilesKind(artifactManager.getResolvingContext())
-          .containsDirectoriesWithClasses() ? "classes" : "lib";
+    for (PackagingElement<?> element :
+        PackagingElementFactory.getInstance().createLibraryElements(library)) {
+      final String dir =
+          element
+                  .getFilesKind(artifactManager.getResolvingContext())
+                  .containsDirectoriesWithClasses()
+              ? "classes"
+              : "lib";
       artifactManager.addElementsToDirectory(artifact, "WEB-INF/" + dir, element);
     }
   }
 
   @Override
-  public void addDescriptor(@NotNull Artifact artifact, @NotNull Project project,
-      @NotNull VirtualFile descriptor) {
-    ArtifactManager.getInstance(project).addElementsToDirectory(artifact, "WEB-INF",
-        PackagingElementFactory.getInstance().createFileCopy(descriptor.getPath(), null));
+  public void addDescriptor(
+      @NotNull Artifact artifact, @NotNull Project project, @NotNull VirtualFile descriptor) {
+    ArtifactManager.getInstance(project)
+        .addElementsToDirectory(
+            artifact,
+            "WEB-INF",
+            PackagingElementFactory.getInstance().createFileCopy(descriptor.getPath(), null));
   }
 
   @Override

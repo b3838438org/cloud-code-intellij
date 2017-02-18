@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,10 +19,9 @@ package com.google.cloud.tools.intellij.appengine.cloud;
 import com.intellij.remoteServer.configuration.ServerConfigurationBase;
 
 /**
- * Model for the IntelliJ application scoped 'Cloud' configurations.  This is a base configuration
+ * Model for the IntelliJ application scoped 'Cloud' configurations. This is a base configuration
  * used by App Engine deployment runtime configurations. It's primarily the bits that can be re-used
  * across deployments.
  */
-public class AppEngineServerConfiguration extends
-    ServerConfigurationBase<AppEngineServerConfiguration> {
-}
+public class AppEngineServerConfiguration
+    extends ServerConfigurationBase<AppEngineServerConfiguration> {}

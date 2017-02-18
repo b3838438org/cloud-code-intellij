@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package com.google.cloud.tools.intellij.feedback;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
+
 import com.intellij.diagnostic.AbstractMessage;
 import com.intellij.diagnostic.IdeErrorsDialog;
 import com.intellij.diagnostic.ReportMessages;
@@ -44,10 +45,12 @@ import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.util.Consumer;
 import com.intellij.util.SystemProperties;
-import java.awt.Component;
-import java.util.Map;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.awt.Component;
+import java.util.Map;
 
 /**
  * This class hooks into IntelliJ's error reporting framework. It's based off of <a
@@ -166,7 +169,7 @@ public class GoogleFeedbackErrorReporter extends ErrorReportSubmitter {
     Object data = event.getData();
 
     if (data instanceof AbstractMessage) {
-      error.setAttachments(((AbstractMessage) data).getAttachments());
+      error.setAttachments(((AbstractMessage) data).getIncludedAttachments());
     }
   }
 

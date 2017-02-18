@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,12 +20,8 @@ import com.google.api.server.spi.config.ApiMethod;
 
 @Api
 public class ClassWithApi_assert_isImplicitUsage {
+  public static void assert_isNotImplicitUsage() {}
+
   @ApiMethod(name = "someFoo")
-  public void assert_isImplicitUsage() {
-
-  }
-
-  public static void assert_isNotImplicitUsage() {
-
-  }
+  public void assert_isImplicitUsage() {}
 }

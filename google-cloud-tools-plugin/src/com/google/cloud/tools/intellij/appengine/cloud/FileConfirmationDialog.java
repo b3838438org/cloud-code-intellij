@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,19 +38,12 @@ import javax.swing.JTextField;
  */
 public class FileConfirmationDialog extends DialogWrapper {
 
-  public enum DialogType {
-    CONFIRM_OVERWRITE, CONFIRM_CREATE_DIR, NOT_DIRECTORY_ERROR
-  }
-
   private JPanel rootPanel;
   private JLabel warningLabel;
   private JTextField pathDisplay;
-
   private DialogType dialogType;
 
-  /**
-   * Initialize the dialog of the correct type.
-   */
+  /** Initialize the dialog of the correct type. */
   public FileConfirmationDialog(
       @Nullable Project project, DialogType dialogType, @NotNull Path targetPath) {
     super(project);
@@ -91,9 +84,15 @@ public class FileConfirmationDialog extends DialogWrapper {
   @Override
   protected Action[] createActions() {
     if (dialogType == DialogType.NOT_DIRECTORY_ERROR) {
-      return new Action[]{getOKAction()};
+      return new Action[] {getOKAction()};
     } else {
       return super.createActions();
     }
+  }
+
+  public enum DialogType {
+    CONFIRM_OVERWRITE,
+    CONFIRM_CREATE_DIR,
+    NOT_DIRECTORY_ERROR
   }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,16 +23,11 @@ import com.intellij.openapi.components.ServiceManager;
  */
 public abstract class CloudSdkVersionNotifier {
 
-  /**
-   * Returns a registered instance of CloudSdkVersionNotifier.
-   */
+  /** Returns a registered instance of CloudSdkVersionNotifier. */
   public static CloudSdkVersionNotifier getInstance() {
     return ServiceManager.getService(CloudSdkVersionNotifier.class);
   }
 
-  /**
-   * Notifies the user if the saved Cloud SDK is not supported.
-   */
+  /** Notifies the user if the saved Cloud SDK is not supported. */
   public abstract void notifyIfUnsupportedVersion();
-
 }

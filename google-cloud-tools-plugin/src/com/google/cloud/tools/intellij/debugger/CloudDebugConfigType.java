@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,9 +31,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.Icon;
 
-/**
- * This class defines the runconfig type and factory for Cloud Debugger RunConfigurations.
- */
+/** This class defines the runconfig type and factory for Cloud Debugger RunConfigurations. */
 public class CloudDebugConfigType implements ConfigurationType {
 
   public static final String GCT_DEBUGGER_ENABLE = "enable.gct.debugger";
@@ -41,12 +39,12 @@ public class CloudDebugConfigType implements ConfigurationType {
 
   private final ConfigurationFactory factory;
 
-  public static CloudDebugConfigType getInstance() {
-    return ConfigurationTypeUtil.findConfigurationType(CloudDebugConfigType.class);
-  }
-
   public CloudDebugConfigType() {
     factory = new MyConfigurationFactory(this);
+  }
+
+  public static CloudDebugConfigType getInstance() {
+    return ConfigurationTypeUtil.findConfigurationType(CloudDebugConfigType.class);
   }
 
   public static boolean isFeatureEnabled() {
@@ -59,7 +57,7 @@ public class CloudDebugConfigType implements ConfigurationType {
 
   @Override
   public ConfigurationFactory[] getConfigurationFactories() {
-    return new ConfigurationFactory[]{factory};
+    return new ConfigurationFactory[] {factory};
   }
 
   @Override
@@ -90,8 +88,8 @@ public class CloudDebugConfigType implements ConfigurationType {
     }
 
     @Override
-    public void configureBeforeRunTaskDefaults(Key<? extends BeforeRunTask> providerId,
-        BeforeRunTask task) {
+    public void configureBeforeRunTaskDefaults(
+        Key<? extends BeforeRunTask> providerId, BeforeRunTask task) {
       task.setEnabled(false);
     }
 

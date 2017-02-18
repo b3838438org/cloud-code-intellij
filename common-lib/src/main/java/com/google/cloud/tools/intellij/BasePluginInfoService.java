@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,13 +20,16 @@ import com.google.cloud.tools.intellij.flags.FlagReader;
 import com.google.cloud.tools.intellij.flags.PropertiesFileFlagReader;
 import com.google.cloud.tools.intellij.util.IntelliJPlatform;
 import com.google.common.annotations.VisibleForTesting;
+
 import com.intellij.ide.plugins.IdeaPluginDescriptor;
 import com.intellij.ide.plugins.PluginManager;
 import com.intellij.openapi.application.ApplicationInfo;
 import com.intellij.openapi.extensions.PluginId;
 import com.intellij.util.PlatformUtils;
-import java.util.Set;
+
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Set;
 
 /** Subclasses of this class will inherit a full implementation of the {@link PluginInfoService}. */
 // Don't expose PluginId in this service's API as it has a private

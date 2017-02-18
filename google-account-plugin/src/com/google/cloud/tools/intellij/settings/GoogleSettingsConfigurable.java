@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,9 +26,7 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.JComponent;
 
-/**
- * Creates a Google menu item to contain various Google plugins related settings.
- */
+/** Creates a Google menu item to contain various Google plugins related settings. */
 public class GoogleSettingsConfigurable implements Configurable {
 
   @Nls
@@ -55,17 +53,11 @@ public class GoogleSettingsConfigurable implements Configurable {
   }
 
   @Override
-  public void apply() throws ConfigurationException {
-
-  }
+  public void apply() throws ConfigurationException {}
 
   @Override
-  public void reset() {
-
-  }
+  public void reset() {}
 
   @Override
-  public void disposeUIResources() {
-
-  }
+  public void disposeUIResources() {}
 }

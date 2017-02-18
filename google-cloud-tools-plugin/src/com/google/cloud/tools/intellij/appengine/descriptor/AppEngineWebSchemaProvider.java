@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,13 +42,11 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * @author nik
- */
+/** @author nik */
 public class AppEngineWebSchemaProvider extends XmlSchemaProvider {
 
-  private static final Set<String> FILE_NAMES = new HashSet<>(
-      Collections.singletonList(AppEngineUtil.APP_ENGINE_WEB_XML_NAME));
+  private static final Set<String> FILE_NAMES =
+      new HashSet<>(Collections.singletonList(AppEngineUtil.APP_ENGINE_WEB_XML_NAME));
 
   @Override
   public boolean isAvailable(@NotNull XmlFile file) {
@@ -60,8 +58,8 @@ public class AppEngineWebSchemaProvider extends XmlSchemaProvider {
   }
 
   @Override
-  public XmlFile getSchema(@NotNull @NonNls String url, @Nullable Module module,
-      @NotNull PsiFile baseFile) {
+  public XmlFile getSchema(
+      @NotNull @NonNls String url, @Nullable Module module, @NotNull PsiFile baseFile) {
     if (module == null) {
       return null;
     }
@@ -83,10 +81,10 @@ public class AppEngineWebSchemaProvider extends XmlSchemaProvider {
         }
       }
     } else if (url.startsWith("http://java.sun.com/xml/ns/jdo/jdoconfig")) {
-      final PsiPackage jdoPackage = JavaPsiFacade.getInstance(module.getProject())
-          .findPackage("javax.jdo");
-      final GlobalSearchScope scope = GlobalSearchScope
-          .moduleWithDependenciesAndLibrariesScope(module);
+      final PsiPackage jdoPackage =
+          JavaPsiFacade.getInstance(module.getProject()).findPackage("javax.jdo");
+      final GlobalSearchScope scope =
+          GlobalSearchScope.moduleWithDependenciesAndLibrariesScope(module);
       if (jdoPackage != null) {
         for (PsiDirectory directory : jdoPackage.getDirectories(scope)) {
           final PsiFile file = directory.findFile("jdoconfig_2_3.xsd");

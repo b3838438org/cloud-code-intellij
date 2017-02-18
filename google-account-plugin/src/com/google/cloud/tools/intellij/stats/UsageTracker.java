@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ public interface UsageTracker {
    * <p>Example: {@code sendEvent("appengine.deployment").withLabel("flex").setValue(1).ping();}
    *
    * @param action is typically a specific operation the user has performed in the plugin, and is
-   *               often prefixed with a domain such as 'appengine.' or 'clouddebugger.'
+   *     often prefixed with a domain such as 'appengine.' or 'clouddebugger.'
    * @return a fluent interface for setting the remaining parameters of a tracking ping
    */
   FluentTrackingEventWithMetadata trackEvent(String action);
@@ -39,15 +39,11 @@ public interface UsageTracker {
    */
   interface PingsAnalytics {
 
-    /**
-     * Send the analytics ping.
-     */
+    /** Send the analytics ping. */
     void ping();
   }
 
-  /**
-   * Interface that accepts a key/value metadata pair for pinging tracking events.
-   */
+  /** Interface that accepts a key/value metadata pair for pinging tracking events. */
   interface FluentTrackingEventWithMetadata extends PingsAnalytics {
 
     /**

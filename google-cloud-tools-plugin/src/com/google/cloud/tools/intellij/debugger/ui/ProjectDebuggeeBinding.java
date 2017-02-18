@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -67,38 +67,58 @@ class ProjectDebuggeeBinding {
   //   has projectSelector.getProjectNumber() set to null.
   private boolean isCdbQueried = false;
 
-  public ProjectDebuggeeBinding(@NotNull ProjectSelector projectSelector,
+  public ProjectDebuggeeBinding(
+      @NotNull ProjectSelector projectSelector,
       @NotNull JComboBox targetSelector,
       @NotNull Action okAction) {
     this.projectSelector = projectSelector;
     this.targetSelector = targetSelector;
     this.okAction = okAction;
 
-    this.projectSelector.getDocument().addDocumentListener(new DocumentAdapter() {
-      @Override
-      protected void textChanged(DocumentEvent event) {
-        refreshDebugTargetList();
-      }
-    });
+    this.projectSelector
+        .getDocument()
+        .addDocumentListener(
+            new DocumentAdapter() {
+              @Override
+              protected void textChanged(DocumentEvent event) {
+                refreshDebugTargetList();
+              }
+            });
 
-    this.projectSelector.addModelListener(new TreeModelListener() {
-      @Override
-      public void treeNodesChanged(TreeModelEvent event) {
-      }
+    this.projectSelector.addModelListener(
+        new TreeModelListener() {
+          @Override
+          public void treeNodesChanged(TreeModelEvent event) {}
 
-      @Override
-      public void treeNodesInserted(TreeModelEvent event) {
-      }
+          @Override
+          public void treeNodesInserted(TreeModelEvent event) {}
 
-      @Override
-      public void treeNodesRemoved(TreeModelEvent event) {
-      }
+          @Override
+          public void treeNodesRemoved(TreeModelEvent event) {}
 
-      @Override
-      public void treeStructureChanged(TreeModelEvent event) {
-        refreshDebugTargetList();
-      }
-    });
+          @Override
+          public void treeStructureChanged(TreeModelEvent event) {
+            refreshDebugTargetList();
+          }
+        });
+  }
+
+  private static String resolveErrorToMessage(Throwable reason) {
+    if (reason instanceof GoogleJsonResponseException) {
+      return resolveJsonResponseToMessage((GoogleJsonResponseException) reason);
+    } else {
+      return GctBundle.getString("clouddebug.debug.targets.error", reason.getLocalizedMessage());
+    }
+  }
+
+  private static String resolveJsonResponseToMessage(GoogleJsonResponseException reason) {
+    switch (reason.getStatusCode()) {
+      case 403:
+        return GctBundle.message("clouddebug.debug.targets.accessdenied");
+      default:
+        return GctBundle.getString(
+            "clouddebug.debug.targets.error", reason.getDetails().getMessage());
+    }
   }
 
   @NotNull
@@ -109,7 +129,8 @@ class ProjectDebuggeeBinding {
     String savedDebuggeeId = selectedItem != null ? selectedItem.getId() : null;
     String savedProjectDescription = projectSelector.getText();
 
-    return new CloudDebugProcessState(credentialedUser != null ? credentialedUser.getEmail() : null,
+    return new CloudDebugProcessState(
+        credentialedUser != null ? credentialedUser.getEmail() : null,
         savedDebuggeeId,
         savedProjectDescription,
         projectNumberString,
@@ -125,8 +146,9 @@ class ProjectDebuggeeBinding {
 
     this.credentialedUser = credentialedUser;
     cloudDebuggerClient =
-        this.credentialedUser != null ? CloudDebuggerClient.getLongTimeoutClient(
-            this.credentialedUser.getEmail()) : null;
+        this.credentialedUser != null
+            ? CloudDebuggerClient.getLongTimeoutClient(this.credentialedUser.getEmail())
+            : null;
 
     return cloudDebuggerClient;
   }
@@ -143,79 +165,93 @@ class ProjectDebuggeeBinding {
     }
   }
 
-  /**
-   * Refreshes the list of attachable debug targets based on the project selection.
-   */
-  @SuppressWarnings("unchecked")
+  /** Refreshes the list of attachable debug targets based on the project selection. */
+  @SuppressWarnings("FutureReturnValueIgnored")
   private void refreshDebugTargetList() {
     targetSelector.removeAllItems();
-    ApplicationManager.getApplication().executeOnPooledThread(new Runnable() {
-      @Override
-      public void run() {
-        try {
-          if (projectSelector.getProjectNumber() != null && getCloudDebuggerClient() != null) {
-            final ListDebuggeesResponse debuggees = getCloudDebuggerClient().debuggees().list()
-                .setProject(projectSelector.getProjectNumber().toString())
-                .setClientVersion(ServiceManager.getService(CloudToolsPluginInfoService.class)
-                    .getClientVersionForCloudDebugger())
-                .execute();
-            isCdbQueried = true;
-
-            SwingUtilities.invokeLater(new Runnable() {
+    ApplicationManager.getApplication()
+        .executeOnPooledThread(
+            new Runnable() {
               @Override
               public void run() {
-                DebugTarget targetSelection = null;
+                try {
+                  if (projectSelector.getProjectNumber() != null
+                      && getCloudDebuggerClient() != null) {
+                    final ListDebuggeesResponse debuggees =
+                        getCloudDebuggerClient()
+                            .debuggees()
+                            .list()
+                            .setProject(projectSelector.getProjectNumber().toString())
+                            .setClientVersion(
+                                ServiceManager.getService(CloudToolsPluginInfoService.class)
+                                    .getClientVersionForCloudDebugger())
+                            .execute();
+                    isCdbQueried = true;
 
-                if (debuggees == null || debuggees.getDebuggees() == null || debuggees
-                    .getDebuggees().isEmpty()) {
-                  disableTargetSelector(GctBundle.getString("clouddebug.nomodulesfound"));
-                } else {
-                  targetSelector.setEnabled(true);
-                  Map<String, DebugTarget> perModuleCache = new HashMap<String, DebugTarget>();
+                    SwingUtilities.invokeLater(
+                        new Runnable() {
+                          @Override
+                          public void run() {
+                            DebugTarget targetSelection = null;
 
-                  for (Debuggee debuggee : debuggees.getDebuggees()) {
-                    DebugTarget item = new DebugTarget(debuggee, projectSelector.getText());
-                    if (!Strings.isNullOrEmpty(item.getModule())
-                        && !Strings.isNullOrEmpty(item.getVersion())) {
-                      //If we already have an existing item for that module+version, compare the
-                      // minor versions and only use the latest minor version.
-                      String key = String.format("%s:%s", item.getModule(), item.getVersion());
-                      DebugTarget existing = perModuleCache.get(key);
-                      if (existing != null && existing.getMinorVersion() > item.getMinorVersion()) {
-                        continue;
-                      }
-                      if (existing != null) {
-                        targetSelector.removeItem(existing);
-                      }
-                      perModuleCache.put(key, item);
-                    }
-                    if (inputState != null && !Strings.isNullOrEmpty(inputState.getDebuggeeId())) {
-                      if (inputState.getDebuggeeId().equals(item.getId())) {
-                        targetSelection = item;
-                      }
-                    }
-                    targetSelector.addItem(item);
-                    okAction.setEnabled(true);
+                            if (debuggees == null
+                                || debuggees.getDebuggees() == null
+                                || debuggees.getDebuggees().isEmpty()) {
+                              disableTargetSelector(
+                                  GctBundle.getString("clouddebug.nomodulesfound"));
+                            } else {
+                              targetSelector.setEnabled(true);
+                              Map<String, DebugTarget> perModuleCache =
+                                  new HashMap<String, DebugTarget>();
+
+                              for (Debuggee debuggee : debuggees.getDebuggees()) {
+                                DebugTarget item =
+                                    new DebugTarget(debuggee, projectSelector.getText());
+                                if (!Strings.isNullOrEmpty(item.getModule())
+                                    && !Strings.isNullOrEmpty(item.getVersion())) {
+                                  //If we already have an existing item for that module+version, compare the
+                                  // minor versions and only use the latest minor version.
+                                  String key =
+                                      String.format("%s:%s", item.getModule(), item.getVersion());
+                                  DebugTarget existing = perModuleCache.get(key);
+                                  if (existing != null
+                                      && existing.getMinorVersion() > item.getMinorVersion()) {
+                                    continue;
+                                  }
+                                  if (existing != null) {
+                                    targetSelector.removeItem(existing);
+                                  }
+                                  perModuleCache.put(key, item);
+                                }
+                                if (inputState != null
+                                    && !Strings.isNullOrEmpty(inputState.getDebuggeeId())) {
+                                  if (inputState.getDebuggeeId().equals(item.getId())) {
+                                    targetSelection = item;
+                                  }
+                                }
+                                targetSelector.addItem(item);
+                                okAction.setEnabled(true);
+                              }
+                            }
+                            if (targetSelection != null) {
+                              targetSelector.setSelectedItem(targetSelection);
+                            }
+                          }
+                        });
                   }
-                }
-                if (targetSelection != null) {
-                  targetSelector.setSelectedItem(targetSelection);
+                } catch (final IOException ex) {
+                  SwingUtilities.invokeLater(
+                      new Runnable() {
+                        @Override
+                        public void run() {
+                          disableTargetSelector(ex);
+                        }
+                      });
+
+                  LOG.warn("Error listing debuggees from Cloud Debugger API", ex);
                 }
               }
             });
-          }
-        } catch (final IOException ex) {
-          SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-              disableTargetSelector(ex);
-            }
-          });
-
-          LOG.warn("Error listing debuggees from Cloud Debugger API", ex);
-        }
-      }
-    });
   }
 
   private void disableTargetSelector(Throwable reason) {
@@ -232,24 +268,6 @@ class ProjectDebuggeeBinding {
       ((ErrorHolder) targetSelector.getSelectedItem()).setErrorMessage(reason);
     } else {
       targetSelector.addItem(new ErrorHolder(reason));
-    }
-  }
-
-  private static String resolveErrorToMessage(Throwable reason) {
-    if (reason instanceof GoogleJsonResponseException) {
-      return resolveJsonResponseToMessage((GoogleJsonResponseException) reason);
-    } else {
-      return GctBundle.getString("clouddebug.debug.targets.error", reason.getLocalizedMessage());
-    }
-  }
-
-  private static String resolveJsonResponseToMessage(GoogleJsonResponseException reason) {
-    switch (reason.getStatusCode()) {
-      case 403:
-        return GctBundle.message("clouddebug.debug.targets.accessdenied");
-      default:
-        return GctBundle
-            .getString("clouddebug.debug.targets.error", reason.getDetails().getMessage());
     }
   }
 

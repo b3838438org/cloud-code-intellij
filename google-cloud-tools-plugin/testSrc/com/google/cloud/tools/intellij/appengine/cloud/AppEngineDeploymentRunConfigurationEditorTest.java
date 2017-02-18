@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 
 package com.google.cloud.tools.intellij.appengine.cloud;
 
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -26,8 +25,6 @@ import com.google.cloud.tools.intellij.appengine.sdk.CloudSdkValidationResult;
 import com.google.cloud.tools.intellij.resources.ProjectSelector;
 import com.google.common.collect.ImmutableSet;
 
-import com.intellij.execution.configurations.RuntimeConfigurationError;
-import com.intellij.execution.configurations.RuntimeConfigurationWarning;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.util.Disposer;
@@ -36,9 +33,7 @@ import com.intellij.testFramework.PlatformTestCase;
 import org.apache.commons.lang.StringUtils;
 import org.picocontainer.MutablePicoContainer;
 
-import java.nio.file.Path;
 import java.util.HashSet;
-import java.util.Set;
 
 import javax.swing.JCheckBox;
 
@@ -66,8 +61,8 @@ public class AppEngineDeploymentRunConfigurationEditorTest extends PlatformTestC
     cloudSdkService = mock(CloudSdkService.class);
     when(cloudSdkService.validateCloudSdk()).thenReturn(new HashSet<CloudSdkValidationResult>());
 
-    MutablePicoContainer applicationContainer = (MutablePicoContainer)
-        ApplicationManager.getApplication().getPicoContainer();
+    MutablePicoContainer applicationContainer =
+        (MutablePicoContainer) ApplicationManager.getApplication().getPicoContainer();
 
     applicationContainer.unregisterComponent(CloudSdkService.class.getName());
 
@@ -106,8 +101,8 @@ public class AppEngineDeploymentRunConfigurationEditorTest extends PlatformTestC
   }
 
   public void testValidationFailureStandardEnv_missingJavaComponent() {
-    when(cloudSdkService.validateCloudSdk()).thenReturn(
-        ImmutableSet.of(CloudSdkValidationResult.NO_APP_ENGINE_COMPONENT));
+    when(cloudSdkService.validateCloudSdk())
+        .thenReturn(ImmutableSet.of(CloudSdkValidationResult.NO_APP_ENGINE_COMPONENT));
     AppEngineDeploymentConfiguration config = new AppEngineDeploymentConfiguration();
     config.setCloudProjectName("test-cloud-proj");
     config.setConfigType(ConfigType.AUTO);
@@ -122,10 +117,10 @@ public class AppEngineDeploymentRunConfigurationEditorTest extends PlatformTestC
   }
 
   public void testValidationSuccessFlexEnv_missingJavaComponent() {
-    when(cloudSdkService.validateCloudSdk()).thenReturn(
-        ImmutableSet.of(CloudSdkValidationResult.NO_APP_ENGINE_COMPONENT));
-    AppEngineDeploymentRunConfigurationEditor editor
-        = createEditor(AppEngineEnvironment.APP_ENGINE_FLEX);
+    when(cloudSdkService.validateCloudSdk())
+        .thenReturn(ImmutableSet.of(CloudSdkValidationResult.NO_APP_ENGINE_COMPONENT));
+    AppEngineDeploymentRunConfigurationEditor editor =
+        createEditor(AppEngineEnvironment.APP_ENGINE_FLEX);
     AppEngineDeploymentConfiguration config = new AppEngineDeploymentConfiguration();
     config.setCloudProjectName("test-cloud-proj");
     config.setConfigType(ConfigType.AUTO);
@@ -139,13 +134,10 @@ public class AppEngineDeploymentRunConfigurationEditorTest extends PlatformTestC
   }
 
   public void testUiAppEngineStandardEnvironment() {
-    when(deploymentSource.getEnvironment())
-        .thenReturn(AppEngineEnvironment.APP_ENGINE_STANDARD);
+    when(deploymentSource.getEnvironment()).thenReturn(AppEngineEnvironment.APP_ENGINE_STANDARD);
     AppEngineDeploymentRunConfigurationEditor editor =
         new AppEngineDeploymentRunConfigurationEditor(
-            getProject(),
-            deploymentSource,
-            appEngineHelper);
+            getProject(), deploymentSource, appEngineHelper);
 
     assertEquals("App Engine Standard Environment", editor.getEnvironmentLabel().getText());
     assertFalse(editor.getAppEngineFlexConfigPanel().isVisible());
@@ -153,8 +145,7 @@ public class AppEngineDeploymentRunConfigurationEditorTest extends PlatformTestC
   }
 
   public void testUiAppEngineFlexEnvironment() {
-    when(deploymentSource.getEnvironment())
-        .thenReturn(AppEngineEnvironment.APP_ENGINE_FLEX);
+    when(deploymentSource.getEnvironment()).thenReturn(AppEngineEnvironment.APP_ENGINE_FLEX);
     AppEngineDeploymentRunConfigurationEditor editor =
         new AppEngineDeploymentRunConfigurationEditor(
             getProject(), deploymentSource, appEngineHelper);
@@ -165,8 +156,7 @@ public class AppEngineDeploymentRunConfigurationEditorTest extends PlatformTestC
   }
 
   public void testPromote_StopPreviousVersion_Standard() {
-    when(deploymentSource.getEnvironment())
-        .thenReturn(AppEngineEnvironment.APP_ENGINE_STANDARD);
+    when(deploymentSource.getEnvironment()).thenReturn(AppEngineEnvironment.APP_ENGINE_STANDARD);
     AppEngineDeploymentRunConfigurationEditor editor =
         new AppEngineDeploymentRunConfigurationEditor(
             getProject(), deploymentSource, appEngineHelper);
@@ -181,8 +171,7 @@ public class AppEngineDeploymentRunConfigurationEditorTest extends PlatformTestC
   }
 
   public void testPromote_StopPreviousVersion_Flexible() {
-    when(deploymentSource.getEnvironment())
-        .thenReturn(AppEngineEnvironment.APP_ENGINE_FLEX);
+    when(deploymentSource.getEnvironment()).thenReturn(AppEngineEnvironment.APP_ENGINE_FLEX);
     AppEngineDeploymentRunConfigurationEditor editor =
         new AppEngineDeploymentRunConfigurationEditor(
             getProject(), deploymentSource, appEngineHelper);
@@ -207,9 +196,9 @@ public class AppEngineDeploymentRunConfigurationEditorTest extends PlatformTestC
   private AppEngineDeploymentRunConfigurationEditor createEditor(AppEngineEnvironment environment) {
     when(deploymentSource.getEnvironment()).thenReturn(environment);
 
-    AppEngineDeploymentRunConfigurationEditor editor
-        = new AppEngineDeploymentRunConfigurationEditor(getProject(),
-        deploymentSource, appEngineHelper);
+    AppEngineDeploymentRunConfigurationEditor editor =
+        new AppEngineDeploymentRunConfigurationEditor(
+            getProject(), deploymentSource, appEngineHelper);
 
     editor.setProjectSelector(projectSelector);
 

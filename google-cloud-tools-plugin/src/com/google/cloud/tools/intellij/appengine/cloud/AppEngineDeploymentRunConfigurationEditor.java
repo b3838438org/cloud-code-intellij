@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -81,13 +81,21 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 
-/**
- * Editor for an App Engine Deployment runtime configuration.
- */
-public class AppEngineDeploymentRunConfigurationEditor extends
-    SettingsEditor<AppEngineDeploymentConfiguration> {
+/** Editor for an App Engine Deployment runtime configuration. */
+public class AppEngineDeploymentRunConfigurationEditor
+    extends SettingsEditor<AppEngineDeploymentConfiguration> {
+  public static final String DEFAULT_APP_YAML_DIR = "/src/main/appengine";
+  public static final String DEFAULT_DOCKERFILE_DIR = "/src/main/docker";
+  public static final boolean PROMOTE_DEFAULT = true;
+  public static final boolean STOP_PREVIOUS_VERSION_DEFAULT = true;
+  private static final String LABEL_OPEN_TAG = "<html><font face='sans' size='-1'>";
+  private static final String LABEL_CLOSE_TAG = "</font></html>";
+  private static final String LABEL_HREF_CLOSE_TAG = "</a>";
+  private static final String PROMOTE_INFO_HREF_OPEN_TAG =
+      "<a href='https://console.cloud.google.com/appengine/versions'>";
+  private static final String COST_WARNING_HREF_OPEN_TAG =
+      "<a href='https://cloud.google.com/appengine/pricing'>";
   private Project project;
-
   private JComboBox configTypeComboBox;
   private JPanel appEngineConfigFilesPanel;
   private JPanel editorPanel;
@@ -109,28 +117,10 @@ public class AppEngineDeploymentRunConfigurationEditor extends
   private JTextPane promoteInfoLabel;
   private AppEngineApplicationInfoPanel applicationInfoPanel;
   private JPanel regionLabel;
-
   private DeploymentSource deploymentSource;
   private AppEngineEnvironment environment;
 
-  private static final String LABEL_OPEN_TAG = "<html><font face='sans' size='-1'>";
-  private static final String LABEL_CLOSE_TAG = "</font></html>";
-  private static final String LABEL_HREF_CLOSE_TAG = "</a>";
-
-  private static final String PROMOTE_INFO_HREF_OPEN_TAG =
-      "<a href='https://console.cloud.google.com/appengine/versions'>";
-  private static final String COST_WARNING_HREF_OPEN_TAG =
-      "<a href='https://cloud.google.com/appengine/pricing'>";
-
-  public static final String DEFAULT_APP_YAML_DIR = "/src/main/appengine";
-  public static final String DEFAULT_DOCKERFILE_DIR = "/src/main/docker";
-
-  public static final boolean PROMOTE_DEFAULT = true;
-  public static final boolean STOP_PREVIOUS_VERSION_DEFAULT = true;
-
-  /**
-   * Initializes the UI components.
-   */
+  /** Initializes the UI components. */
   public AppEngineDeploymentRunConfigurationEditor(
       final Project project,
       final AppEngineDeployable deploymentSource,
@@ -149,7 +139,8 @@ public class AppEngineDeploymentRunConfigurationEditor extends
     environment = deploymentSource.getEnvironment();
 
     promoteInfoLabel.setText(
-        GctBundle.message("appengine.promote.info.label",
+        GctBundle.message(
+            "appengine.promote.info.label",
             LABEL_OPEN_TAG,
             PROMOTE_INFO_HREF_OPEN_TAG,
             LABEL_HREF_CLOSE_TAG,
@@ -158,7 +149,8 @@ public class AppEngineDeploymentRunConfigurationEditor extends
 
     if (environment.isFlexible()) {
       appEngineCostWarningLabel.setText(
-          GctBundle.message("appengine.flex.deployment.cost.warning",
+          GctBundle.message(
+              "appengine.flex.deployment.cost.warning",
               LABEL_OPEN_TAG,
               COST_WARNING_HREF_OPEN_TAG,
               LABEL_HREF_CLOSE_TAG,
@@ -176,51 +168,54 @@ public class AppEngineDeploymentRunConfigurationEditor extends
     configTypeComboBox.setModel(new DefaultComboBoxModel(ConfigType.values()));
     configTypeComboBox.setSelectedItem(ConfigType.AUTO);
     appEngineConfigFilesPanel.setVisible(false);
-    configTypeComboBox.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent event) {
-        if (getConfigType() == ConfigType.CUSTOM) {
-          appEngineConfigFilesPanel.setVisible(true);
+    configTypeComboBox.addActionListener(
+        new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent event) {
+            if (getConfigType() == ConfigType.CUSTOM) {
+              appEngineConfigFilesPanel.setVisible(true);
 
-          // For user convenience, pre-fill the path fields for app.yaml and Dockerfile
-          // if they already exist in their usual directories in the current project.
-          if (project != null && project.getBasePath() != null) {
-            if (StringUtil.isEmpty(appYamlPathField.getText())) {
-              Path defaultAppYamlPath = Paths.get(
-                  project.getBasePath() + DEFAULT_APP_YAML_DIR + "/app.yaml");
-              if (Files.exists(defaultAppYamlPath)) {
-                appYamlPathField.setText(defaultAppYamlPath.toString());
+              // For user convenience, pre-fill the path fields for app.yaml and Dockerfile
+              // if they already exist in their usual directories in the current project.
+              if (project != null && project.getBasePath() != null) {
+                if (StringUtil.isEmpty(appYamlPathField.getText())) {
+                  Path defaultAppYamlPath =
+                      Paths.get(project.getBasePath() + DEFAULT_APP_YAML_DIR + "/app.yaml");
+                  if (Files.exists(defaultAppYamlPath)) {
+                    appYamlPathField.setText(defaultAppYamlPath.toString());
+                  }
+                }
+                if (StringUtil.isEmpty(dockerFilePathField.getText())) {
+                  Path defaultDockerfilePath =
+                      Paths.get(project.getBasePath() + DEFAULT_DOCKERFILE_DIR + "/Dockerfile");
+                  if (Files.exists(defaultDockerfilePath)) {
+                    dockerFilePathField.setText(defaultDockerfilePath.toString());
+                  }
+                }
               }
-            }
-            if (StringUtil.isEmpty(dockerFilePathField.getText())) {
-              Path defaultDockerfilePath = Paths.get(
-                  project.getBasePath() + DEFAULT_DOCKERFILE_DIR + "/Dockerfile");
-              if (Files.exists(defaultDockerfilePath)) {
-                dockerFilePathField.setText(defaultDockerfilePath.toString());
-              }
+            } else {
+              appEngineConfigFilesPanel.setVisible(false);
             }
           }
-        } else {
-          appEngineConfigFilesPanel.setVisible(false);
-        }
-      }
-    });
+        });
     userSpecifiedArtifactFileSelector.addBrowseFolderListener(
         GctBundle.message("appengine.flex.config.user.specified.artifact.title"),
         null,
         project,
         FileChooserDescriptorFactory.createSingleFileDescriptor()
-            .withFileFilter(new Condition<VirtualFile>() {
-              @Override
-              public boolean value(VirtualFile file) {
-                return Comparing.equal(
-                        file.getExtension(), "jar", SystemInfo.isFileSystemCaseSensitive)
-                    || Comparing.equal(
-                        file.getExtension(), "war", SystemInfo.isFileSystemCaseSensitive);
-              }
-            })
-    );
-    userSpecifiedArtifactFileSelector.getTextField().getDocument()
+            .withFileFilter(
+                new Condition<VirtualFile>() {
+                  @Override
+                  public boolean value(VirtualFile file) {
+                    return Comparing.equal(
+                            file.getExtension(), "jar", SystemInfo.isFileSystemCaseSensitive)
+                        || Comparing.equal(
+                            file.getExtension(), "war", SystemInfo.isFileSystemCaseSensitive);
+                  }
+                }));
+    userSpecifiedArtifactFileSelector
+        .getTextField()
+        .getDocument()
         .addDocumentListener(getUserSpecifiedArtifactFileListener());
     dockerFilePathField.addBrowseFolderListener(
         GctBundle.message("appengine.dockerfile.location.browse.button"),
@@ -233,15 +228,23 @@ public class AppEngineDeploymentRunConfigurationEditor extends
         project,
         FileChooserDescriptorFactory.createSingleFileDescriptor());
     generateAppYamlButton.addActionListener(
-        new GenerateConfigActionListener(project, "app.yaml", ConfigFileType.APP_YAML,
+        new GenerateConfigActionListener(
+            project,
+            "app.yaml",
+            ConfigFileType.APP_YAML,
             new Supplier<Path>() {
               @Override
               public Path get() {
                 return appEngineHelper.defaultAppYaml();
               }
-            }, appYamlPathField, userSpecifiedArtifactFileSelector));
+            },
+            appYamlPathField,
+            userSpecifiedArtifactFileSelector));
     generateDockerfileButton.addActionListener(
-        new GenerateConfigActionListener(project, "Dockerfile", ConfigFileType.DOCKERFILE,
+        new GenerateConfigActionListener(
+            project,
+            "Dockerfile",
+            ConfigFileType.DOCKERFILE,
             new Supplier<Path>() {
               @Override
               public Path get() {
@@ -249,7 +252,9 @@ public class AppEngineDeploymentRunConfigurationEditor extends
                     AppEngineFlexDeploymentArtifactType.typeForPath(
                         Paths.get(deploymentSource.getFilePath())));
               }
-            }, dockerFilePathField, userSpecifiedArtifactFileSelector));
+            },
+            dockerFilePathField,
+            userSpecifiedArtifactFileSelector));
     versionOverrideCheckBox.addItemListener(
         new CustomFieldOverrideListener(versionOverrideCheckBox, versionIdField));
     promoteCheckbox.addItemListener(new PromoteListener());
@@ -258,37 +263,40 @@ public class AppEngineDeploymentRunConfigurationEditor extends
         environment == AppEngineEnvironment.APP_ENGINE_FLEX
             && !AppEngineProjectService.getInstance().isFlexCompat(project, deploymentSource));
 
-    projectSelector.addProjectSelectionListener((event) ->
-        applicationInfoPanel.refresh(event.getSelectedProject().getProjectId(),
-            event.getUser().getCredential()));
+    projectSelector.addProjectSelectionListener(
+        (event) ->
+            applicationInfoPanel.refresh(
+                event.getSelectedProject().getProjectId(), event.getUser().getCredential()));
 
-    projectSelector.addModelListener(new TreeModelListener() {
-      @Override
-      public void treeNodesChanged(TreeModelEvent e) {
-        // Do nothing.
-      }
+    projectSelector.addModelListener(
+        new TreeModelListener() {
+          @Override
+          public void treeNodesChanged(TreeModelEvent e) {
+            // Do nothing.
+          }
 
-      @Override
-      public void treeNodesInserted(TreeModelEvent e) {
-        // Do nothing.
-      }
+          @Override
+          public void treeNodesInserted(TreeModelEvent e) {
+            // Do nothing.
+          }
 
-      @Override
-      public void treeNodesRemoved(TreeModelEvent e) {
-        // Do nothing.
-      }
+          @Override
+          public void treeNodesRemoved(TreeModelEvent e) {
+            // Do nothing.
+          }
 
-      @Override
-      public void treeStructureChanged(TreeModelEvent e) {
-        // projects have finished loading
-        refreshApplicationInfoPanel();
-      }
-    });
+          @Override
+          public void treeStructureChanged(TreeModelEvent e) {
+            // projects have finished loading
+            refreshApplicationInfoPanel();
+          }
+        });
   }
 
   private void refreshApplicationInfoPanel() {
     if (projectSelector.getProject() != null && projectSelector.getSelectedUser() != null) {
-      applicationInfoPanel.refresh(projectSelector.getProject().getProjectId(),
+      applicationInfoPanel.refresh(
+          projectSelector.getProject().getProjectId(),
           projectSelector.getSelectedUser().getCredential());
     }
   }
@@ -368,8 +376,8 @@ public class AppEngineDeploymentRunConfigurationEditor extends
   }
 
   /**
-   * If a project's appengine-web.xml contains <env>flex</env> then we want to override
-   * the default localized label of the environment
+   * If a project's appengine-web.xml contains <env>flex</env> then we want to override the default
+   * localized label of the environment
    */
   private String getEnvironmentDisplayableLabel() {
     return environment.localizedLabel();
@@ -395,9 +403,7 @@ public class AppEngineDeploymentRunConfigurationEditor extends
   }
 
   private String getDisplayableVersion() {
-    return versionOverrideCheckBox.isSelected()
-        ? versionIdField.getText() : "auto";
-
+    return versionOverrideCheckBox.isSelected() ? versionIdField.getText() : "auto";
   }
 
   private void validateConfiguration() throws ConfigurationException {
@@ -430,8 +436,9 @@ public class AppEngineDeploymentRunConfigurationEditor extends
       Set<CloudSdkValidationResult> validationResults =
           CloudSdkService.getInstance().validateCloudSdk();
       if (validationResults.contains(CloudSdkValidationResult.CLOUD_SDK_NOT_FOUND)) {
-        throw new ConfigurationException(GctBundle.message(
-            "appengine.cloudsdk.deploymentconfiguration.location.invalid.message"));
+        throw new ConfigurationException(
+            GctBundle.message(
+                "appengine.cloudsdk.deploymentconfiguration.location.invalid.message"));
       }
       if (environment.isStandard()
           && validationResults.contains(CloudSdkValidationResult.NO_APP_ENGINE_COMPONENT)) {
@@ -460,8 +467,8 @@ public class AppEngineDeploymentRunConfigurationEditor extends
       @Override
       protected void textChanged(DocumentEvent event) {
         if (isUserSpecifiedPathDeploymentSource()) {
-          ((UserSpecifiedPathDeploymentSource) deploymentSource).setFilePath(
-              userSpecifiedArtifactFileSelector.getText());
+          ((UserSpecifiedPathDeploymentSource) deploymentSource)
+              .setFilePath(userSpecifiedArtifactFileSelector.getText());
         }
       }
     };
@@ -482,9 +489,7 @@ public class AppEngineDeploymentRunConfigurationEditor extends
     return editorPanel;
   }
 
-  /**
-   * A somewhat generic way of generating a file for a {@link TextFieldWithBrowseButton}.
-   */
+  /** A somewhat generic way of generating a file for a {@link TextFieldWithBrowseButton}. */
   private class GenerateConfigActionListener implements ActionListener {
 
     private final Project project;
@@ -513,41 +518,46 @@ public class AppEngineDeploymentRunConfigurationEditor extends
     public void actionPerformed(ActionEvent event) {
       if (sourceFileProvider.get() == null) {
         if (!isUserSpecifiedPathDeploymentSource()) {
-          throw new AssertionError("Error generating configuration file: "
-              + "artifact deployment source is missing a source .jar or .war file.");
+          throw new AssertionError(
+              "Error generating configuration file: "
+                  + "artifact deployment source is missing a source .jar or .war file.");
         }
 
-        BalloonBuilder builder = JBPopupFactory.getInstance()
-            .createHtmlTextBalloonBuilder(
-                GctBundle.getString("appengine.config.deployment.source.error"),
-                MessageType.INFO, null)
-            .setFadeoutTime(3000);
+        BalloonBuilder builder =
+            JBPopupFactory.getInstance()
+                .createHtmlTextBalloonBuilder(
+                    GctBundle.getString("appengine.config.deployment.source.error"),
+                    MessageType.INFO,
+                    null)
+                .setFadeoutTime(3000);
         Balloon balloon = builder.createBalloon();
         balloon.show(
-            new RelativePoint(fileSelector,
-                new Point(fileSelector.getWidth() / 2, fileSelector.getHeight() / 2)),
+            new RelativePoint(
+                fileSelector, new Point(fileSelector.getWidth() / 2, fileSelector.getHeight() / 2)),
             Position.above);
         return;
       }
 
-      SelectConfigDestinationFolderDialog destinationFolderDialog = new
-          SelectConfigDestinationFolderDialog(project, configFileType);
+      SelectConfigDestinationFolderDialog destinationFolderDialog =
+          new SelectConfigDestinationFolderDialog(project, configFileType);
       if (destinationFolderDialog.showAndGet()) {
         Path destinationFolderPath = destinationFolderDialog.getDestinationFolder();
         Path destinationFilePath = destinationFolderPath.resolve(fileName);
 
         if (Files.exists(destinationFilePath)) {
           if (!new FileConfirmationDialog(
-              project, DialogType.CONFIRM_OVERWRITE, destinationFilePath).showAndGet()) {
+                  project, DialogType.CONFIRM_OVERWRITE, destinationFilePath)
+              .showAndGet()) {
             return;
           }
         } else if (Files.isRegularFile(destinationFolderPath)) {
-          new FileConfirmationDialog(
-              project, DialogType.NOT_DIRECTORY_ERROR, destinationFolderPath).show();
+          new FileConfirmationDialog(project, DialogType.NOT_DIRECTORY_ERROR, destinationFolderPath)
+              .show();
           return;
         } else if (!Files.exists(destinationFolderPath)) {
           if (!new FileConfirmationDialog(
-              project, DialogType.CONFIRM_CREATE_DIR, destinationFolderPath).showAndGet()) {
+                  project, DialogType.CONFIRM_CREATE_DIR, destinationFolderPath)
+              .showAndGet()) {
             return;
           }
         }
@@ -556,8 +566,9 @@ public class AppEngineDeploymentRunConfigurationEditor extends
           FileUtil.copy(sourceFileProvider.get().toFile(), destinationFilePath.toFile());
           LocalFileSystem.getInstance().refreshAndFindFileByIoFile(destinationFilePath.toFile());
         } catch (IOException ex) {
-          String message = GctBundle.message(
-              "appengine.flex.config.generation.io.error", destinationFilePath.getFileName());
+          String message =
+              GctBundle.message(
+                  "appengine.flex.config.generation.io.error", destinationFilePath.getFileName());
           Messages.showErrorDialog(project, message + ex.getLocalizedMessage(), "Error");
           return;
         }

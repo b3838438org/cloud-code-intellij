@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,9 +33,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 
-/**
- * UI for the node that prompts for Google Login.
- */
+/** UI for the node that prompts for Google Login. */
 class BaseGoogleLoginUi extends JPanel {
 
   public static final int PREFERRED_HEIGHT = 150;

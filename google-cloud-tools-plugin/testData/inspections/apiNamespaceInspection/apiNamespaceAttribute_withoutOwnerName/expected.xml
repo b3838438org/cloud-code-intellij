@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~ Copyright (C) 2016 The Android Open Source Project
+  ~ Copyright 2017 Google Inc. All Rights Reserved.
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -16,9 +16,11 @@
   -->
 
 <problems>
-  <problem>
-    <file>test.java</file>
-    <line>22</line>
-    <description>Invalid namespace configuration. If a namespace is set, make sure to set an Owner Domain and Name. Package Path is optional.</description>
-  </problem>
+    <problem>
+        <file>test.java</file>
+        <line>22</line>
+        <description>Invalid namespace configuration. If a namespace is set, make sure to set an
+            Owner Domain and Name. Package Path is optional.
+        </description>
+    </problem>
 </problems>

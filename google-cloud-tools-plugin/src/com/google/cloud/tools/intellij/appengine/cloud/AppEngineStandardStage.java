@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,18 +29,13 @@ import org.jetbrains.annotations.NotNull;
 
 import java.nio.file.Path;
 
-/**
- * Stages an application in preparation for deployment to the App Engine flexible environment.
- */
+/** Stages an application in preparation for deployment to the App Engine flexible environment. */
 public class AppEngineStandardStage {
   private CloudSdkAppEngineHelper helper;
   private LoggingHandler loggingHandler;
   private Path deploymentArtifactPath;
 
-
-  /**
-   * Initialize the staging dependencies.
-   */
+  /** Initialize the staging dependencies. */
   public AppEngineStandardStage(
       @NotNull CloudSdkAppEngineHelper helper,
       @NotNull LoggingHandler loggingHandler,
@@ -61,19 +56,17 @@ public class AppEngineStandardStage {
       @NotNull ProcessStartListener startListener,
       @NotNull ProcessExitListener onStageComplete) {
 
-    ProcessOutputLineListener outputListener = new ProcessOutputLineListener() {
-      @Override
-      public void onOutputLine(String line) {
-        loggingHandler.print(line + "\n");
-      }
-    };
+    ProcessOutputLineListener outputListener =
+        new ProcessOutputLineListener() {
+          @Override
+          public void onOutputLine(String line) {
+            loggingHandler.print(line + "\n");
+          }
+        };
 
-    CloudSdk sdk = helper.createSdk(
-        loggingHandler,
-        startListener,
-        outputListener,
-        outputListener,
-        onStageComplete);
+    CloudSdk sdk =
+        helper.createSdk(
+            loggingHandler, startListener, outputListener, outputListener, onStageComplete);
 
     // TODO determine the default set of flags we want to set for AE standard staging
     DefaultStageStandardConfiguration stageConfig = new DefaultStageStandardConfiguration();

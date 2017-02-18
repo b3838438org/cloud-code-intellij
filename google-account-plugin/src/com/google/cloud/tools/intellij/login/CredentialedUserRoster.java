@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -99,9 +99,7 @@ public class CredentialedUserRoster {
     }
   }
 
-  /**
-   * If there is an active user, makes the active use no longer active.
-   */
+  /** If there is an active user, makes the active use no longer active. */
   public void removeActiveUser() {
     synchronized (this) {
       if (activeUser != null) {
@@ -173,9 +171,7 @@ public class CredentialedUserRoster {
     }
   }
 
-  /**
-   * Removes all logged in users. There is no active user after this.
-   */
+  /** Removes all logged in users. There is no active user after this. */
   public void removeAllUsers() {
     synchronized (this) {
       allUsers.clear();

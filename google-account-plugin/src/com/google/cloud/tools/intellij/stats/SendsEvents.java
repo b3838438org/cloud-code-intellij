@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,15 +22,14 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Map;
 
 /**
- * Package internal only interface used for providing multiple ping implementations to the
- * {@link TrackingEventBuilder}.
+ * Package internal only interface used for providing multiple ping implementations to the {@link
+ * TrackingEventBuilder}.
  */
 interface SendsEvents {
 
-  /**
-   * When tracking events, do NOT include any information that can identify the user.
-   */
-  void sendEvent(@NotNull String eventCategory,
+  /** When tracking events, do NOT include any information that can identify the user. */
+  void sendEvent(
+      @NotNull String eventCategory,
       @NotNull String eventAction,
       @Nullable Map<String, String> metadataMap);
 }

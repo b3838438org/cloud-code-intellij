@@ -25,9 +25,7 @@ import com.intellij.util.xml.DomFileDescription;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * This is the file description for the App Engine xml config file
- */
+/** This is the file description for the App Engine xml config file */
 public class AppEngineStandardWebFileDescriptor
     extends DomFileDescription<AppEngineStandardWebApp> {
 

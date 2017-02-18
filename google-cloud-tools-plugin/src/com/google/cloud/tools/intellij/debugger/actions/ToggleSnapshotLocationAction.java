@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,11 +45,10 @@ public class ToggleSnapshotLocationAction extends AnAction {
   public static final Key<Integer> POPUP_LINE = Key.create("SnapshotTargetLine");
   private static final Logger LOG = Logger.getInstance(ToggleSnapshotLocationAction.class);
 
-  /**
-   * Initialize the action.
-   */
+  /** Initialize the action. */
   public ToggleSnapshotLocationAction() {
-    super(GctBundle.getString("clouddebug.snapshot.location"),
+    super(
+        GctBundle.getString("clouddebug.snapshot.location"),
         GctBundle.getString("clouddebug.adds.snapshot.location"),
         GoogleCloudToolsIcons.CLOUD);
   }
@@ -72,7 +71,9 @@ public class ToggleSnapshotLocationAction extends AnAction {
         return;
       }
       XDebuggerUtil.getInstance()
-          .toggleLineBreakpoint(exEditor.getProject(), CloudLineBreakpointType.getInstance(),
+          .toggleLineBreakpoint(
+              exEditor.getProject(),
+              CloudLineBreakpointType.getInstance(),
               exEditor.getVirtualFile(),
               editor.getUserData(POPUP_LINE));
     }

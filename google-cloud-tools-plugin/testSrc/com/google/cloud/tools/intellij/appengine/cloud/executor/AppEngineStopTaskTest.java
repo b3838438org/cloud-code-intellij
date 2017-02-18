@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,6 @@ import com.google.cloud.tools.appengine.cloudsdk.process.ProcessStartListener;
 import com.google.cloud.tools.intellij.appengine.cloud.AppEngineDeploymentConfiguration;
 import com.google.cloud.tools.intellij.appengine.cloud.AppEngineHelper;
 import com.google.cloud.tools.intellij.appengine.cloud.AppEngineStop;
-import com.google.cloud.tools.intellij.appengine.cloud.executor.AppEngineStopTask;
 
 import com.intellij.remoteServer.runtime.deployment.DeploymentRuntime.UndeploymentTaskCallback;
 
@@ -41,21 +40,16 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.nio.file.Paths;
 
-/**
- * Unit tests for {@link AppEngineStopTask}
- */
+/** Unit tests for {@link AppEngineStopTask} */
 @RunWith(MockitoJUnitRunner.class)
 public class AppEngineStopTaskTest {
 
-  private AppEngineStopTask task;
-  @Mock
-  AppEngineStop stop;
-  @Mock
-  AppEngineDeploymentConfiguration configuration;
-  @Mock
-  AppEngineHelper helper;
+  @Mock AppEngineStop stop;
+  @Mock AppEngineDeploymentConfiguration configuration;
+  @Mock AppEngineHelper helper;
   @Mock UndeploymentTaskCallback callback;
   @Mock ProcessStartListener startListener;
+  private AppEngineStopTask task;
 
   @Before
   public void setUp() {
@@ -73,7 +67,8 @@ public class AppEngineStopTaskTest {
     task.execute(startListener);
 
     verify(callback, times(1))
-        .errorOccurred("Failed to prepare credentials. Please make sure you are logged in with the correct account.");
+        .errorOccurred(
+            "Failed to prepare credentials. Please make sure you are logged in with the correct account.");
   }
 
   @Test
@@ -98,5 +93,4 @@ public class AppEngineStopTaskTest {
 
     fail("Expected exception due to logging error level.");
   }
-
 }

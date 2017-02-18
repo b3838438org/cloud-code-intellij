@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,8 @@
 package com.example.app;
 
 import com.google.api.server.spi.config.Api;
-import com.google.appengine.api.users.User;
-
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequestWrapper;
-
 
 @Api
 public class Foo {

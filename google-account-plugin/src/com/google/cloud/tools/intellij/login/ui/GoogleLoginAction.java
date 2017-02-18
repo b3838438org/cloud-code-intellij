@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,11 +32,21 @@ import java.awt.Point;
 
 import javax.swing.JComponent;
 
-/**
- * Action to open the Google Login panel.
- */
+/** Action to open the Google Login panel. */
 public class GoogleLoginAction extends AnAction
     implements DumbAware, CustomComponentAction, RightAlignedToolbarAction {
+
+  /** Opens up the Google Login panel as a popup. */
+  private static void showPopup(AnActionEvent event) {
+    GoogleLoginUsersPanel usersPanel = new GoogleLoginUsersPanel();
+    JComponent source = (JComponent) event.getInputEvent().getSource();
+    ComponentPopupBuilder popupBuilder =
+        JBPopupFactory.getInstance().createComponentPopupBuilder(usersPanel, usersPanel.getList());
+    JBPopup popup = popupBuilder.createPopup();
+    JComponent component = popup.getContent();
+    int startingPoint = (int) (source.getWidth() - component.getPreferredSize().getWidth());
+    popup.show(new RelativePoint(source, new Point(startingPoint, source.getHeight() - 1)));
+  }
 
   @Override
   public void actionPerformed(AnActionEvent event) {
@@ -47,19 +57,5 @@ public class GoogleLoginAction extends AnAction
   public JComponent createCustomComponent(Presentation presentation) {
     return new GoogleLoginActionButton(
         this, presentation, presentation.getText(), ActionToolbar.DEFAULT_MINIMUM_BUTTON_SIZE);
-  }
-
-  /**
-   * Opens up the Google Login panel as a popup.
-   */
-  private static void showPopup(AnActionEvent event) {
-    GoogleLoginUsersPanel usersPanel = new GoogleLoginUsersPanel();
-    JComponent source = (JComponent) event.getInputEvent().getSource();
-    ComponentPopupBuilder popupBuilder =
-        JBPopupFactory.getInstance().createComponentPopupBuilder(usersPanel, usersPanel.getList());
-    JBPopup popup = popupBuilder.createPopup();
-    JComponent component = popup.getContent();
-    int startingPoint = (int)(source.getWidth() - component.getPreferredSize().getWidth());
-    popup.show(new RelativePoint(source, new Point(startingPoint, source.getHeight() - 1)));
   }
 }

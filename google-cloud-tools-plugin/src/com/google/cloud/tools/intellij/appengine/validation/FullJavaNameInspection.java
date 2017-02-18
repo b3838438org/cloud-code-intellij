@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  */
 
 package com.google.cloud.tools.intellij.appengine.validation;
-
 
 import com.google.cloud.tools.intellij.appengine.util.EndpointBundle;
 import com.google.cloud.tools.intellij.appengine.util.EndpointUtilities;
@@ -65,9 +64,7 @@ public class FullJavaNameInspection extends EndpointInspectionBase {
   @Override
   public PsiElementVisitor buildVisitor(@NotNull final ProblemsHolder holder, boolean isOnTheFly) {
     return new EndpointPsiElementVisitor() {
-      /**
-       * Flags methods that have a duplicate full java name.
-       */
+      /** Flags methods that have a duplicate full java name. */
       @Override
       public void visitClass(PsiClass psiClass) {
         if (!EndpointUtilities.isEndpointClass(psiClass)) {
@@ -83,11 +80,11 @@ public class FullJavaNameInspection extends EndpointInspectionBase {
       }
 
       /**
-       * Checks that the backend method name is unique to ensure that there are no overloaded
-       * API methods.
+       * Checks that the backend method name is unique to ensure that there are no overloaded API
+       * methods.
        */
-      private void validateBackendMethodNameUnique(PsiMethod psiMethod,
-          Map<String, PsiMethod> javaMethodNames) {
+      private void validateBackendMethodNameUnique(
+          PsiMethod psiMethod, Map<String, PsiMethod> javaMethodNames) {
         // Check if method is a public or non-static
         if (!EndpointUtilities.isApiMethod(psiMethod)) {
           return;
@@ -104,28 +101,33 @@ public class FullJavaNameInspection extends EndpointInspectionBase {
           javaMethodNames.put(javaName, psiMethod);
         } else {
           String psiMethodName =
-              psiMethod.getContainingClass().getName() + "." + psiMethod.getName()
+              psiMethod.getContainingClass().getName()
+                  + "."
+                  + psiMethod.getName()
                   + psiMethod.getParameterList().getText();
           String seenMethodName =
-              seenMethod.getContainingClass().getName() + "." + seenMethod.getName()
+              seenMethod.getContainingClass().getName()
+                  + "."
+                  + seenMethod.getName()
                   + seenMethod.getParameterList().getText();
-          holder.registerProblem(psiMethod, "Overloaded methods are not supported. " + javaName
-              + " has at least one overload: " + psiMethodName + " and " + seenMethodName,
+          holder.registerProblem(
+              psiMethod,
+              "Overloaded methods are not supported. "
+                  + javaName
+                  + " has at least one overload: "
+                  + psiMethodName
+                  + " and "
+                  + seenMethodName,
               new MyQuickFix());
         }
-
       }
     };
   }
 
-  /**
-   * Quick fix for {@link FullJavaNameInspection} problems.
-   */
+  /** Quick fix for {@link FullJavaNameInspection} problems. */
   public class MyQuickFix implements LocalQuickFix {
 
-    public MyQuickFix() {
-
-    }
+    public MyQuickFix() {}
 
     @NotNull
     @Override
@@ -139,9 +141,7 @@ public class FullJavaNameInspection extends EndpointInspectionBase {
       return getDisplayName();
     }
 
-    /**
-     * Adds "_1" to the name of the PsiElement in <code>desciptor</code>.
-     */
+    /** Adds "_1" to the name of the PsiElement in <code>desciptor</code>. */
     @Override
     public void applyFix(@NotNull Project project, @NotNull ProblemDescriptor descriptor) {
       PsiElement element = descriptor.getPsiElement();
@@ -151,6 +151,5 @@ public class FullJavaNameInspection extends EndpointInspectionBase {
       PsiMethod method = (PsiMethod) element;
       method.setName(method.getName() + "_1");
     }
-
   }
 }

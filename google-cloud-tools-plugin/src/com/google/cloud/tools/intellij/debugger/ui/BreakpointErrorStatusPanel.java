@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,8 +47,7 @@ public class BreakpointErrorStatusPanel
   private JPanel errorPanel;
   private JPanel mainPanel;
 
-  public BreakpointErrorStatusPanel() {
-  }
+  public BreakpointErrorStatusPanel() {}
 
   @NotNull
   @Override
@@ -78,9 +77,7 @@ public class BreakpointErrorStatusPanel
   }
 
   @Override
-  public void saveTo(@NotNull final XLineBreakpoint<CloudLineBreakpointProperties> ideBreakpoint) {
-  }
+  public void saveTo(@NotNull final XLineBreakpoint<CloudLineBreakpointProperties> ideBreakpoint) {}
 
-  private void createUIComponents() {
-  }
+  private void createUIComponents() {}
 }

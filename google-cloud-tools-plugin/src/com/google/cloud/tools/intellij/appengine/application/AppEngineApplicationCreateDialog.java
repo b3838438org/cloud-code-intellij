@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,26 +49,24 @@ import javax.swing.JTextPane;
  */
 public class AppEngineApplicationCreateDialog extends DialogWrapper {
 
-  private final static String LOCATIONS_DOCUMENTATION_URL
-      = "https://cloud.google.com/docs/geography-and-regions";
-  private final static String FLEX_DOCUMENTATION_URL
-      = "https://cloud.google.com/appengine/docs/flexible";
-  private final static String STANDARD_DOCUMENTATION_URL
-      = "https://cloud.google.com/appengine/docs/about-the-standard-environment";
+  private static final String LOCATIONS_DOCUMENTATION_URL =
+      "https://cloud.google.com/docs/geography-and-regions";
+  private static final String FLEX_DOCUMENTATION_URL =
+      "https://cloud.google.com/appengine/docs/flexible";
+  private static final String STANDARD_DOCUMENTATION_URL =
+      "https://cloud.google.com/appengine/docs/about-the-standard-environment";
   private static final String HTML_OPEN_TAG = "<html><font face='sans' size='-1'>";
   private static final String HTML_CLOSE_TAG = "</font></html>";
-
+  private final Credential userCredential;
+  private final String gcpProjectId;
   private JPanel panel;
   private JTextPane instructionsTextPane;
   private JComboBox<AppEngineLocationSelectorItem> regionComboBox;
   private JTextPane statusPane;
   private JTextPane regionDetailPane;
 
-  private final Credential userCredential;
-  private final String gcpProjectId;
-
-  public AppEngineApplicationCreateDialog(@NotNull Component parent, @NotNull String gcpProjectId,
-      @NotNull Credential userCredential) {
+  public AppEngineApplicationCreateDialog(
+      @NotNull Component parent, @NotNull String gcpProjectId, @NotNull Credential userCredential) {
     super(parent, false);
     this.gcpProjectId = gcpProjectId;
     this.userCredential = userCredential;
@@ -82,24 +80,31 @@ public class AppEngineApplicationCreateDialog extends DialogWrapper {
     setTitle(GctBundle.message("appengine.application.region.select"));
     refreshLocationsSelector();
 
-    regionComboBox.addItemListener((event) -> {
-      if (event.getStateChange() == ItemEvent.SELECTED) {
-        updateLocationDetailMessage();
-      }
-    });
+    regionComboBox.addItemListener(
+        (event) -> {
+          if (event.getStateChange() == ItemEvent.SELECTED) {
+            updateLocationDetailMessage();
+          }
+        });
 
     regionDetailPane.addHyperlinkListener(new BrowserOpeningHyperLinkListener());
     instructionsTextPane.addHyperlinkListener(new BrowserOpeningHyperLinkListener());
-    instructionsTextPane.setText(HTML_OPEN_TAG
-        + GctBundle.message("appengine.application.create.instructions") + "<p>"
-        + GctBundle.message("appengine.application.create.documentation",
-        "<a href=\"" + LOCATIONS_DOCUMENTATION_URL + "\">", "</a>") + "</p>" + HTML_CLOSE_TAG);
+    instructionsTextPane.setText(
+        HTML_OPEN_TAG
+            + GctBundle.message("appengine.application.create.instructions")
+            + "<p>"
+            + GctBundle.message(
+                "appengine.application.create.documentation",
+                "<a href=\"" + LOCATIONS_DOCUMENTATION_URL + "\">",
+                "</a>")
+            + "</p>"
+            + HTML_CLOSE_TAG);
   }
 
   @Override
   protected void doOKAction() {
-    final Location selectedLocation
-        = ((AppEngineLocationSelectorItem) regionComboBox.getSelectedItem()).getLocation();
+    final Location selectedLocation =
+        ((AppEngineLocationSelectorItem) regionComboBox.getSelectedItem()).getLocation();
 
     // show loading state
     disable();
@@ -110,13 +115,16 @@ public class AppEngineApplicationCreateDialog extends DialogWrapper {
           .ping();
 
       // attempt to create the application, and close the dialog if successful
-      ProgressManager.getInstance().runProcessWithProgressSynchronously(() ->
-              AppEngineAdminService.getInstance().createApplication(
-                  selectedLocation.getLocationId(), gcpProjectId, userCredential),
-      GctBundle.message("appengine.application.create.loading",
-              selectedLocation.getLocationId()),
-          true /* cancellable */,
-          ProjectManager.getInstance().getDefaultProject());
+      ProgressManager.getInstance()
+          .runProcessWithProgressSynchronously(
+              () ->
+                  AppEngineAdminService.getInstance()
+                      .createApplication(
+                          selectedLocation.getLocationId(), gcpProjectId, userCredential),
+              GctBundle.message(
+                  "appengine.application.create.loading", selectedLocation.getLocationId()),
+              true /* cancellable */,
+              ProjectManager.getInstance().getDefaultProject());
 
       UsageTrackerProvider.getInstance()
           .trackEvent(GctTracking.APP_ENGINE_APPLICATION_CREATE_SUCCESS)
@@ -148,8 +156,11 @@ public class AppEngineApplicationCreateDialog extends DialogWrapper {
   }
 
   private void setStatusMessageAsync(final String message, final boolean isError) {
-    ApplicationManager.getApplication().invokeLater(() -> setStatusMessage(message, isError),
-        ModalityState.stateForComponent(AppEngineApplicationCreateDialog.this.getContentPane()));
+    ApplicationManager.getApplication()
+        .invokeLater(
+            () -> setStatusMessage(message, isError),
+            ModalityState.stateForComponent(
+                AppEngineApplicationCreateDialog.this.getContentPane()));
   }
 
   private void setStatusMessage(String message, boolean isError) {
@@ -161,31 +172,38 @@ public class AppEngineApplicationCreateDialog extends DialogWrapper {
   /**
    * Refreshes the locations combo box. This method should be called from the event dispatch thread.
    */
+  @SuppressWarnings("FutureReturnValueIgnored")
   private void refreshLocationsSelector() {
     // show loading state
     disable();
     regionComboBox.removeAllItems();
 
-    ApplicationManager.getApplication().executeOnPooledThread(() -> {
-      final List<Location> appEngineRegions;
-      try {
-        appEngineRegions = AppEngineAdminService.getInstance()
-            .getAllAppEngineLocations(userCredential);
-      } catch (IOException | GoogleApiException e) {
-        setStatusMessageAsync(GctBundle.message("appengine.application.region.list.fetch.error"),
-            true);
-        enable();
-        return;
-      }
+    ApplicationManager.getApplication()
+        .executeOnPooledThread(
+            () -> {
+              final List<Location> appEngineRegions;
+              try {
+                appEngineRegions =
+                    AppEngineAdminService.getInstance().getAllAppEngineLocations(userCredential);
+              } catch (IOException | GoogleApiException e) {
+                setStatusMessageAsync(
+                    GctBundle.message("appengine.application.region.list.fetch.error"), true);
+                enable();
+                return;
+              }
 
-      // perform the actual UI updates on the event dispatch thread
-      ApplicationManager.getApplication().invokeLater(() -> {
-        for (Location location : appEngineRegions) {
-          regionComboBox.addItem(new AppEngineLocationSelectorItem(location));
-        }
-        enable();
-      }, ModalityState.stateForComponent(AppEngineApplicationCreateDialog.this.getContentPane()));
-    });
+              // perform the actual UI updates on the event dispatch thread
+              ApplicationManager.getApplication()
+                  .invokeLater(
+                      () -> {
+                        for (Location location : appEngineRegions) {
+                          regionComboBox.addItem(new AppEngineLocationSelectorItem(location));
+                        }
+                        enable();
+                      },
+                      ModalityState.stateForComponent(
+                          AppEngineApplicationCreateDialog.this.getContentPane()));
+            });
   }
 
   private void disable() {
@@ -199,22 +217,33 @@ public class AppEngineApplicationCreateDialog extends DialogWrapper {
   }
 
   private void updateLocationDetailMessage() {
-    AppEngineLocationSelectorItem item
-        = (AppEngineLocationSelectorItem) regionComboBox.getSelectedItem();
+    AppEngineLocationSelectorItem item =
+        (AppEngineLocationSelectorItem) regionComboBox.getSelectedItem();
 
-    String displayText = HTML_OPEN_TAG +
-        GctBundle.message("appengine.application.region.supported.environments",
-            "<strong>" + item.getLocation().getLocationId() + "</strong>") + "<ul>";
+    String displayText =
+        HTML_OPEN_TAG
+            + GctBundle.message(
+                "appengine.application.region.supported.environments",
+                "<strong>" + item.getLocation().getLocationId() + "</strong>")
+            + "<ul>";
 
     if (item.isStandardSupported()) {
-      displayText += "<li>" + GctBundle.message("appengine.application.region.supports.standard",
-          "<a href=\"" + STANDARD_DOCUMENTATION_URL + "\">", "</a>")
-          + "</li>";
+      displayText +=
+          "<li>"
+              + GctBundle.message(
+                  "appengine.application.region.supports.standard",
+                  "<a href=\"" + STANDARD_DOCUMENTATION_URL + "\">",
+                  "</a>")
+              + "</li>";
     }
     if (item.isFlexSupported()) {
-      displayText += "<li>" + GctBundle.message("appengine.application.region.supports.flex",
-          "<a href=\"" + FLEX_DOCUMENTATION_URL + "\">", "</a>")
-          + "</li>";
+      displayText +=
+          "<li>"
+              + GctBundle.message(
+                  "appengine.application.region.supports.flex",
+                  "<a href=\"" + FLEX_DOCUMENTATION_URL + "\">",
+                  "</a>")
+              + "</li>";
     }
 
     displayText += "</ul>" + HTML_CLOSE_TAG;
@@ -226,5 +255,4 @@ public class AppEngineApplicationCreateDialog extends DialogWrapper {
   protected JComponent createCenterPanel() {
     return panel;
   }
-
 }

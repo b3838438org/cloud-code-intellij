@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,15 +16,14 @@
 package com.example.app;
 
 import com.google.api.server.spi.config.Api;
-import com.google.api.server.spi.config.Named;
 
 import java.util.List;
 
 @Api
 public class Foo {
-    public void aMethod(List<Boo> boo) {
-        // do nothing
-    }
+  public void aMethod(List<Boo> boo) {
+    // do nothing
+  }
 
-    class  Boo{}
+  class Boo {}
 }

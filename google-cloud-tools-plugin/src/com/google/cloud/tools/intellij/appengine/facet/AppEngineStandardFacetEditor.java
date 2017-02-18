@@ -1,11 +1,11 @@
 /*
- * Copyright 2000-2016 JetBrains s.r.o.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -45,9 +45,7 @@ import java.util.Set;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
-/**
- * @author nik
- */
+/** @author nik */
 public class AppEngineStandardFacetEditor extends FacetEditorTab {
 
   private final AppEngineFacetConfiguration facetConfiguration;
@@ -56,15 +54,15 @@ public class AppEngineStandardFacetEditor extends FacetEditorTab {
   private AppEngineStandardLibraryPanel appEngineStandardLibraryPanel;
   private Listener libraryListener;
 
-
-  public AppEngineStandardFacetEditor(AppEngineFacetConfiguration facetConfiguration,
-      FacetEditorContext context) {
+  public AppEngineStandardFacetEditor(
+      AppEngineFacetConfiguration facetConfiguration, FacetEditorContext context) {
     this.facetConfiguration = facetConfiguration;
     this.context = context;
     libraryListener = new LibraryModificationListener();
 
     LibraryTablesRegistrar.getInstance()
-        .getLibraryTable(context.getProject()).addListener(libraryListener);
+        .getLibraryTable(context.getProject())
+        .addListener(libraryListener);
   }
 
   @Override
@@ -84,10 +82,10 @@ public class AppEngineStandardFacetEditor extends FacetEditorTab {
       return false;
     }
 
-    Set<AppEngineStandardMavenLibrary> savedLibs
-        = facetConfiguration.getLibraries(context.getProject());
-    Set<AppEngineStandardMavenLibrary> selectedLibs
-        = appEngineStandardLibraryPanel.getSelectedLibraries();
+    Set<AppEngineStandardMavenLibrary> savedLibs =
+        facetConfiguration.getLibraries(context.getProject());
+    Set<AppEngineStandardMavenLibrary> selectedLibs =
+        appEngineStandardLibraryPanel.getSelectedLibraries();
 
     return !Objects.equals(savedLibs, selectedLibs);
   }
@@ -95,10 +93,10 @@ public class AppEngineStandardFacetEditor extends FacetEditorTab {
   @Override
   public void apply() {
     if (appEngineStandardLibraryPanel.isEnabled()) {
-      Set<AppEngineStandardMavenLibrary> savedLibs
-          = facetConfiguration.getLibraries(context.getProject());
-      Set<AppEngineStandardMavenLibrary> selectedLibs
-          = appEngineStandardLibraryPanel.getSelectedLibraries();
+      Set<AppEngineStandardMavenLibrary> savedLibs =
+          facetConfiguration.getLibraries(context.getProject());
+      Set<AppEngineStandardMavenLibrary> selectedLibs =
+          appEngineStandardLibraryPanel.getSelectedLibraries();
 
       Set<AppEngineStandardMavenLibrary> libsToAdd = Sets.difference(selectedLibs, savedLibs);
       Set<AppEngineStandardMavenLibrary> libsToRemove = Sets.difference(savedLibs, selectedLibs);
@@ -118,8 +116,8 @@ public class AppEngineStandardFacetEditor extends FacetEditorTab {
   @Override
   public void reset() {
     if (appEngineStandardLibraryPanel.isEnabled()) {
-      appEngineStandardLibraryPanel
-          .setSelectedLibraries(facetConfiguration.getLibraries(context.getProject()));
+      appEngineStandardLibraryPanel.setSelectedLibraries(
+          facetConfiguration.getLibraries(context.getProject()));
     }
   }
 
@@ -127,7 +125,8 @@ public class AppEngineStandardFacetEditor extends FacetEditorTab {
   public void disposeUIResources() {
     if (libraryListener != null) {
       LibraryTablesRegistrar.getInstance()
-          .getLibraryTable(context.getProject()).removeListener(libraryListener);
+          .getLibraryTable(context.getProject())
+          .removeListener(libraryListener);
     }
   }
 
@@ -166,8 +165,8 @@ public class AppEngineStandardFacetEditor extends FacetEditorTab {
 
     @Override
     public void afterLibraryAdded(final Library addedLibrary) {
-      AppEngineStandardMavenLibrary library = AppEngineStandardMavenLibrary
-          .getLibraryByMavenDisplayName(addedLibrary.getName());
+      AppEngineStandardMavenLibrary library =
+          AppEngineStandardMavenLibrary.getLibraryByMavenDisplayName(addedLibrary.getName());
 
       if (library == null) {
         return;
@@ -192,8 +191,9 @@ public class AppEngineStandardFacetEditor extends FacetEditorTab {
         }
       }.execute();
 
-      Artifact artifact = AppEngineSupportProvider
-          .findOrCreateWebArtifact((AppEngineStandardFacet) context.getFacet());
+      Artifact artifact =
+          AppEngineSupportProvider.findOrCreateWebArtifact(
+              (AppEngineStandardFacet) context.getFacet());
       AppEngineStandardWebIntegration.getInstance()
           .addLibraryToArtifact(addedLibrary, artifact, context.getProject());
 
@@ -204,8 +204,8 @@ public class AppEngineStandardFacetEditor extends FacetEditorTab {
 
     @Override
     public void afterLibraryRemoved(Library removedLibrary) {
-      AppEngineStandardMavenLibrary library = AppEngineStandardMavenLibrary
-          .getLibraryByMavenDisplayName(removedLibrary.getName());
+      AppEngineStandardMavenLibrary library =
+          AppEngineStandardMavenLibrary.getLibraryByMavenDisplayName(removedLibrary.getName());
 
       if (library != null) {
         appEngineStandardLibraryPanel.toggleLibrary(library, false /* select */);

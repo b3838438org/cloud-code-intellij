@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,13 +20,12 @@ import com.google.cloud.tools.intellij.CloudToolsRunConfigurationAction;
 import com.google.cloud.tools.intellij.ui.GoogleCloudToolsIcons;
 import com.google.cloud.tools.intellij.util.GctBundle;
 
-/**
- * Creates a shortcut to the Stackdriver debugger configuration in the tools menu.
- */
+/** Creates a shortcut to the Stackdriver debugger configuration in the tools menu. */
 public class CloudDebuggerToolsMenuAction extends CloudToolsRunConfigurationAction {
 
   public CloudDebuggerToolsMenuAction() {
-    super(CloudDebugConfigType.getInstance(),
+    super(
+        CloudDebugConfigType.getInstance(),
         GctBundle.message("appengine.tools.menu.debug.text"),
         GctBundle.message("appengine.tools.menu.debug.description"),
         GoogleCloudToolsIcons.STACKDRIVER_DEBUGGER);

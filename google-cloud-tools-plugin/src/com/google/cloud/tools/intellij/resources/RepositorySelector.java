@@ -58,16 +58,16 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreeSelectionModel;
 
 /**
- * Defines a repository selector UI widget allowing the user to select a repository associated
- * with a given Google Cloud project.
+ * Defines a repository selector UI widget allowing the user to select a repository associated with
+ * a given Google Cloud project.
  */
 public class RepositorySelector extends CustomizableComboBox implements CustomizableComboBoxPopup {
 
   private static final Logger logger = Logger.getInstance(RepositorySelector.class);
   private static final int SELECTOR_HEIGHT = 140;
   private static final int SELECTOR_WIDTH = 400;
-  private static final String PANETHEON_CREATE_REPO_URL_PREFIX
-      = "https://console.cloud.google.com/code/develop/repo?project=";
+  private static final String PANETHEON_CREATE_REPO_URL_PREFIX =
+      "https://console.cloud.google.com/code/develop/repo?project=";
   private JBPopup popup;
   private JPanel panel;
   private ProjectRepositoriesModelItem repositories;
@@ -75,13 +75,14 @@ public class RepositorySelector extends CustomizableComboBox implements Customiz
   private CredentialedUser user;
   private boolean canCreateRepository;
 
-  public RepositorySelector(@Nullable String cloudProject,
-      @Nullable CredentialedUser user, boolean canCreateRepository) {
+  public RepositorySelector(
+      @Nullable String cloudProject, @Nullable CredentialedUser user, boolean canCreateRepository) {
     this.cloudProject = cloudProject;
     this.user = user;
     this.canCreateRepository = canCreateRepository;
 
-    getTextField().getEmptyText()
+    getTextField()
+        .getEmptyText()
         .setText(GctBundle.message("cloud.repository.selector.placeholder.text"));
   }
 
@@ -134,8 +135,8 @@ public class RepositorySelector extends CustomizableComboBox implements Customiz
       if (popup == null || popup.isDisposed()) {
         panel = new RepositoryPanel();
 
-        ComponentPopupBuilder popupBuilder = JBPopupFactory.getInstance()
-            .createComponentPopupBuilder(panel, null);
+        ComponentPopupBuilder popupBuilder =
+            JBPopupFactory.getInstance().createComponentPopupBuilder(panel, null);
         popup = popupBuilder.createPopup();
       }
       if (!popup.isVisible()) {
@@ -144,8 +145,8 @@ public class RepositorySelector extends CustomizableComboBox implements Customiz
     } else {
       panel = new ProjectNotSelectedPanel();
 
-      ComponentPopupBuilder popupBuilder = JBPopupFactory.getInstance()
-            .createComponentPopupBuilder(panel, null);
+      ComponentPopupBuilder popupBuilder =
+          JBPopupFactory.getInstance().createComponentPopupBuilder(panel, null);
       popup = popupBuilder.createPopup();
       popup.show(showTarget);
     }
@@ -232,15 +233,16 @@ public class RepositorySelector extends CustomizableComboBox implements Customiz
       renderer.setLeafIcon(null);
       repositoryTree.setCellRenderer(renderer);
 
-      repositoryTree.addTreeSelectionListener(event -> {
-        DefaultMutableTreeNode node
-            = (DefaultMutableTreeNode) repositoryTree.getLastSelectedPathComponent();
-        if (node != null && node instanceof RepositoryModelItem) {
-          RepositoryModelItem repoNode = (RepositoryModelItem) node;
-          RepositorySelector.this.setText(repoNode.getRepositoryId());
-          ApplicationManager.getApplication().invokeLater(RepositorySelector.this::hidePopup);
-        }
-      });
+      repositoryTree.addTreeSelectionListener(
+          event -> {
+            DefaultMutableTreeNode node =
+                (DefaultMutableTreeNode) repositoryTree.getLastSelectedPathComponent();
+            if (node != null && node instanceof RepositoryModelItem) {
+              RepositoryModelItem repoNode = (RepositoryModelItem) node;
+              RepositorySelector.this.setText(repoNode.getRepositoryId());
+              ApplicationManager.getApplication().invokeLater(RepositorySelector.this::hidePopup);
+            }
+          });
 
       JBScrollPane scrollPane = new JBScrollPane();
       scrollPane.setPreferredSize(new Dimension(getPopupWidth(), getPreferredPopupHeight()));
@@ -260,23 +262,25 @@ public class RepositorySelector extends CustomizableComboBox implements Customiz
       if (canCreateRepository) {
         JButton newRepositoryButton = new JButton();
         newRepositoryButton.setText(GctBundle.message("cloud.repository.selector.create.button"));
-        newRepositoryButton.addActionListener(event -> {
-          try {
-            Desktop.getDesktop()
-                .browse(URI.create(PANETHEON_CREATE_REPO_URL_PREFIX + cloudProject));
-          } catch (IOException e) {
-            logger.error(GctBundle.message("cloud.repository.selector.create.url.error"));
-          }
-        });
+        newRepositoryButton.addActionListener(
+            event -> {
+              try {
+                Desktop.getDesktop()
+                    .browse(URI.create(PANETHEON_CREATE_REPO_URL_PREFIX + cloudProject));
+              } catch (IOException e) {
+                logger.error(GctBundle.message("cloud.repository.selector.create.url.error"));
+              }
+            });
 
         buttonPanel.add(newRepositoryButton);
       }
 
       JButton refreshButton = new JButton();
       refreshButton.setIcon(GoogleCloudToolsIcons.REFRESH);
-      refreshButton.addActionListener(event -> {
-        refresh();
-      });
+      refreshButton.addActionListener(
+          event -> {
+            refresh();
+          });
 
       buttonPanel.add(Box.createHorizontalGlue());
       buttonPanel.add(refreshButton);
@@ -293,23 +297,28 @@ public class RepositorySelector extends CustomizableComboBox implements Customiz
 
       setLoader();
 
-      loadRepositories(() ->
-          ApplicationManager.getApplication().invokeAndWait(() -> {
-            treeModel.insertNodeInto(repositories, projectRootNode, 0);
-            treeModel.reload();
-            repositoryTree.expandRow(0);
-          }, ModalityState.stateForComponent(RepositorySelector.this))
-      );
+      loadRepositories(
+          () ->
+              ApplicationManager.getApplication()
+                  .invokeAndWait(
+                      () -> {
+                        treeModel.insertNodeInto(repositories, projectRootNode, 0);
+                        treeModel.reload();
+                        repositoryTree.expandRow(0);
+                      },
+                      ModalityState.stateForComponent(RepositorySelector.this)));
     }
 
     private void setLoader() {
-      ApplicationManager.getApplication().invokeAndWait(() -> {
-        repositories.removeAllChildren();
-        repositories.add(new ResourceLoadingModelItem());
-        treeModel.insertNodeInto(repositories, projectRootNode, 0);
-        treeModel.reload();
-        repositoryTree.expandRow(0);
-      });
+      ApplicationManager.getApplication()
+          .invokeAndWait(
+              () -> {
+                repositories.removeAllChildren();
+                repositories.add(new ResourceLoadingModelItem());
+                treeModel.insertNodeInto(repositories, projectRootNode, 0);
+                treeModel.reload();
+                repositoryTree.expandRow(0);
+              });
     }
 
     @VisibleForTesting

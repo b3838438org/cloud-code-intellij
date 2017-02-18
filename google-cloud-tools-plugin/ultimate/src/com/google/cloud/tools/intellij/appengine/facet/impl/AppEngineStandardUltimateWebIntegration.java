@@ -1,11 +1,11 @@
 /*
- * Copyright 2000-2016 JetBrains s.r.o.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -61,13 +61,31 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * @author nik
- */
+/** @author nik */
 public class AppEngineStandardUltimateWebIntegration extends AppEngineStandardWebIntegration {
 
   private static final FrameworkRole JAVA_PROJECT_ROLE = new FrameworkRole("JAVA_MODULE");
   private static final FrameworkRole JAVA_EE_PROJECT_ROLE = JavaeeProjectCategory.ROLE;
+
+  private static ApplicationServer getOrCreateAppServer() {
+    final CloudSdkService sdkService = CloudSdkService.getInstance();
+    if (sdkService == null) {
+      return null;
+    }
+
+    final AppEngineServerIntegration integration = AppEngineServerIntegration.getInstance();
+
+    // There are no distinguishing features about the App Engine servers so just return
+    // the first one found
+    final List<ApplicationServer> servers =
+        ApplicationServersManager.getInstance().getApplicationServers(integration);
+    if (!servers.isEmpty()) {
+      return servers.iterator().next();
+    }
+
+    return ApplicationServersManager.getInstance()
+        .createServer(integration, new JavaeePersistentData());
+  }
 
   @NotNull
   @Override
@@ -82,8 +100,8 @@ public class AppEngineStandardUltimateWebIntegration extends AppEngineStandardWe
   }
 
   @Override
-  public VirtualFile suggestParentDirectoryForAppEngineWebXml(@NotNull Module module,
-      @NotNull ModifiableRootModel rootModel) {
+  public VirtualFile suggestParentDirectoryForAppEngineWebXml(
+      @NotNull Module module, @NotNull ModifiableRootModel rootModel) {
     final WebFacet webFacet = ContainerUtil.getFirstItem(WebFacet.getInstances(module));
     if (webFacet == null) {
       return null;
@@ -106,36 +124,46 @@ public class AppEngineStandardUltimateWebIntegration extends AppEngineStandardWe
   public void setupJpaSupport(@NotNull Module module, @NotNull VirtualFile persistenceXml) {
     JpaFacet facet = FacetManager.getInstance(module).getFacetByType(JpaFacet.ID);
     if (facet == null) {
-      final JpaFacet jpaFacet = FacetManager.getInstance(module).addFacet(
-          JpaFacetType.getInstance(), JpaFacetType.getInstance().getDefaultFacetName(), null);
-      jpaFacet.getDescriptorsContainer().getConfiguration().replaceConfigFile(
-          JavaeePersistenceDescriptorsConstants.PERSISTENCE_XML_META_DATA, persistenceXml.getUrl());
+      final JpaFacet jpaFacet =
+          FacetManager.getInstance(module)
+              .addFacet(
+                  JpaFacetType.getInstance(),
+                  JpaFacetType.getInstance().getDefaultFacetName(),
+                  null);
+      jpaFacet
+          .getDescriptorsContainer()
+          .getConfiguration()
+          .replaceConfigFile(
+              JavaeePersistenceDescriptorsConstants.PERSISTENCE_XML_META_DATA,
+              persistenceXml.getUrl());
     }
   }
 
   @Override
-  public void setupRunConfigurations(Artifact artifact, @NotNull Project project,
-      ModuleRunConfiguration existingConfiguration) {
+  public void setupRunConfigurations(
+      Artifact artifact, @NotNull Project project, ModuleRunConfiguration existingConfiguration) {
     super.setupRunConfigurations(artifact, project, existingConfiguration);
     setupLocalDevRunConfiguration(artifact, project, existingConfiguration);
   }
 
-  private void setupLocalDevRunConfiguration(Artifact artifact, @NotNull Project project,
-      ModuleRunConfiguration existingConfiguration) {
+  private void setupLocalDevRunConfiguration(
+      Artifact artifact, @NotNull Project project, ModuleRunConfiguration existingConfiguration) {
     final ApplicationServer appServer = getOrCreateAppServer();
     if (appServer != null) {
-      AppEngineServerConfigurationType configurationType = AppEngineServerConfigurationType
-          .getInstance();
+      AppEngineServerConfigurationType configurationType =
+          AppEngineServerConfigurationType.getInstance();
 
       CommonModel configuration;
       if (existingConfiguration instanceof CommonModel
           && ((CommonModel) existingConfiguration).getServerModel()
-          instanceof AppEngineServerModel) {
+              instanceof AppEngineServerModel) {
         configuration = (CommonModel) existingConfiguration;
       } else if (RunManager.getInstance(project)
-          .getConfigurationSettingsList(configurationType).isEmpty()) {
-        final RunnerAndConfigurationSettings settings = J2EEConfigurationFactory.getInstance()
-            .addAppServerConfiguration(project, configurationType.getLocalFactory(), appServer);
+          .getConfigurationSettingsList(configurationType)
+          .isEmpty()) {
+        final RunnerAndConfigurationSettings settings =
+            J2EEConfigurationFactory.getInstance()
+                .addAppServerConfiguration(project, configurationType.getLocalFactory(), appServer);
         configuration = (CommonModel) settings.getConfiguration();
       } else {
         configuration = null;
@@ -143,8 +171,8 @@ public class AppEngineStandardUltimateWebIntegration extends AppEngineStandardWe
 
       if (artifact != null && configuration != null) {
         ((AppEngineServerModel) configuration.getServerModel()).setArtifact(artifact);
-        BuildArtifactsBeforeRunTaskProvider
-            .setBuildArtifactBeforeRun(project, configuration, artifact);
+        BuildArtifactsBeforeRunTaskProvider.setBuildArtifactBeforeRun(
+            project, configuration, artifact);
       }
     }
   }
@@ -158,8 +186,8 @@ public class AppEngineStandardUltimateWebIntegration extends AppEngineStandardWe
   }
 
   @Override
-  public void addLibraryToArtifact(@NotNull Library library, @NotNull Artifact artifact,
-      @NotNull Project project) {
+  public void addLibraryToArtifact(
+      @NotNull Library library, @NotNull Artifact artifact, @NotNull Project project) {
     WebArtifactUtil.getInstance().addLibrary(library, artifact, project);
   }
 
@@ -168,29 +196,9 @@ public class AppEngineStandardUltimateWebIntegration extends AppEngineStandardWe
     getOrCreateAppServer();
   }
 
-  private static ApplicationServer getOrCreateAppServer() {
-    final CloudSdkService sdkService = CloudSdkService.getInstance();
-    if (sdkService == null) {
-      return null;
-    }
-
-    final AppEngineServerIntegration integration = AppEngineServerIntegration.getInstance();
-
-    // There are no distinguishing features about the App Engine servers so just return
-    // the first one found
-    final List<ApplicationServer> servers =
-        ApplicationServersManager.getInstance().getApplicationServers(integration);
-    if (!servers.isEmpty()) {
-      return servers.iterator().next();
-    }
-
-    return ApplicationServersManager.getInstance()
-        .createServer(integration, new JavaeePersistentData());
-  }
-
   @Override
-  public void registerFrameworkInModel(FrameworkSupportModel model,
-      AppEngineStandardFacet appEngineStandardFacet) {
+  public void registerFrameworkInModel(
+      FrameworkSupportModel model, AppEngineStandardFacet appEngineStandardFacet) {
     JavaeeFrameworkSupportInfoCollector.getOrCreateCollector(model)
         .setFacet(AppEngineStandardFacet.ID, appEngineStandardFacet);
   }
@@ -210,6 +218,6 @@ public class AppEngineStandardUltimateWebIntegration extends AppEngineStandardWe
   @NotNull
   @Override
   public FrameworkRole[] getFrameworkRoles() {
-    return new FrameworkRole[] { JAVA_PROJECT_ROLE, JAVA_EE_PROJECT_ROLE };
+    return new FrameworkRole[] {JAVA_PROJECT_ROLE, JAVA_EE_PROJECT_ROLE};
   }
 }

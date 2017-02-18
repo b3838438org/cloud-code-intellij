@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,18 +31,14 @@ import java.awt.Image;
 
 import javax.swing.ImageIcon;
 
-/**
- * The Google Login button that appears on the main toolbar.
- */
+/** The Google Login button that appears on the main toolbar. */
 public final class GoogleLoginActionButton extends ActionButton {
-  private static final String SIGN_IN_MESSAGE = AccountMessageBundle.message(
-      "login.toolbar.button.sign.in.text");
+  private static final String SIGN_IN_MESSAGE =
+      AccountMessageBundle.message("login.toolbar.button.sign.in.text");
 
-  /**
-   * Initialize the Google Login button.
-   */
-  public GoogleLoginActionButton(AnAction action, Presentation presentation,
-      String place, @NotNull Dimension minimumSize) {
+  /** Initialize the Google Login button. */
+  public GoogleLoginActionButton(
+      AnAction action, Presentation presentation, String place, @NotNull Dimension minimumSize) {
     super(action, presentation, place, minimumSize);
     Services.getLoginService().setLoginMenuItemContribution(this);
     updateUi();

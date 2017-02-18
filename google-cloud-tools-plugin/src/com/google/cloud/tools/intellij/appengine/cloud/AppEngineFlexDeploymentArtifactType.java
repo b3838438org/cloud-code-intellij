@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,11 +27,13 @@ import java.util.Locale;
  * environment.
  */
 public enum AppEngineFlexDeploymentArtifactType {
-  UNKNOWN, JAR, WAR;
+  UNKNOWN,
+  JAR,
+  WAR;
 
   /**
-   * Returns the right {@code AppEngineFlexDeploymentArtifactType} for the given
-   * {@code deployPackage}.
+   * Returns the right {@code AppEngineFlexDeploymentArtifactType} for the given {@code
+   * deployPackage}.
    */
   @NotNull
   public static AppEngineFlexDeploymentArtifactType typeForPath(@Nullable Path deployPackage) {
@@ -44,7 +46,6 @@ public enum AppEngineFlexDeploymentArtifactType {
     }
     return UNKNOWN;
   }
-
 
   @Override
   public String toString() {

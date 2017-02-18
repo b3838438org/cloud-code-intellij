@@ -1,11 +1,11 @@
 /*
- * Copyright 2000-2016 JetBrains s.r.o.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -34,17 +34,15 @@ import java.io.File;
 
 import javax.swing.JComponent;
 
-/**
- * @author nik
- */
+/** @author nik */
 public class AppEngineServerHelper implements ApplicationServerHelper {
 
   @Override
   public ApplicationServerInfo getApplicationServerInfo(
       ApplicationServerPersistentData persistentData)
       throws CantFindApplicationServerJarsException {
-    return new ApplicationServerInfo(new File[]{},
-        GctBundle.getString("appengine.run.server.name"));
+    return new ApplicationServerInfo(
+        new File[] {}, GctBundle.getString("appengine.run.server.name"));
   }
 
   @Override
@@ -64,8 +62,8 @@ public class AppEngineServerHelper implements ApplicationServerHelper {
 
       @Override
       protected void applyEditorTo(ApplicationServerPersistentData data) {
-        if (CloudSdkService.getInstance().isValidCloudSdk(
-            cloudSdkPanel.getCloudSdkDirectoryText())) {
+        if (CloudSdkService.getInstance()
+            .isValidCloudSdk(cloudSdkPanel.getCloudSdkDirectoryText())) {
           try {
             cloudSdkPanel.apply();
           } catch (ConfigurationException ce) {

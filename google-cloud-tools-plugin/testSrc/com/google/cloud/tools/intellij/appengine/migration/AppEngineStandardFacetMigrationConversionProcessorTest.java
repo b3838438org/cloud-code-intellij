@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,9 +28,7 @@ import org.jdom.Element;
 import java.util.Collection;
 import java.util.Collections;
 
-/**
- * Unit tests for {@link AppEngineStandardFacetMigrationConversionProcessor}
- */
+/** Unit tests for {@link AppEngineStandardFacetMigrationConversionProcessor} */
 public class AppEngineStandardFacetMigrationConversionProcessorTest extends PlatformTestCase {
 
   private ModuleSettings moduleSettingsMock;
@@ -48,9 +46,11 @@ public class AppEngineStandardFacetMigrationConversionProcessorTest extends Plat
   }
 
   public void testIsConversionNeeded_oldFacetsAreNotPresent() {
-    when(moduleSettingsMock.getFacetElements(getOldFacetId())).thenReturn((Collection) Collections.emptyList());
+    when(moduleSettingsMock.getFacetElements(getOldFacetId()))
+        .thenReturn((Collection) Collections.emptyList());
     assertFalse(processor.isConversionNeeded(moduleSettingsMock));
   }
+
   public void testIsConversionNeeded_oldFacetsArePresent() {
     when(moduleSettingsMock.getFacetElements(getOldFacetId())).thenReturn(testFacetElements);
     assertTrue(processor.isConversionNeeded(moduleSettingsMock));
@@ -59,6 +59,4 @@ public class AppEngineStandardFacetMigrationConversionProcessorTest extends Plat
   private String getOldFacetId() {
     return eq(AppEngineStandardFacetMigrationConversionProcessor.DEPRECATED_APP_ENGINE_FACET_ID);
   }
-
 }
-

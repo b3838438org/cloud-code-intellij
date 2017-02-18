@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,27 +19,20 @@ import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.DefaultValue;
 import com.google.api.server.spi.config.Named;
-import com.google.api.server.spi.response.CollectionResponse;
-
-import java.lang.Boolean;
-import java.lang.String;
-import java.util.ArrayList;
-import java.util.List;
-
 
 @Api
 public class MyClass {
   // "GET 1"
-  @ApiMethod(path="", httpMethod = "GET")
-  public Collection<Foo> delete1(@DefaultValue @Named("id") String id){
-    return  null;
+  @ApiMethod(path = "", httpMethod = "GET")
+  public Collection<Foo> delete1(@DefaultValue @Named("id") String id) {
+    return null;
   }
 
   // "GET 1"
-  @ApiMethod(path="", httpMethod = "GET")
-  public Collection<Foo> delete1(@DefaultValue @Named("id") double id){
-    return  null;
+  @ApiMethod(path = "", httpMethod = "GET")
+  public Collection<Foo> delete1(@DefaultValue @Named("id") double id) {
+    return null;
   }
 
-  public class Foo{}
+  public class Foo {}
 }

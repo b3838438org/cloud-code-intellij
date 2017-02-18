@@ -1,6 +1,6 @@
 
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,10 +23,10 @@ import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.services.clouddebugger.v2.Clouddebugger.Debugger;
-import com.google.cloud.tools.intellij.testing.BasePluginTestCase;
 import com.google.cloud.tools.intellij.CloudToolsPluginInfoService;
 import com.google.cloud.tools.intellij.login.CredentialedUser;
 import com.google.cloud.tools.intellij.login.GoogleLoginService;
+import com.google.cloud.tools.intellij.testing.BasePluginTestCase;
 import com.google.gdt.eclipse.login.common.GoogleLoginState;
 
 import org.junit.Assert;
@@ -43,15 +43,15 @@ import java.util.LinkedHashMap;
 @RunWith(MockitoJUnitRunner.class)
 public class CloudDebuggerClientTest extends BasePluginTestCase {
 
-  @Mock
-  CloudToolsPluginInfoService mockInfoService;
+  @Mock CloudToolsPluginInfoService mockInfoService;
 
   @Before
   public void setUp() {
     GoogleLoginService mockLogin = Mockito.mock(GoogleLoginService.class);
     registerService(GoogleLoginService.class, mockLogin);
     registerService(CloudToolsPluginInfoService.class, mockInfoService);
-    LinkedHashMap<String, CredentialedUser> allUsers = new LinkedHashMap<String, CredentialedUser>();
+    LinkedHashMap<String, CredentialedUser> allUsers =
+        new LinkedHashMap<String, CredentialedUser>();
     CredentialedUser user = Mockito.mock(CredentialedUser.class);
     allUsers.put("foo@example.com", user);
     when(mockLogin.getAllUsers()).thenReturn(allUsers);
@@ -87,5 +87,4 @@ public class CloudDebuggerClientTest extends BasePluginTestCase {
   public void testGetShortTimeoutClient_fromNullUserEmail() {
     Assert.assertNull(CloudDebuggerClient.getShortTimeoutClient((String) null));
   }
-
 }

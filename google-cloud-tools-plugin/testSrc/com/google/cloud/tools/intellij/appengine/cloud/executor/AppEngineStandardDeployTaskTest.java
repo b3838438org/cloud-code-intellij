@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,6 @@ import com.google.cloud.tools.intellij.appengine.cloud.AppEngineDeploy;
 import com.google.cloud.tools.intellij.appengine.cloud.AppEngineDeploymentConfiguration;
 import com.google.cloud.tools.intellij.appengine.cloud.AppEngineHelper;
 import com.google.cloud.tools.intellij.appengine.cloud.AppEngineStandardStage;
-import com.google.cloud.tools.intellij.appengine.cloud.executor.AppEngineStandardDeployTask;
 import com.google.cloud.tools.intellij.appengine.sdk.CloudSdkValidationResult;
 
 import com.intellij.remoteServer.runtime.deployment.ServerRuntimeInstance.DeploymentOperationCallback;
@@ -48,38 +47,29 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-/**
- * Unit tests for {@link AppEngineStandardDeployTask}
- */
+/** Unit tests for {@link AppEngineStandardDeployTask} */
 @RunWith(MockitoJUnitRunner.class)
 public class AppEngineStandardDeployTaskTest {
-
-  private AppEngineStandardDeployTask task;
-  @Mock
-  AppEngineDeploy deploy;
-  @Mock
-  AppEngineStandardStage stage;
-  @Mock DeploymentOperationCallback callback;
-  @Mock
-  AppEngineDeploymentConfiguration deploymentConfiguration;
-  @Mock
-  AppEngineHelper helper;
-  @Mock ProcessStartListener startListener;
 
   private static final String DEPLOY_EXCEPTION_MSG =
       "Deployment failed with an exception.\n"
           + "Please make sure that you are using the latest version of the Google Cloud SDK.\n"
           + "Run ''gcloud components update'' to update the SDK. "
           + "(See: https://cloud.google.com/sdk/gcloud/reference/components/update.)";
-
   private static final String STAGE_EXCEPTION_MSG =
       "Deployment failed due to an exception while staging the project.\n"
           + "Please make sure that you are using the latest version of the Google Cloud SDK.\n"
           + "Run ''gcloud components update'' to update the SDK. "
           + "(See: https://cloud.google.com/sdk/gcloud/reference/components/update.)";
-
   private static final String JAVA_COMPONENTS_MISSING_FAIL_MSG =
       CloudSdkValidationResult.NO_APP_ENGINE_COMPONENT.getMessage();
+  @Mock AppEngineDeploy deploy;
+  @Mock AppEngineStandardStage stage;
+  @Mock DeploymentOperationCallback callback;
+  @Mock AppEngineDeploymentConfiguration deploymentConfiguration;
+  @Mock AppEngineHelper helper;
+  @Mock ProcessStartListener startListener;
+  private AppEngineStandardDeployTask task;
 
   @Before
   public void setUp() throws IOException {
@@ -99,7 +89,8 @@ public class AppEngineStandardDeployTaskTest {
     task.execute(startListener);
 
     verify(callback, times(1))
-        .errorOccurred("Failed to prepare credentials. Please make sure you are logged in with the correct account.");
+        .errorOccurred(
+            "Failed to prepare credentials. Please make sure you are logged in with the correct account.");
   }
 
   @Test
@@ -153,7 +144,8 @@ public class AppEngineStandardDeployTaskTest {
   @Test
   public void deploy_exception() {
     doThrow(new RuntimeException())
-        .when(deploy).deploy(any(Path.class), any(ProcessStartListener.class));
+        .when(deploy)
+        .deploy(any(Path.class), any(ProcessStartListener.class));
     try {
       task.deploy(Paths.get("myFile.jar"), startListener).onExit(0);
     } catch (AssertionError ae) {

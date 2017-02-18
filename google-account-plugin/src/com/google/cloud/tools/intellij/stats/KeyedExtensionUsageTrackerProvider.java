@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,20 +33,9 @@ public final class KeyedExtensionUsageTrackerProvider extends UsageTrackerProvid
       new KeyedExtensionCollector<>(UsageTrackerExtensionPointBean.EP_NAME.getName());
 
   /**
-   * When using the usage tracker, do NOT include any information that can identify the user
-   * @return the usage tracker for the current platform.
-   */
-  @NotNull
-  @Override
-  protected UsageTracker getTracker() {
-    String key = PlatformUtils.getPlatformPrefix();
-    return getTracker(key);
-  }
-
-  /**
    * For usage tracking in the Cloud Tools family of plugins, we only want one tracker pinging an
    * analytics backend for a given platform. New platform specific trackers can register with their
-   * platform prefix key and the UsageTrackerProvider will select them.  Otherwise, the no-op usage
+   * platform prefix key and the UsageTrackerProvider will select them. Otherwise, the no-op usage
    * tracker will be used.
    *
    * @param key A string search key associated with an extension
@@ -59,13 +48,26 @@ public final class KeyedExtensionUsageTrackerProvider extends UsageTrackerProvid
     }
 
     return new NoOpUsageTracker();
+  }
 
+  /**
+   * When using the usage tracker, do NOT include any information that can identify the user
+   *
+   * @return the usage tracker for the current platform.
+   */
+  @NotNull
+  @Override
+  protected UsageTracker getTracker() {
+    String key = PlatformUtils.getPlatformPrefix();
+    return getTracker(key);
   }
 
   private static class NoOpUsageTracker implements UsageTracker, SendsEvents {
 
     @Override
-    public void sendEvent(@NotNull String eventCategory, @NotNull String eventAction,
+    public void sendEvent(
+        @NotNull String eventCategory,
+        @NotNull String eventAction,
         @Nullable Map<String, String> metadataMap) {
       // Do nothing
     }

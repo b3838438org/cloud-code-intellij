@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,8 +30,8 @@ import org.jetbrains.annotations.NotNull;
  * A {@link DeploymentSourceType} that supports serialization for a {@link
  * UserSpecifiedPathDeploymentSource}.
  */
-public class UserSpecifiedPathDeploymentSourceType extends
-    DeploymentSourceType<ModuleDeploymentSource> {
+public class UserSpecifiedPathDeploymentSourceType
+    extends DeploymentSourceType<ModuleDeploymentSource> {
 
   private static final String SOURCE_TYPE_ID = "filesystem-war-jar-module";
   private static final String PROJECT_ATTRIBUTE = "project";
@@ -49,16 +49,18 @@ public class UserSpecifiedPathDeploymentSourceType extends
   @Override
   public ModuleDeploymentSource load(@NotNull Element tag, @NotNull Project project) {
     UserSpecifiedPathDeploymentSource userSpecifiedSource =
-        new UserSpecifiedPathDeploymentSource(ModulePointerManager
-            .getInstance(project).create(UserSpecifiedPathDeploymentSource.moduleName));
+        new UserSpecifiedPathDeploymentSource(
+            ModulePointerManager.getInstance(project)
+                .create(UserSpecifiedPathDeploymentSource.moduleName));
 
     userSpecifiedSource.setProjectName(tag.getAttributeValue(PROJECT_ATTRIBUTE));
     userSpecifiedSource.setVersion(tag.getAttributeValue(VERSION_ATTRIBUTE));
 
     Element settings = tag.getChild(DeployToServerRunConfiguration.SETTINGS_ELEMENT);
     if (settings != null) {
-      String filePath = settings.getAttributeValue(
-          AppEngineDeploymentConfiguration.USER_SPECIFIED_ARTIFACT_PATH_ATTRIBUTE);
+      String filePath =
+          settings.getAttributeValue(
+              AppEngineDeploymentConfiguration.USER_SPECIFIED_ARTIFACT_PATH_ATTRIBUTE);
 
       if (!StringUtil.isEmpty(filePath)) {
         userSpecifiedSource.setFilePath(filePath);
@@ -76,8 +78,8 @@ public class UserSpecifiedPathDeploymentSourceType extends
       AppEngineDeployable deployable = (AppEngineDeployable) deploymentSource;
 
       if (deployable.getProjectName() != null) {
-        tag.setAttribute(PROJECT_ATTRIBUTE,
-            ((AppEngineDeployable) deploymentSource).getProjectName());
+        tag.setAttribute(
+            PROJECT_ATTRIBUTE, ((AppEngineDeployable) deploymentSource).getProjectName());
       }
 
       if (deployable.getVersion() != null) {

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,18 +25,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-/**
- * Stages an application in preparation for deployment to the App Engine flexible environment.
- */
+/** Stages an application in preparation for deployment to the App Engine flexible environment. */
 public class AppEngineFlexibleStage {
   private CloudSdkAppEngineHelper helper;
   private LoggingHandler loggingHandler;
   private Path deploymentArtifactPath;
   private AppEngineDeploymentConfiguration deploymentConfiguration;
 
-  /**
-   * Initialize the staging dependencies.
-   */
+  /** Initialize the staging dependencies. */
   public AppEngineFlexibleStage(
       @NotNull CloudSdkAppEngineHelper helper,
       @NotNull LoggingHandler loggingHandler,
@@ -49,24 +45,27 @@ public class AppEngineFlexibleStage {
   }
 
   /**
-   * Given a local staging directory, stage the application in preparation for deployment to the
-   * App Engine flexible environment.
+   * Given a local staging directory, stage the application in preparation for deployment to the App
+   * Engine flexible environment.
    */
   public void stage(@NotNull Path stagingDirectory) {
     try {
-      Path stagedArtifactPath = stagingDirectory.resolve(
-          "target" + AppEngineFlexDeploymentArtifactType.typeForPath(deploymentArtifactPath));
+      Path stagedArtifactPath =
+          stagingDirectory.resolve(
+              "target" + AppEngineFlexDeploymentArtifactType.typeForPath(deploymentArtifactPath));
       Files.copy(deploymentArtifactPath, stagedArtifactPath);
 
-      Path appYamlPath = deploymentConfiguration.isAuto()
-          ? helper.defaultAppYaml()
-          : Paths.get(deploymentConfiguration.getAppYamlPath());
+      Path appYamlPath =
+          deploymentConfiguration.isAuto()
+              ? helper.defaultAppYaml()
+              : Paths.get(deploymentConfiguration.getAppYamlPath());
       Files.copy(appYamlPath, stagingDirectory.resolve("app.yaml"));
 
-      Path dockerFilePath = deploymentConfiguration.isAuto()
-          ? helper.defaultDockerfile(
-          AppEngineFlexDeploymentArtifactType.typeForPath(deploymentArtifactPath))
-          : Paths.get(deploymentConfiguration.getDockerFilePath());
+      Path dockerFilePath =
+          deploymentConfiguration.isAuto()
+              ? helper.defaultDockerfile(
+                  AppEngineFlexDeploymentArtifactType.typeForPath(deploymentArtifactPath))
+              : Paths.get(deploymentConfiguration.getDockerFilePath());
       Files.copy(dockerFilePath, stagingDirectory.resolve("Dockerfile"));
     } catch (IOException ex) {
       loggingHandler.print(ex.getMessage() + "\n");

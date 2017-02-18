@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,10 +40,8 @@ import com.intellij.testFramework.fixtures.TempDirTestFixture;
 import com.intellij.testFramework.fixtures.TestFixtureBuilder;
 import com.intellij.util.CommonProcessors;
 
-import junit.framework.Assert;
-
-import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
+import org.junit.Assert;
 import org.picocontainer.MutablePicoContainer;
 
 import java.io.File;
@@ -51,18 +49,35 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Paths;
 
-/**
- * @author nik
- */
+/** @author nik */
 public abstract class AppEngineCodeInsightTestCase extends UsefulTestCase {
+  protected CodeInsightTestFixture myCodeInsightFixture;
   private JavaModuleFixtureBuilder myModuleBuilder;
   private IdeaProjectTestFixture myProjectFixture;
-  protected CodeInsightTestFixture myCodeInsightFixture;
+
+  public static File getWebSchemeFile() {
+    return new File(getTestDataPath(), "sdk/docs/appengine-web.xsd");
+  }
+
+  public static String getSdkPath() {
+    return FileUtil.toSystemIndependentName(new File(getTestDataPath(), "sdk").getAbsolutePath());
+  }
+
+  public static File getTestDataPath() {
+    try {
+      URL resource = AppEngineCodeInsightTestCase.class.getResource("/sdk");
+      File testDataRoot = Paths.get(resource.toURI()).toFile().getParentFile();
+      return testDataRoot;
+    } catch (URISyntaxException e) {
+      throw new RuntimeException(e);
+    }
+  }
 
   @Override
   protected void setUp() throws Exception {
     super.setUp();
-    final TestFixtureBuilder<IdeaProjectTestFixture> fixtureBuilder = JavaTestFixtureFactory.createFixtureBuilder(getName());
+    final TestFixtureBuilder<IdeaProjectTestFixture> fixtureBuilder =
+        JavaTestFixtureFactory.createFixtureBuilder(getName());
     myModuleBuilder = fixtureBuilder.addModule(JavaModuleFixtureBuilder.class);
     myProjectFixture = fixtureBuilder.getFixture();
     myCodeInsightFixture = createCodeInsightFixture(getBaseDirectoryPath());
@@ -80,22 +95,13 @@ public abstract class AppEngineCodeInsightTestCase extends UsefulTestCase {
     CloudSdkService sdkService = mock(CloudSdkService.class);
     when(sdkService.getWebSchemeFile()).thenReturn(getWebSchemeFile());
 
-    MutablePicoContainer applicationContainer = (MutablePicoContainer)
-        ApplicationManager.getApplication().getPicoContainer();
+    MutablePicoContainer applicationContainer =
+        (MutablePicoContainer) ApplicationManager.getApplication().getPicoContainer();
     applicationContainer.unregisterComponent(CloudSdkService.class.getName());
-    applicationContainer.registerComponentInstance(
-        CloudSdkService.class.getName(), sdkService);
+    applicationContainer.registerComponentInstance(CloudSdkService.class.getName(), sdkService);
 
-    FacetManager
-        .getInstance(module).addFacet(AppEngineStandardFacet.getFacetType(), "AppEngine", null);
-  }
-
-  public static File getWebSchemeFile() {
-    return new File(getTestDataPath(), "sdk/docs/appengine-web.xsd");
-  }
-
-  public static String getSdkPath() {
-    return FileUtil.toSystemIndependentName(new File(getTestDataPath(), "sdk").getAbsolutePath());
+    FacetManager.getInstance(module)
+        .addFacet(AppEngineStandardFacet.getFacetType(), "AppEngine", null);
   }
 
   @Override
@@ -104,9 +110,11 @@ public abstract class AppEngineCodeInsightTestCase extends UsefulTestCase {
     super.tearDown();
   }
 
-  protected CodeInsightTestFixture createCodeInsightFixture(final String relativeTestDataPath) throws Exception {
+  protected CodeInsightTestFixture createCodeInsightFixture(final String relativeTestDataPath)
+      throws Exception {
     final String testDataPath = new File(getTestDataPath(), relativeTestDataPath).getAbsolutePath();
-    final CodeInsightTestFixture codeInsightFixture = JavaTestFixtureFactory.getFixtureFactory().createCodeInsightFixture(myProjectFixture);
+    final CodeInsightTestFixture codeInsightFixture =
+        JavaTestFixtureFactory.getFixtureFactory().createCodeInsightFixture(myProjectFixture);
     codeInsightFixture.setTestDataPath(testDataPath);
     final TempDirTestFixture tempDir = codeInsightFixture.getTempDirFixture();
     myModuleBuilder.addSourceContentRoot(tempDir.getTempDirPath());
@@ -115,22 +123,15 @@ public abstract class AppEngineCodeInsightTestCase extends UsefulTestCase {
     Assert.assertNotNull("Test data directory not found: " + testDataPath, dir);
     VfsUtil.processFilesRecursively(dir, new CommonProcessors.CollectProcessor<VirtualFile>());
     dir.refresh(false, true);
-    tempDir.copyAll(testDataPath, "", new VirtualFileFilter() {
-      @Override
-      public boolean accept(VirtualFile file) {
-        return !file.getName().contains("_after");
-      }
-    });
+    tempDir.copyAll(
+        testDataPath,
+        "",
+        new VirtualFileFilter() {
+          @Override
+          public boolean accept(VirtualFile file) {
+            return !file.getName().contains("_after");
+          }
+        });
     return codeInsightFixture;
-  }
-
-  public static File getTestDataPath() {
-    try {
-      URL resource = AppEngineCodeInsightTestCase.class.getResource("/sdk");
-      File testDataRoot = Paths.get(resource.toURI()).toFile().getParentFile();
-      return testDataRoot;
-    } catch (URISyntaxException e) {
-      throw new RuntimeException(e);
-    }
   }
 }

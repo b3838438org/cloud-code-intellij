@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,9 +24,7 @@ import org.junit.Test;
 
 import javax.swing.JCheckBox;
 
-/**
- * Tests for {@link AppEngineStandardLibraryPanel}.
- */
+/** Tests for {@link AppEngineStandardLibraryPanel}. */
 public class AppEngineStandardLibraryPanelTest {
 
   private AppEngineStandardLibraryPanel panel;
@@ -47,11 +45,10 @@ public class AppEngineStandardLibraryPanelTest {
     }
   }
 
-
   @Test
   public void testObjectifySelection_selectsAppEngineApi() {
-    JCheckBox appEngineApiCheckbox
-        = panel.getLibraryCheckbox(AppEngineStandardMavenLibrary.APP_ENGINE_API.getDisplayName());
+    JCheckBox appEngineApiCheckbox =
+        panel.getLibraryCheckbox(AppEngineStandardMavenLibrary.APP_ENGINE_API.getDisplayName());
 
     // App Engine API checkbox is initially unchecked
     assertFalse(appEngineApiCheckbox.isSelected());
@@ -65,8 +62,8 @@ public class AppEngineStandardLibraryPanelTest {
 
   @Test
   public void testEndpointsSelection_selectsAppEngineApi() {
-    JCheckBox appEngineApiCheckbox
-        = panel.getLibraryCheckbox(AppEngineStandardMavenLibrary.APP_ENGINE_API.getDisplayName());
+    JCheckBox appEngineApiCheckbox =
+        panel.getLibraryCheckbox(AppEngineStandardMavenLibrary.APP_ENGINE_API.getDisplayName());
 
     // App Engine API checkbox is initially unchecked
     assertFalse(appEngineApiCheckbox.isSelected());
@@ -81,16 +78,16 @@ public class AppEngineStandardLibraryPanelTest {
   @Test
   public void testUnselectAppEngineApi_unselectsDependencies() {
     // Select both Objectify and Endpoints
-    JCheckBox objectifyCheckbox
-        = panel.getLibraryCheckbox(AppEngineStandardMavenLibrary.OBJECTIFY.getDisplayName());
-    JCheckBox endpointsCheckbox
-        = panel.getLibraryCheckbox(AppEngineStandardMavenLibrary.ENDPOINTS.getDisplayName());
+    JCheckBox objectifyCheckbox =
+        panel.getLibraryCheckbox(AppEngineStandardMavenLibrary.OBJECTIFY.getDisplayName());
+    JCheckBox endpointsCheckbox =
+        panel.getLibraryCheckbox(AppEngineStandardMavenLibrary.ENDPOINTS.getDisplayName());
     objectifyCheckbox.setSelected(true);
     endpointsCheckbox.setSelected(true);
 
     // Uncheck the App Engine API
-    JCheckBox appEngineApiCheckbox
-        = panel.getLibraryCheckbox(AppEngineStandardMavenLibrary.APP_ENGINE_API.getDisplayName());
+    JCheckBox appEngineApiCheckbox =
+        panel.getLibraryCheckbox(AppEngineStandardMavenLibrary.APP_ENGINE_API.getDisplayName());
     appEngineApiCheckbox.setSelected(false);
 
     assertFalse(objectifyCheckbox.isSelected());

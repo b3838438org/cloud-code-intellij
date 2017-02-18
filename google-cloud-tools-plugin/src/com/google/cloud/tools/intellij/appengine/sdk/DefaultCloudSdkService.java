@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,22 +54,18 @@ import java.util.Set;
 /**
  * Default implementation of {@link CloudSdkService} backed by {@link PropertiesComponent} for
  * serialization.
- *
  */
 // TODO (eshaul) Offload path logic for retrieving AE libs to the common library once implemented
 public class DefaultCloudSdkService extends CloudSdkService {
 
-  private static final Logger logger = Logger.getInstance(DefaultCloudSdkService.class);
-
-  private PropertiesComponent propertiesComponent = PropertiesComponent.getInstance();
-  private static final String CLOUD_SDK_PROPERTY_KEY = "GCT_CLOUD_SDK_HOME_PATH";
-  private static final Path JAVA_TOOLS_RELATIVE_PATH
-      = Paths.get("platform", "google_appengine", "google", "appengine", "tools", "java");
-
   // Kept around for AppEngineGwtServer
-  public static final Path LIB_APPENGINE_TOOLS_API_JAR
-      = Paths.get("lib", "appengine-tools-api.jar");
-
+  public static final Path LIB_APPENGINE_TOOLS_API_JAR =
+      Paths.get("lib", "appengine-tools-api.jar");
+  private static final Logger logger = Logger.getInstance(DefaultCloudSdkService.class);
+  private static final String CLOUD_SDK_PROPERTY_KEY = "GCT_CLOUD_SDK_HOME_PATH";
+  private static final Path JAVA_TOOLS_RELATIVE_PATH =
+      Paths.get("platform", "google_appengine", "google", "appengine", "tools", "java");
+  private PropertiesComponent propertiesComponent = PropertiesComponent.getInstance();
   private Map<String, Set<String>> myMethodsBlackList;
 
   @Nullable
@@ -191,13 +187,15 @@ public class DefaultCloudSdkService extends CloudSdkService {
   @Override
   public void patchJavaParametersForDevServer(@NotNull ParametersList vmParameters) {
     if (getJavaToolsBasePath() != null) {
-      File agentPath = getJavaToolsBasePath().resolve(
-          Paths.get("lib", "agent", "appengine-agent.jar")).toFile();
+      File agentPath =
+          getJavaToolsBasePath().resolve(Paths.get("lib", "agent", "appengine-agent.jar")).toFile();
       if (agentPath.exists()) {
         vmParameters.add("-javaagent:" + agentPath.getAbsolutePath());
       }
-      File patchPath = getJavaToolsBasePath().resolve(
-          Paths.get("lib", "override", "appengine-dev-jdk-overrides.jar")).toFile();
+      File patchPath =
+          getJavaToolsBasePath()
+              .resolve(Paths.get("lib", "override", "appengine-dev-jdk-overrides.jar"))
+              .toFile();
       if (patchPath.exists()) {
         vmParameters.add("-Xbootclasspath/p:" + patchPath.getAbsolutePath());
       }
@@ -208,8 +206,8 @@ public class DefaultCloudSdkService extends CloudSdkService {
     final InputStream stream = getClass().getResourceAsStream("/data/methodsBlacklist.txt");
     logger.assertTrue(stream != null, "/data/methodsBlacklist.txt not found");
     final THashMap<String, Set<String>> map = new THashMap<>();
-    BufferedReader reader
-        = new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8));
+    BufferedReader reader =
+        new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8));
     try {
       String line;
       while ((line = reader.readLine()) != null) {
@@ -240,6 +238,5 @@ public class DefaultCloudSdkService extends CloudSdkService {
   @VisibleForTesting
   CloudSdk buildCloudSdkWithPath(@NotNull Path path) {
     return new CloudSdk.Builder().sdkPath(path).build();
-
   }
 }

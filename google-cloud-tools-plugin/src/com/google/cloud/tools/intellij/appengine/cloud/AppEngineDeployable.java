@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,20 +19,15 @@ package com.google.cloud.tools.intellij.appengine.cloud;
 import com.intellij.remoteServer.configuration.deployment.DeploymentSource;
 
 /**
- * An {@link DeploymentSource} that is deployable to Google App engine that specifies its target
- * App Engine environment.
+ * An {@link DeploymentSource} that is deployable to Google App engine that specifies its target App
+ * Engine environment.
  */
 public interface AppEngineDeployable extends DeploymentSource {
 
-  /**
-   * Returns the targeted App Engine environment.
-   */
+  /** Returns the targeted App Engine environment. */
   AppEngineEnvironment getEnvironment();
 
-
-  /**
-   * Returns the targeted cloud project name.
-   */
+  /** Returns the targeted cloud project name. */
   String getProjectName();
 
   /**
@@ -41,14 +36,12 @@ public interface AppEngineDeployable extends DeploymentSource {
    */
   void setProjectName(String projectName);
 
-  /**
-   * Returns the targeted cloud project version.
-   */
+  /** Returns the targeted cloud project version. */
   String getVersion();
 
   /**
-   * Sets the targeted cloud project version. It is mutable because the cloud project version is
-   * not known until deploy time where it is then set.
+   * Sets the targeted cloud project version. It is mutable because the cloud project version is not
+   * known until deploy time where it is then set.
    */
   void setVersion(String version);
 }

@@ -1,11 +1,11 @@
 /*
- * Copyright 2000-2016 JetBrains s.r.o.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -21,8 +21,8 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.google.cloud.tools.intellij.appengine.facet.AppEngineStandardFacet;
 import com.google.cloud.tools.intellij.appengine.facet.AppEngineFrameworkType;
+import com.google.cloud.tools.intellij.appengine.facet.AppEngineStandardFacet;
 import com.google.cloud.tools.intellij.appengine.facet.AppEngineStandardLibraryPanel;
 import com.google.cloud.tools.intellij.appengine.facet.AppEngineSupportProvider;
 import com.google.cloud.tools.intellij.appengine.facet.AppEngineSupportProvider.AppEngineSupportConfigurable;
@@ -58,9 +58,7 @@ import org.picocontainer.MutablePicoContainer;
 import java.io.File;
 import java.util.List;
 
-/**
- * @author nik
- */
+/** @author nik */
 public class AppEngineSupportProviderTest extends JavaeeFrameworkSupportProviderTestCase {
   public void testAppEngine_noManagedLibrariesSelected() {
     setupAppEngine(new AppEngineStandardLibraryPanel(false /*enabled*/), null /*library*/);
@@ -68,16 +66,17 @@ public class AppEngineSupportProviderTest extends JavaeeFrameworkSupportProvider
 
     assertNull(FacetManager.getInstance(myModule).getFacetByType(WebFacet.ID));
     final String moduleName = myModule.getName();
-    ArtifactsTestUtil.assertLayout(myProject, moduleName, "<root>\n" +
-                                                          " WEB-INF/\n" +
-                                                          "  classes/\n" +
-                                                          "   module:" + moduleName + "\n");
+    ArtifactsTestUtil.assertLayout(
+        myProject,
+        moduleName,
+        "<root>\n" + " WEB-INF/\n" + "  classes/\n" + "   module:" + moduleName + "\n");
   }
 
   public void testAppEngineWithWeb_noManagedLibrariesSelected() {
     setupAppEngine(new AppEngineStandardLibraryPanel(false /*enabled*/), null /*library*/);
     selectFramework(WebFacet.ID);
-    selectVersion(WebFrameworkType.getInstance(), new WebFrameworkVersion(WebAppVersion.WebAppVersion_2_5));
+    selectVersion(
+        WebFrameworkType.getInstance(), new WebFrameworkVersion(WebAppVersion.WebAppVersion_2_5));
     addSupport();
 
     getFacet(AppEngineStandardFacet.ID);
@@ -86,16 +85,23 @@ public class AppEngineSupportProviderTest extends JavaeeFrameworkSupportProvider
 
     final String moduleName = myModule.getName();
     Artifact artifact = ArtifactsTestUtil.findArtifact(myProject, moduleName + ":war exploded");
-    ArtifactsTestUtil.assertLayout(artifact.getRootElement(), "<root>\n" +
-                                                              " javaee-resources:Web(" + moduleName + ")\n" +
-                                                              " WEB-INF/\n" +
-                                                              "  classes/\n" +
-                                                              "   module:" + moduleName + "\n");
+    ArtifactsTestUtil.assertLayout(
+        artifact.getRootElement(),
+        "<root>\n"
+            + " javaee-resources:Web("
+            + moduleName
+            + ")\n"
+            + " WEB-INF/\n"
+            + "  classes/\n"
+            + "   module:"
+            + moduleName
+            + "\n");
     assertRunConfigurationCreated(artifact);
   }
 
   public void testAppEngine_defaultManagedLibrariesSelected() {
-    AppEngineStandardLibraryPanel libraryPanel = new AppEngineStandardLibraryPanel(true /*enabled*/);
+    AppEngineStandardLibraryPanel libraryPanel =
+        new AppEngineStandardLibraryPanel(true /*enabled*/);
 
     LibraryEx library = mock(LibraryEx.class);
     when(library.getTable()).thenReturn(ProjectLibraryTable.getInstance(myModule.getProject()));
@@ -107,27 +113,36 @@ public class AppEngineSupportProviderTest extends JavaeeFrameworkSupportProvider
 
     assertNull(FacetManager.getInstance(myModule).getFacetByType(WebFacet.ID));
     final String moduleName = myModule.getName();
-    ArtifactsTestUtil.assertLayout(myProject, moduleName, "<root>\n" +
-                                                          " WEB-INF/\n" +
-                                                          "  classes/\n" +
-                                                          "   module:" + moduleName + "\n" +
-                                                          "  lib/\n" +
-                                                          "   lib:javax.servlet:servlet-api:2.5(project)\n");
+    ArtifactsTestUtil.assertLayout(
+        myProject,
+        moduleName,
+        "<root>\n"
+            + " WEB-INF/\n"
+            + "  classes/\n"
+            + "   module:"
+            + moduleName
+            + "\n"
+            + "  lib/\n"
+            + "   lib:javax.servlet:servlet-api:2.5(project)\n");
   }
 
   private void setupAppEngine(AppEngineStandardLibraryPanel libraryPanel, Library library) {
     CloudSdkService sdkService = mock(CloudSdkService.class);
-    when(sdkService.getLibraries()).thenReturn(new File[]{});
+    when(sdkService.getLibraries()).thenReturn(new File[] {});
 
-    MavenRepositoryLibraryDownloader libraryDownloader = mock(MavenRepositoryLibraryDownloader.class);
-    when(libraryDownloader.downloadLibrary(any(Module.class), any(RepositoryLibraryDescription.class),
-        any(RepositoryLibraryProperties.class), anyString())).thenReturn(library);
+    MavenRepositoryLibraryDownloader libraryDownloader =
+        mock(MavenRepositoryLibraryDownloader.class);
+    when(libraryDownloader.downloadLibrary(
+            any(Module.class),
+            any(RepositoryLibraryDescription.class),
+            any(RepositoryLibraryProperties.class),
+            anyString()))
+        .thenReturn(library);
 
-    MutablePicoContainer applicationContainer = (MutablePicoContainer)
-        ApplicationManager.getApplication().getPicoContainer();
+    MutablePicoContainer applicationContainer =
+        (MutablePicoContainer) ApplicationManager.getApplication().getPicoContainer();
     applicationContainer.unregisterComponent(CloudSdkService.class.getName());
-    applicationContainer.registerComponentInstance(
-        CloudSdkService.class.getName(), sdkService);
+    applicationContainer.registerComponentInstance(CloudSdkService.class.getName(), sdkService);
     applicationContainer.unregisterComponent(MavenRepositoryLibraryDownloader.class.getName());
     applicationContainer.registerComponentInstance(
         MavenRepositoryLibraryDownloader.class.getName(), libraryDownloader);
@@ -147,7 +162,9 @@ public class AppEngineSupportProviderTest extends JavaeeFrameworkSupportProvider
   }
 
   private void assertRunConfigurationCreated(Artifact artifactToDeploy) {
-    List<RunConfiguration> list = RunManager.getInstance(myProject).getConfigurationsList(AppEngineServerConfigurationType.getInstance());
+    List<RunConfiguration> list =
+        RunManager.getInstance(myProject)
+            .getConfigurationsList(AppEngineServerConfigurationType.getInstance());
     CommonModel configuration = assertInstanceOf(assertOneElement(list), CommonModel.class);
     assertSameElements(configuration.getDeployedArtifacts(), artifactToDeploy);
   }

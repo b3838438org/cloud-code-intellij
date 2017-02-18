@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,9 +53,7 @@ import java.util.Set;
 import javax.swing.JComboBox;
 import javax.swing.JList;
 
-/**
- * App Engine utility methods.
- */
+/** App Engine utility methods. */
 public class AppEngineUtil {
 
   public static final String APP_ENGINE_WEB_XML_NAME = "appengine-web.xml";
@@ -82,10 +80,10 @@ public class AppEngineUtil {
     AppEngineAssetProvider assetProvider = AppEngineAssetProvider.getInstance();
 
     for (Module module : ModuleManager.getInstance(project).getModules()) {
-      XmlFile appEngineWebXml
-          = assetProvider.loadAppEngineStandardWebXml(project, Collections.singletonList(module));
-      final AppEngineEnvironment environment
-          = projectService.getModuleAppEngineEnvironment(appEngineWebXml);
+      XmlFile appEngineWebXml =
+          assetProvider.loadAppEngineStandardWebXml(project, Collections.singletonList(module));
+      final AppEngineEnvironment environment =
+          projectService.getModuleAppEngineEnvironment(appEngineWebXml);
 
       boolean isFlexCompat = projectService.isFlexCompat(appEngineWebXml);
       boolean isStandardModule = environment.isStandard() || isFlexCompat;
@@ -93,8 +91,9 @@ public class AppEngineUtil {
       Collection<Artifact> artifacts = ArtifactUtil.getArtifactsContainingModuleOutput(module);
       for (Artifact artifact : artifacts) {
         if ((isStandardModule && projectService.isAppEngineStandardArtifactType(artifact))
-            || (!isFlexCompat && environment.isFlexible()
-                  && projectService.isAppEngineFlexArtifactType(artifact))) {
+            || (!isFlexCompat
+                && environment.isFlexible()
+                && projectService.isAppEngineFlexArtifactType(artifact))) {
           sources.add(createArtifactDeploymentSource(project, artifact, environment));
         }
       }
@@ -124,11 +123,11 @@ public class AppEngineUtil {
     boolean hasStandardModules = false;
 
     for (Module module : ModuleManager.getInstance(project).getModules()) {
-      XmlFile appEngineWebXml = assetProvider.loadAppEngineStandardWebXml(
-          project, Collections.singletonList(module));
+      XmlFile appEngineWebXml =
+          assetProvider.loadAppEngineStandardWebXml(project, Collections.singletonList(module));
 
-      AppEngineEnvironment environment
-          = projectService.getModuleAppEngineEnvironment(appEngineWebXml);
+      AppEngineEnvironment environment =
+          projectService.getModuleAppEngineEnvironment(appEngineWebXml);
 
       if (ModuleType.is(module, JavaModuleType.getModuleType())
           && projectService.isJarOrWarMavenBuild(module)) {
@@ -147,18 +146,21 @@ public class AppEngineUtil {
     return moduleDeploymentSources;
   }
 
-  public static void setupAppEngineArtifactCombobox(@NotNull Project project,
-      final @NotNull JComboBox comboBox, final boolean withAppEngineFacetOnly) {
-    comboBox.setRenderer(new ListCellRendererWrapper<Artifact>() {
-      @Override
-      public void customize(JList list, Artifact value, int index, boolean selected,
-          boolean hasFocus) {
-        if (value != null) {
-          setIcon(value.getArtifactType().getIcon());
-          setText(value.getName());
-        }
-      }
-    });
+  public static void setupAppEngineArtifactCombobox(
+      @NotNull Project project,
+      final @NotNull JComboBox comboBox,
+      final boolean withAppEngineFacetOnly) {
+    comboBox.setRenderer(
+        new ListCellRendererWrapper<Artifact>() {
+          @Override
+          public void customize(
+              JList list, Artifact value, int index, boolean selected, boolean hasFocus) {
+            if (value != null) {
+              setIcon(value.getArtifactType().getIcon());
+              setText(value.getName());
+            }
+          }
+        });
 
     comboBox.removeAllItems();
     for (Artifact artifact : collectAppEngineArtifacts(project, withAppEngineFacetOnly)) {
@@ -167,15 +169,15 @@ public class AppEngineUtil {
   }
 
   @Nullable
-  public static AppEngineStandardFacet findAppEngineFacet(@NotNull Project project,
-      @NotNull Artifact artifact) {
+  public static AppEngineStandardFacet findAppEngineFacet(
+      @NotNull Project project, @NotNull Artifact artifact) {
     // TODO(joaomartins): Find out why the GAE facet isn't being added to Gradle projects.
     // https://github.com/GoogleCloudPlatform/gcloud-intellij/issues/835
-    final Set<Module> modules = ArtifactUtil
-        .getModulesIncludedInArtifacts(Collections.singletonList(artifact), project);
+    final Set<Module> modules =
+        ArtifactUtil.getModulesIncludedInArtifacts(Collections.singletonList(artifact), project);
     for (Module module : modules) {
-      final AppEngineStandardFacet appEngineStandardFacet
-          = AppEngineStandardFacet.getAppEngineFacetByModule(module);
+      final AppEngineStandardFacet appEngineStandardFacet =
+          AppEngineStandardFacet.getAppEngineFacetByModule(module);
       if (appEngineStandardFacet != null) {
         return appEngineStandardFacet;
       }
@@ -213,30 +215,30 @@ public class AppEngineUtil {
   }
 
   private static MavenBuildDeploymentSource createMavenBuildDeploymentSource(
-      @NotNull Project project,
-      @NotNull Module module,
-      @NotNull AppEngineEnvironment environment) {
+      @NotNull Project project, @NotNull Module module, @NotNull AppEngineEnvironment environment) {
     return new MavenBuildDeploymentSource(
         ModulePointerManager.getInstance(project).create(module), project, environment);
   }
 
   private static UserSpecifiedPathDeploymentSource createUserSpecifiedPathDeploymentSource(
       @NotNull Project project) {
-    ModulePointer modulePointer = ModulePointerManager.getInstance(project)
-        .create(UserSpecifiedPathDeploymentSource.moduleName);
+    ModulePointer modulePointer =
+        ModulePointerManager.getInstance(project)
+            .create(UserSpecifiedPathDeploymentSource.moduleName);
 
     return new UserSpecifiedPathDeploymentSource(modulePointer);
   }
 
-  private static List<Artifact> collectAppEngineArtifacts(@NotNull Project project,
-      final boolean withAppEngineFacetOnly) {
+  private static List<Artifact> collectAppEngineArtifacts(
+      @NotNull Project project, final boolean withAppEngineFacetOnly) {
     final List<Artifact> artifacts = new ArrayList<Artifact>();
     if (project.isDefault()) {
       return artifacts;
     }
     for (Artifact artifact : ArtifactManager.getInstance(project).getArtifacts()) {
-      if (AppEngineStandardWebIntegration.getInstance().getAppEngineTargetArtifactTypes()
-          .contains(artifact.getArtifactType())
+      if (AppEngineStandardWebIntegration.getInstance()
+              .getAppEngineTargetArtifactTypes()
+              .contains(artifact.getArtifactType())
           && (!withAppEngineFacetOnly || findAppEngineFacet(project, artifact) != null)) {
         artifacts.add(artifact);
       }

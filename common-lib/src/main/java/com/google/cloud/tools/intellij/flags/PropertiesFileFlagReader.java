@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,11 +17,14 @@
 package com.google.cloud.tools.intellij.flags;
 
 import com.google.common.annotations.VisibleForTesting;
+
 import com.intellij.openapi.diagnostic.Logger;
+
+import org.jetbrains.annotations.Nullable;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Use an instance of this class to read flags provided to your plugin through a {@code

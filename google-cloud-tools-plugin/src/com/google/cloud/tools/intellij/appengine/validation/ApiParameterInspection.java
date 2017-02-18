@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -109,9 +109,11 @@ public class ApiParameterInspection extends EndpointInspectionBase {
 
         // Check that API parameter has Named Resource (@Named)
         if (!hasParameterName(psiParameter)) {
-          holder.registerProblem(psiParameter, "Missing parameter name. Parameter type ("
-              + psiType.getPresentableText()
-              + ") is not an entity type and thus should be annotated with @Named.",
+          holder.registerProblem(
+              psiParameter,
+              "Missing parameter name. Parameter type ("
+                  + psiType.getPresentableText()
+                  + ") is not an entity type and thus should be annotated with @Named.",
               new MyQuickFix());
         }
       }
@@ -137,14 +139,10 @@ public class ApiParameterInspection extends EndpointInspectionBase {
     return false;
   }
 
-  /**
-   * Quick fix for {@link ApiParameterInspection} problems to add @Named to method parameters.
-   */
+  /** Quick fix for {@link ApiParameterInspection} problems to add @Named to method parameters. */
   public class MyQuickFix implements LocalQuickFix {
 
-    public MyQuickFix() {
-
-    }
+    public MyQuickFix() {}
 
     @NotNull
     @Override
@@ -193,8 +191,9 @@ public class ApiParameterInspection extends EndpointInspectionBase {
       }
 
       String annotationString = "@Named(\"" + parameter.getName() + "\")";
-      PsiAnnotation annotation = JavaPsiFacade.getElementFactory(project)
-          .createAnnotationFromText(annotationString, element);
+      PsiAnnotation annotation =
+          JavaPsiFacade.getElementFactory(project)
+              .createAnnotationFromText(annotationString, element);
       modifierList.add(annotation);
 
       PsiFile file = parameter.getContainingFile();

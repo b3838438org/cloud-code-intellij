@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,9 +34,7 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-/**
- * An empty Google Login Panel that displays an option to log in at the bottom.
- */
+/** An empty Google Login Panel that displays an option to log in at the bottom. */
 public class GoogleLoginEmptyPanel extends JPanel {
   private static final String ADD_ACCOUNT =
       AccountMessageBundle.message("login.panel.add.account.button.text");
@@ -45,20 +43,19 @@ public class GoogleLoginEmptyPanel extends JPanel {
   private JBScrollPane contentScrollPane;
   private JPanel bottomPane;
 
-  /**
-   * Initializes an empty Google Login Panel.
-   */
+  /** Initializes an empty Google Login Panel. */
   public GoogleLoginEmptyPanel() {
     super(new BorderLayout());
 
     contentScrollPane = new JBScrollPane();
     JButton addAccountButton = new JButton(needsToSignIn() ? SIGN_IN : ADD_ACCOUNT);
-    addAccountButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent event) {
-        doLogin();
-      }
-    });
+    addAccountButton.addActionListener(
+        new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent event) {
+            doLogin();
+          }
+        });
     addAccountButton.setHorizontalAlignment(SwingConstants.LEFT);
 
     //Create a panel to hold the buttons

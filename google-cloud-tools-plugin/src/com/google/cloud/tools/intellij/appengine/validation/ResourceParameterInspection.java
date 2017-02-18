@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  */
 
 package com.google.cloud.tools.intellij.appengine.validation;
-
 
 import com.google.cloud.tools.intellij.appengine.GctConstants;
 import com.google.cloud.tools.intellij.appengine.util.EndpointBundle;
@@ -38,7 +37,6 @@ import com.intellij.psi.PsiType;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
 
 /**
  * Inspection to check that resource or entity parameters are not a collection or an array and do
@@ -104,7 +102,8 @@ public class ResourceParameterInspection extends EndpointInspectionBase {
 
         // Check that there is no more than one resource (entity) parameter for this method.
         if (resourceParameterCount > 1) {
-          holder.registerProblem(method,
+          holder.registerProblem(
+              method,
               "Multiple entity parameters. There can only be a single entity parameter per method.",
               LocalQuickFix.EMPTY_ARRAY);
         }
@@ -123,11 +122,12 @@ public class ResourceParameterInspection extends EndpointInspectionBase {
 
         // Check that parameter is not a collection or an array
         if (type instanceof PsiArrayType || isCollectionType(type, project)) {
-          holder.registerProblem(psiParameter,
-              "Illegal parameter type (\'" + psiParameter.getType().getPresentableText()
+          holder.registerProblem(
+              psiParameter,
+              "Illegal parameter type (\'"
+                  + psiParameter.getType().getPresentableText()
                   + "\'). Arrays or collections of entity types are not allowed.",
               LocalQuickFix.EMPTY_ARRAY);
-
         }
 
         // Check that parameter does not have an @Named annotation
@@ -140,8 +140,10 @@ public class ResourceParameterInspection extends EndpointInspectionBase {
           }
         }
 
-        holder.registerProblem(psiParameter, "Bad parameter name. Parameter is entity (resource)"
-            + " type and should not be named.", LocalQuickFix.EMPTY_ARRAY);
+        holder.registerProblem(
+            psiParameter,
+            "Bad parameter name. Parameter is entity (resource)" + " type and should not be named.",
+            LocalQuickFix.EMPTY_ARRAY);
       }
     };
   }

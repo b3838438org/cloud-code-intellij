@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,26 +22,27 @@ import org.junit.Test;
 
 import java.nio.file.Paths;
 
-/**
- * Test cases for {@link AppEngineFlexDeploymentArtifactType}.
- */
+/** Test cases for {@link AppEngineFlexDeploymentArtifactType}. */
 public class AppEngineFlexDeploymentArtifactTypeTest {
 
   @Test
   public void testTypeForPath_jar() throws Exception {
-    assertEquals(AppEngineFlexDeploymentArtifactType.JAR,
+    assertEquals(
+        AppEngineFlexDeploymentArtifactType.JAR,
         AppEngineFlexDeploymentArtifactType.typeForPath(Paths.get("some", "path", "to", "a.jar")));
   }
 
   @Test
   public void testTypeForPath_war() throws Exception {
-    assertEquals(AppEngineFlexDeploymentArtifactType.WAR,
+    assertEquals(
+        AppEngineFlexDeploymentArtifactType.WAR,
         AppEngineFlexDeploymentArtifactType.typeForPath(Paths.get("some", "path", "to", "a.war")));
   }
 
   @Test
   public void testTypeForPath_anythingElse() throws Exception {
-    assertEquals(AppEngineFlexDeploymentArtifactType.UNKNOWN,
+    assertEquals(
+        AppEngineFlexDeploymentArtifactType.UNKNOWN,
         AppEngineFlexDeploymentArtifactType.typeForPath(Paths.get("some", "path", "to", "a.txt")));
   }
 }

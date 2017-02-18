@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,7 +37,8 @@ class DoUpdateIdeWithBreakpoint implements Runnable {
   private Map<String, XBreakpoint> ideBreakpoints;
   private CloudDebugProcess debugProcess;
 
-  public DoUpdateIdeWithBreakpoint(XBreakpointManager manager,
+  public DoUpdateIdeWithBreakpoint(
+      XBreakpointManager manager,
       VirtualFile file,
       int line,
       CloudLineBreakpointProperties properties,
@@ -67,11 +68,13 @@ class DoUpdateIdeWithBreakpoint implements Runnable {
       newXIdeBreakpoint.setCondition(serverBreakpoint.getCondition());
     }
 
-    if (serverBreakpoint.getExpressions() != null
-        && serverBreakpoint.getExpressions().size() > 0) {
-      newXIdeBreakpoint.getProperties().setWatchExpressions(
-          serverBreakpoint.getExpressions().toArray(
-              new String[serverBreakpoint.getExpressions().size()]));
+    if (serverBreakpoint.getExpressions() != null && serverBreakpoint.getExpressions().size() > 0) {
+      newXIdeBreakpoint
+          .getProperties()
+          .setWatchExpressions(
+              serverBreakpoint
+                  .getExpressions()
+                  .toArray(new String[serverBreakpoint.getExpressions().size()]));
     }
 
     // after this, changes in the UI will cause a re-register on the server.

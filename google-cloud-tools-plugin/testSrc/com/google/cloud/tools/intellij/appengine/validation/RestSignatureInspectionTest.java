@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,9 @@
  */
 package com.google.cloud.tools.intellij.appengine.validation;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import com.google.cloud.tools.intellij.appengine.GctConstants;
 
 import com.intellij.codeInspection.LocalInspectionTool;
@@ -29,9 +32,6 @@ import com.intellij.psi.PsiParameter;
 import com.intellij.psi.PsiParameterList;
 
 import org.mockito.MockitoAnnotations;
-
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class RestSignatureInspectionTest extends EndpointTestBase {
   private PsiMethod mockPsiMethod;
@@ -65,9 +65,7 @@ public class RestSignatureInspectionTest extends EndpointTestBase {
     assertEquals("post", httpMethod);
   }
 
-  /**
-   * Test getHttpMethod when the method name starts with a REST prefix.
-   */
+  /** Test getHttpMethod when the method name starts with a REST prefix. */
   public void testGetHttpMethod_NameWithRestPrefix() {
     initializePsiClass("\"\"", "\"\"");
     initializePsiMethod("updateFoo", "\"\"", "\"\"");
@@ -78,9 +76,7 @@ public class RestSignatureInspectionTest extends EndpointTestBase {
     assertEquals("PUT", httpMethod);
   }
 
-  /**
-   * Test getHttpMethod when the method name does not start with a REST prefix.
-   */
+  /** Test getHttpMethod when the method name does not start with a REST prefix. */
   public void testGetHttpMethod_NameWithoutRestPrefix() {
     initializePsiClass("\"\"", "\"\"");
     initializePsiMethod("foo", "\"\"", "\"\"");
@@ -162,8 +158,7 @@ public class RestSignatureInspectionTest extends EndpointTestBase {
   }
 
   /**
-   * Testing getPath() with the @ApiMethod's path attribute and the @Api's
-   * resource attribute set.
+   * Testing getPath() with the @ApiMethod's path attribute and the @Api's resource attribute set.
    */
   public void testGetPath_PathAndApiResourceSet() {
     initializePsiClass("\"res\"", "\"\"");
@@ -235,7 +230,8 @@ public class RestSignatureInspectionTest extends EndpointTestBase {
     when(mockAnnotationMemberValue2.getText()).thenReturn(pathValue);
 
     PsiAnnotation mockAnnotation = mock(PsiAnnotation.class);
-    when(mockAnnotation.getQualifiedName()).thenReturn(GctConstants.APP_ENGINE_ANNOTATION_API_METHOD);
+    when(mockAnnotation.getQualifiedName())
+        .thenReturn(GctConstants.APP_ENGINE_ANNOTATION_API_METHOD);
     when(mockAnnotation.findAttributeValue("httpMethod")).thenReturn(mockAnnotationMemberValue1);
     when(mockAnnotation.findAttributeValue("path")).thenReturn(mockAnnotationMemberValue2);
     PsiAnnotation[] mockAnnotationsArray = {mockAnnotation};
@@ -270,7 +266,8 @@ public class RestSignatureInspectionTest extends EndpointTestBase {
 
     // Mock @ApiClass(resource = "")
     PsiAnnotation mockAnnotation2 = mock(PsiAnnotation.class);
-    when(mockAnnotation2.getQualifiedName()).thenReturn(GctConstants.APP_ENGINE_ANNOTATION_API_CLASS);
+    when(mockAnnotation2.getQualifiedName())
+        .thenReturn(GctConstants.APP_ENGINE_ANNOTATION_API_CLASS);
     when(mockAnnotation2.findAttributeValue("resource")).thenReturn(mockAnnotationMemberValue2);
 
     PsiAnnotation[] mockAnnotationsArray = {mockAnnotation1, mockAnnotation2};
@@ -281,6 +278,4 @@ public class RestSignatureInspectionTest extends EndpointTestBase {
     mockPsiClass = mock(PsiClass.class);
     when(mockPsiClass.getModifierList()).thenReturn(mockModifierList);
   }
-
 }
-

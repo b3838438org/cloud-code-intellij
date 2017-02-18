@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,9 +33,7 @@ import org.picocontainer.MutablePicoContainer;
 
 import java.util.Collection;
 
-/**
- * Tests for {@link AppEngineServerConfigurationType}.
- */
+/** Tests for {@link AppEngineServerConfigurationType}. */
 public class AppEngineServerConfigurationTypeTest extends PlatformTestCase {
   private AppEngineAssetProvider assetProvider;
 
@@ -43,8 +41,8 @@ public class AppEngineServerConfigurationTypeTest extends PlatformTestCase {
   protected void setUp() throws Exception {
     super.setUp();
 
-    MutablePicoContainer applicationContainer = (MutablePicoContainer)
-        ApplicationManager.getApplication().getPicoContainer();
+    MutablePicoContainer applicationContainer =
+        (MutablePicoContainer) ApplicationManager.getApplication().getPicoContainer();
 
     assetProvider = mock(AppEngineAssetProvider.class);
 
@@ -57,8 +55,8 @@ public class AppEngineServerConfigurationTypeTest extends PlatformTestCase {
   public void testIsApplicable_notAppEngineStandardApp() {
     when(assetProvider.loadAppEngineStandardWebXml(any(Project.class), any(Collection.class)))
         .thenReturn(null);
-    AppEngineServerConfigurationType configurationType
-        = AppEngineServerConfigurationType.getInstance();
+    AppEngineServerConfigurationType configurationType =
+        AppEngineServerConfigurationType.getInstance();
 
     ConfigurationFactory factory = configurationType.getConfigurationFactories()[0];
     assertFalse(factory.isApplicable(getProject()));
@@ -68,8 +66,8 @@ public class AppEngineServerConfigurationTypeTest extends PlatformTestCase {
     when(assetProvider.loadAppEngineStandardWebXml(any(Project.class), any(Collection.class)))
         .thenReturn(mock(XmlFile.class));
 
-    AppEngineServerConfigurationType configurationType
-        = AppEngineServerConfigurationType.getInstance();
+    AppEngineServerConfigurationType configurationType =
+        AppEngineServerConfigurationType.getInstance();
 
     ConfigurationFactory factory = configurationType.getConfigurationFactories()[0];
     assertTrue(factory.isApplicable(getProject()));

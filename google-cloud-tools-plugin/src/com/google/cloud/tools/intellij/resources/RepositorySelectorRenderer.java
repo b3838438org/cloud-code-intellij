@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,9 +23,7 @@ import java.awt.Component;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeCellRenderer;
 
-/**
- * TreeCellRenderer for nodes in the repository selector UI widget.
- */
+/** TreeCellRenderer for nodes in the repository selector UI widget. */
 public class RepositorySelectorRenderer extends DefaultTreeCellRenderer {
 
   private RepositoryItem repositoryItem;
@@ -36,15 +34,23 @@ public class RepositorySelectorRenderer extends DefaultTreeCellRenderer {
   public RepositorySelectorRenderer() {
     DefaultTreeCellRenderer defaultRenderer = new DefaultTreeCellRenderer();
     repositoryItem = new RepositoryItem();
-    loadingItem = new ResourceSelectorLoadingItem(defaultRenderer.getBackgroundNonSelectionColor(),
-        defaultRenderer.getTextNonSelectionColor());
+    loadingItem =
+        new ResourceSelectorLoadingItem(
+            defaultRenderer.getBackgroundNonSelectionColor(),
+            defaultRenderer.getTextNonSelectionColor());
     emptyItem = new ResourceSelectorEmptyItem();
     errorItem = new ResourceSelectorErrorItem(JBColor.RED);
   }
 
   @Override
-  public Component getTreeCellRendererComponent(JTree tree, Object value, boolean selected,
-      boolean expanded, boolean leaf, int row, boolean hasFocus) {
+  public Component getTreeCellRendererComponent(
+      JTree tree,
+      Object value,
+      boolean selected,
+      boolean expanded,
+      boolean leaf,
+      int row,
+      boolean hasFocus) {
     if (value instanceof RepositoryModelItem) {
       repositoryItem.setText(((RepositoryModelItem) value).getRepositoryId());
       return repositoryItem;
@@ -67,5 +73,4 @@ public class RepositorySelectorRenderer extends DefaultTreeCellRenderer {
 
     return super.getTreeCellRendererComponent(tree, value, selected, expanded, leaf, row, hasFocus);
   }
-
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,58 +16,64 @@
 
 package com.google.cloud.tools.intellij.appengine.validation;
 
-import com.google.cloud.tools.intellij.appengine.GctConstants;
-
-import com.intellij.psi.*;
-import junit.framework.Assert;
-import junit.framework.TestCase;
-import org.mockito.MockitoAnnotations;
-
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-/**
- * Unit test for {@link EndpointPsiElementVisitor}
- */
+import com.google.cloud.tools.intellij.appengine.GctConstants;
+
+import com.intellij.psi.PsiAnnotation;
+import com.intellij.psi.PsiAnnotationMemberValue;
+import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiMethod;
+import com.intellij.psi.PsiModifierList;
+import com.intellij.psi.PsiParameter;
+
+import org.junit.Assert;
+import org.junit.TestCase;
+import org.mockito.MockitoAnnotations;
+
+/** Unit test for {@link EndpointPsiElementVisitor} */
 public class EndpointPsiElementVisitorTest extends TestCase {
+  private static final String API_TRANSFORMER_ATTRIBUTE = "transformers";
   private PsiMethod mockPsiMethod;
   private PsiClass mockPsiClass;
   private PsiParameter mockPsiParameter;
-  private static final String API_TRANSFORMER_ATTRIBUTE = "transformers";
 
   private void initializePsiClass(boolean hasApiTransformerApi, boolean hasTransformerAttribute) {
     PsiAnnotation mockTransformerAnnotation = null;
     PsiAnnotation mockApiAnnotation = null;
 
-    if(hasApiTransformerApi) {
+    if (hasApiTransformerApi) {
       // Mock @ApiTransformer(MyTransformer.class))
       mockTransformerAnnotation = mock(PsiAnnotation.class);
-      when(mockTransformerAnnotation.getQualifiedName()).thenReturn(GctConstants.APP_ENGINE_ANNOTATION_API_TRANSFORMER);
+      when(mockTransformerAnnotation.getQualifiedName())
+          .thenReturn(GctConstants.APP_ENGINE_ANNOTATION_API_TRANSFORMER);
     }
 
-    if(hasTransformerAttribute) {
+    if (hasTransformerAttribute) {
       PsiAnnotationMemberValue mockAnnotationMemberValue = mock(PsiAnnotationMemberValue.class);
       when(mockAnnotationMemberValue.getText()).thenReturn("MyTransformer.class");
 
       // Mock @Api(transformer = MyTransformer.class)
       mockApiAnnotation = mock(PsiAnnotation.class);
       when(mockApiAnnotation.getQualifiedName()).thenReturn(GctConstants.APP_ENGINE_ANNOTATION_API);
-      when(mockApiAnnotation.findAttributeValue(API_TRANSFORMER_ATTRIBUTE)).thenReturn(mockAnnotationMemberValue);
+      when(mockApiAnnotation.findAttributeValue(API_TRANSFORMER_ATTRIBUTE))
+          .thenReturn(mockAnnotationMemberValue);
     }
 
     PsiModifierList mockModifierList = mock(PsiModifierList.class);
     when(mockModifierList.findAnnotation(GctConstants.APP_ENGINE_ANNOTATION_API_TRANSFORMER))
-      .thenReturn(mockTransformerAnnotation);
+        .thenReturn(mockTransformerAnnotation);
     when(mockModifierList.findAnnotation(GctConstants.APP_ENGINE_ANNOTATION_API))
-      .thenReturn(mockApiAnnotation);
+        .thenReturn(mockApiAnnotation);
 
     mockPsiClass = mock(PsiClass.class);
     when(mockPsiClass.getModifierList()).thenReturn(mockModifierList);
   }
 
   /**
-   * Tests that {@Link EndpointPsiElementVisitor#hasTransformer} returns true
-   * for a PsiClass that uses the @ApiTransformer to specify its transformer.
+   * Tests that {@Link EndpointPsiElementVisitor#hasTransformer} returns true for a PsiClass that
+   * uses the @ApiTransformer to specify its transformer.
    */
   public void testHasTransformer_ClassWithTransformerAnnotation() {
     initializePsiClass(true, false);
@@ -78,8 +84,8 @@ public class EndpointPsiElementVisitorTest extends TestCase {
   }
 
   /**
-   * Tests that {@Link EndpointPsiElementVisitor#hasTransformer} returns true
-   * for a PsiClass that uses the transformers attribute on @Api to specify its transformer.
+   * Tests that {@Link EndpointPsiElementVisitor#hasTransformer} returns true for a PsiClass that
+   * uses the transformers attribute on @Api to specify its transformer.
    */
   public void testHasTransformer_ClassWithTransformerAttribute() {
     initializePsiClass(false, true);
@@ -90,8 +96,8 @@ public class EndpointPsiElementVisitorTest extends TestCase {
   }
 
   /**
-   * Tests that {@Link EndpointPsiElementVisitor#hasTransformer} returns false
-   * for a PsiClass that doe not specify a transformer.
+   * Tests that {@Link EndpointPsiElementVisitor#hasTransformer} returns false for a PsiClass that
+   * doe not specify a transformer.
    */
   public void testHasTransformer_ClassWithoutTransformer() {
     initializePsiClass(false, false);
@@ -102,8 +108,8 @@ public class EndpointPsiElementVisitorTest extends TestCase {
   }
 
   /**
-   * Tests that {@Link EndpointPsiElementVisitor#hasTransformer} returns true
-   * for a PsiMethod whose containing class uses the @ApiTransformer to specify its transformer.
+   * Tests that {@Link EndpointPsiElementVisitor#hasTransformer} returns true for a PsiMethod whose
+   * containing class uses the @ApiTransformer to specify its transformer.
    */
   public void testHasTransformer_MethodWithTransformer() {
     initializePsiClass(true, false);
@@ -116,8 +122,8 @@ public class EndpointPsiElementVisitorTest extends TestCase {
   }
 
   /**
-   * Tests that {@Link EndpointPsiElementVisitor#hasTransformer} returns false
-   * for a PsiParameter whose containing class does not specify a transformer.
+   * Tests that {@Link EndpointPsiElementVisitor#hasTransformer} returns false for a PsiParameter
+   * whose containing class does not specify a transformer.
    */
   public void testHasTransformer_ParameterWithoutTransformer() {
     initializePsiClass(false, false);
@@ -130,5 +136,4 @@ public class EndpointPsiElementVisitorTest extends TestCase {
     EndpointPsiElementVisitor endpointPsiElementVisitor = new EndpointPsiElementVisitor();
     Assert.assertFalse(endpointPsiElementVisitor.hasTransformer(mockPsiParameter));
   }
-
 }

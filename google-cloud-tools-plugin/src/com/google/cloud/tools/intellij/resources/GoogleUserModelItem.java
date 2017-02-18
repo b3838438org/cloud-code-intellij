@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -62,8 +62,8 @@ class GoogleUserModelItem extends DefaultMutableTreeNode {
     this.treeModel = treeModel;
     setNeedsSynchronizing();
 
-    cloudResourceManagerClient
-        = GoogleApiClientFactory.getInstance().getCloudResourceManagerClient(user.getCredential());
+    cloudResourceManagerClient =
+        GoogleApiClientFactory.getInstance().getCloudResourceManagerClient(user.getCredential());
   }
 
   public CredentialedUser getCredentialedUser() {
@@ -97,20 +97,23 @@ class GoogleUserModelItem extends DefaultMutableTreeNode {
    * This method kicks off synchronization of this user asynchronously.
    * If synchronization is already in progress, this call is ignored.
    */
+  @SuppressWarnings("FutureReturnValueIgnored")
   public void synchronize() {
     if (!needsSynchronizing || isSynchronizing) {
       return;
     }
     isSynchronizing = true;
 
-    ApplicationManager.getApplication().executeOnPooledThread(() -> {
-      try {
-        loadUserProjects();
-        needsSynchronizing = false;
-      } finally {
-        isSynchronizing = false;
-      }
-    });
+    ApplicationManager.getApplication()
+        .executeOnPooledThread(
+            () -> {
+              try {
+                loadUserProjects();
+                needsSynchronizing = false;
+              } finally {
+                isSynchronizing = false;
+              }
+            });
   }
 
   public boolean isSynchronizing() {
@@ -119,14 +122,15 @@ class GoogleUserModelItem extends DefaultMutableTreeNode {
 
   // If an error occurs during the resource manager call, we load a model that shows the error.
   private void loadErrorState(@NotNull final String errorMessage) {
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        GoogleUserModelItem.this.removeAllChildren();
-        GoogleUserModelItem.this.add(new ResourceErrorModelItem("Error: " + errorMessage));
-        treeModel.reload(GoogleUserModelItem.this);
-      }
-    });
+    SwingUtilities.invokeLater(
+        new Runnable() {
+          @Override
+          public void run() {
+            GoogleUserModelItem.this.removeAllChildren();
+            GoogleUserModelItem.this.add(new ResourceErrorModelItem("Error: " + errorMessage));
+            treeModel.reload(GoogleUserModelItem.this);
+          }
+        });
   }
 
   private void loadUserProjects() {
@@ -134,25 +138,36 @@ class GoogleUserModelItem extends DefaultMutableTreeNode {
 
     try {
 
-      ListProjectsResponse response = cloudResourceManagerClient.projects().list()
-          .setPageSize(PROJECTS_MAX_PAGE_SIZE).execute();
+      ListProjectsResponse response =
+          cloudResourceManagerClient
+              .projects()
+              .list()
+              .setPageSize(PROJECTS_MAX_PAGE_SIZE)
+              .execute();
 
       if (response != null && response.getProjects() != null) {
         // Create a sorted set to sort the projects list by project ID.
-        Set<Project> allProjects = new TreeSet<>((Project p1, Project p2) ->
-            p1.getName().toLowerCase().compareTo(p2.getName().toLowerCase()));
+        Set<Project> allProjects =
+            new TreeSet<>(
+                (Project p1, Project p2) ->
+                    p1.getName().toLowerCase().compareTo(p2.getName().toLowerCase()));
 
-        response.getProjects().stream()
+        response
+            .getProjects()
+            .stream()
             // Filter out any projects that are scheduled for deletion.
             .filter((project) -> !PROJECT_DELETE_REQUESTED.equals(project.getLifecycleState()))
             // Add remaining projects to the set.
             .forEach(allProjects::add);
 
         while (!Strings.isNullOrEmpty(response.getNextPageToken())) {
-          response = cloudResourceManagerClient.projects().list()
-              .setPageToken(response.getNextPageToken())
-              .setPageSize(PROJECTS_MAX_PAGE_SIZE)
-              .execute();
+          response =
+              cloudResourceManagerClient
+                  .projects()
+                  .list()
+                  .setPageToken(response.getNextPageToken())
+                  .setPageSize(PROJECTS_MAX_PAGE_SIZE)
+                  .execute();
           allProjects.addAll(response.getProjects());
         }
         for (Project pantheonProject : allProjects) {
@@ -175,18 +190,19 @@ class GoogleUserModelItem extends DefaultMutableTreeNode {
 
     try {
       // We invoke back to the UI thread to update the model and treeview.
-      SwingUtilities.invokeAndWait(new Runnable() {
-        @Override
-        public void run() {
-          GoogleUserModelItem.this.removeAllChildren();
+      SwingUtilities.invokeAndWait(
+          new Runnable() {
+            @Override
+            public void run() {
+              GoogleUserModelItem.this.removeAllChildren();
 
-          for (DefaultMutableTreeNode item : result) {
-            GoogleUserModelItem.this.add(item);
-          }
+              for (DefaultMutableTreeNode item : result) {
+                GoogleUserModelItem.this.add(item);
+              }
 
-          treeModel.reload(GoogleUserModelItem.this);
-        }
-      });
+              treeModel.reload(GoogleUserModelItem.this);
+            }
+          });
     } catch (InterruptedException ex) {
       LOG.error("InterruptedException loading projects for " + user.getName(), ex);
       loadErrorState(ex.getMessage());

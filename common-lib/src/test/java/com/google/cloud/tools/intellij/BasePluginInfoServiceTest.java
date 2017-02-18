@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,9 @@ import static org.mockito.Mockito.when;
 import com.google.cloud.tools.intellij.flags.FlagReader;
 import com.google.cloud.tools.intellij.util.IntelliJPlatform;
 import com.google.common.collect.ImmutableSet;
+
 import com.intellij.ide.plugins.IdeaPluginDescriptor;
+
 import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
 import org.junit.Test;

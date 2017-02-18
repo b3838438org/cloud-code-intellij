@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,19 +22,18 @@ import com.google.gdt.eclipse.login.common.GoogleLoginState;
 
 import java.awt.Image;
 
-/**
- * Class that represents a single logged in user.
- */
+/** Class that represents a single logged in user. */
 public class CredentialedUser {
-  private String name;
-  private Image image;
   private final String email;
   private final Credential credential;
-  private boolean isActive = false;
   private final GoogleLoginState googleLoginState;
+  private String name;
+  private Image image;
+  private boolean isActive = false;
 
   /**
    * Constructor. Should only be used as temporary place holder for user.
+   *
    * @param email Email address of user
    */
   protected CredentialedUser(String email) {
@@ -45,27 +44,27 @@ public class CredentialedUser {
     googleLoginState = null;
   }
 
-  /**
-   * Creates a credentialed user.
-   */
-  public CredentialedUser(GoogleLoginState state,
-      final IGoogleLoginCompletedCallback updateUserCallback) {
+  /** Creates a credentialed user. */
+  public CredentialedUser(
+      GoogleLoginState state, final IGoogleLoginCompletedCallback updateUserCallback) {
     this.email = state.getEmail();
     googleLoginState = state;
     credential = googleLoginState.makeCredential();
 
-    IUserPropertyCallback callback = new IUserPropertyCallback<Userinfoplus>() {
-      @Override
-      public void setProperty(Userinfoplus userinfoplus) {
-        initializeUserInfo(userinfoplus, updateUserCallback);
-      }
-    };
+    IUserPropertyCallback callback =
+        new IUserPropertyCallback<Userinfoplus>() {
+          @Override
+          public void setProperty(Userinfoplus userinfoplus) {
+            initializeUserInfo(userinfoplus, updateUserCallback);
+          }
+        };
 
     GoogleLoginUtils.getUserInfo(credential, callback);
   }
 
   /**
    * Returns the email address of this user.
+   *
    * @return Email address of user.
    */
   public String getEmail() {
@@ -90,6 +89,15 @@ public class CredentialedUser {
     return isActive;
   }
 
+  /**
+   * Sets this user to active if <code>isActive</code> is true and false otherwise.
+   *
+   * @param isActive True if this user should be set to active and false otherwise.
+   */
+  protected void setActive(boolean isActive) {
+    this.isActive = isActive;
+  }
+
   public String getName() {
     return name;
   }
@@ -102,28 +110,21 @@ public class CredentialedUser {
     return googleLoginState;
   }
 
-  /**
-   * Sets this user to active if <code>isActive</code> is true and false otherwise.
-   * @param isActive True if this user should be set to active and false otherwise.
-   */
-  protected void setActive(boolean isActive) {
-    this.isActive = isActive;
-  }
-
-  private void initializeUserInfo(Userinfoplus userInfo,
-      final IGoogleLoginCompletedCallback updateUserCallback) {
+  private void initializeUserInfo(
+      Userinfoplus userInfo, final IGoogleLoginCompletedCallback updateUserCallback) {
     if (userInfo == null) {
       name = null;
       image = null;
     } else {
       name = userInfo.getName();
-      IUserPropertyCallback pictureCallback = new IUserPropertyCallback<Image>() {
-        @Override
-        public void setProperty(Image newImage) {
-          image = newImage;
-          updateUserCallback.onLoginCompleted();
-        }
-      };
+      IUserPropertyCallback pictureCallback =
+          new IUserPropertyCallback<Image>() {
+            @Override
+            public void setProperty(Image newImage) {
+              image = newImage;
+              updateUserCallback.onLoginCompleted();
+            }
+          };
       GoogleLoginUtils.provideUserPicture(userInfo, pictureCallback);
     }
   }

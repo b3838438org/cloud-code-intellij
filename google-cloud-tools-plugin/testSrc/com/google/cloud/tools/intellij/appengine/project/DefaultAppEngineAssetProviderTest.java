@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import com.google.cloud.tools.intellij.appengine.project.DefaultAppEngineAssetProvider.AppEngineWebXmlOrdering;
+
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.newvfs.impl.FakeVirtualFile;
 import com.intellij.openapi.vfs.newvfs.impl.StubVirtualFile;
@@ -32,9 +33,7 @@ import org.junit.Test;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * Unit tests for {@link DefaultAppEngineAssetProvider}
- */
+/** Unit tests for {@link DefaultAppEngineAssetProvider} */
 public class DefaultAppEngineAssetProviderTest {
 
   private DefaultAppEngineAssetProvider assetProvider;
@@ -94,5 +93,4 @@ public class DefaultAppEngineAssetProviderTest {
       return "/";
     }
   }
-
 }

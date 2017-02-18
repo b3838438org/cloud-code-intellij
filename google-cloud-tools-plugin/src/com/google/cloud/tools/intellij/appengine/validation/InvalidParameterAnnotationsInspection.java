@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -89,8 +89,8 @@ public class InvalidParameterAnnotationsInspection extends EndpointInspectionBas
         }
 
         // Check for @ApiMethod
-        PsiAnnotation apiMethodAnnotation = method.getModifierList()
-            .findAnnotation(GctConstants.APP_ENGINE_ANNOTATION_API_METHOD);
+        PsiAnnotation apiMethodAnnotation =
+            method.getModifierList().findAnnotation(GctConstants.APP_ENGINE_ANNOTATION_API_METHOD);
         if (apiMethodAnnotation == null) {
           return;
         }
@@ -112,8 +112,8 @@ public class InvalidParameterAnnotationsInspection extends EndpointInspectionBas
           if (namedAnnotation == null) {
             continue;
           }
-          String nameValue = EndpointUtilities
-              .removeBeginningAndEndingQuotes(namedAnnotation.getText());
+          String nameValue =
+              EndpointUtilities.removeBeginningAndEndingQuotes(namedAnnotation.getText());
 
           // Check is @Named value is in list of path parameters
           if (!pathParameters.contains(nameValue)) {
@@ -121,24 +121,29 @@ public class InvalidParameterAnnotationsInspection extends EndpointInspectionBas
           }
 
           // Check if @Named parameter also has @Nullable or @DefaultValue
-          if ((psiParameter.getModifierList()
-              .findAnnotation(GctConstants.APP_ENGINE_ANNOTATION_NULLABLE) != null)
-              || (psiParameter.getModifierList()
-                  .findAnnotation("javax.annotation.Nullable") != null)
-              || (psiParameter.getModifierList()
-                  .findAnnotation(GctConstants.APP_ENGINE_ANNOTATION_DEFAULT_VALUE) != null)) {
-            holder.registerProblem(psiParameter, "Invalid parameter configuration. "
-                + "A parameter in the method path should not be marked @Nullable or "
-                + "@DefaultValue.",
+          if ((psiParameter
+                      .getModifierList()
+                      .findAnnotation(GctConstants.APP_ENGINE_ANNOTATION_NULLABLE)
+                  != null)
+              || (psiParameter.getModifierList().findAnnotation("javax.annotation.Nullable")
+                  != null)
+              || (psiParameter
+                      .getModifierList()
+                      .findAnnotation(GctConstants.APP_ENGINE_ANNOTATION_DEFAULT_VALUE)
+                  != null)) {
+            holder.registerProblem(
+                psiParameter,
+                "Invalid parameter configuration. "
+                    + "A parameter in the method path should not be marked @Nullable or "
+                    + "@DefaultValue.",
                 new MyQuickFix());
           }
         }
-
-
       }
 
       /**
        * Gets the parameters in <code>path</code>
+       *
        * @param path The path whose parameters are to be parsed.
        * @return A collection of the parameter in <code>path</code>
        */
@@ -155,14 +160,10 @@ public class InvalidParameterAnnotationsInspection extends EndpointInspectionBas
     };
   }
 
-  /**
-   * Quick fix for {@link InvalidParameterAnnotationsInspection} problems.
-   */
+  /** Quick fix for {@link InvalidParameterAnnotationsInspection} problems. */
   public static class MyQuickFix implements LocalQuickFix {
 
-    public MyQuickFix() {
-
-    }
+    public MyQuickFix() {}
 
     @NotNull
     @Override
@@ -176,9 +177,7 @@ public class InvalidParameterAnnotationsInspection extends EndpointInspectionBas
       return EndpointBundle.message("api.name.name");
     }
 
-    /**
-     * Remove @Default and @Nullable from the method parameter if they exist.
-     */
+    /** Remove @Default and @Nullable from the method parameter if they exist. */
     @Override
     public void applyFix(@NotNull Project project, @NotNull ProblemDescriptor descriptor) {
       PsiElement element = descriptor.getPsiElement();
@@ -191,20 +190,20 @@ public class InvalidParameterAnnotationsInspection extends EndpointInspectionBas
       }
 
       PsiModifierList modifierList = ((PsiParameter) element).getModifierList();
-      PsiAnnotation gaeNullableAnnotation = modifierList
-          .findAnnotation(GctConstants.APP_ENGINE_ANNOTATION_NULLABLE);
+      PsiAnnotation gaeNullableAnnotation =
+          modifierList.findAnnotation(GctConstants.APP_ENGINE_ANNOTATION_NULLABLE);
       if (gaeNullableAnnotation != null) {
         gaeNullableAnnotation.delete();
       }
 
-      PsiAnnotation javaxNullableAnnotation = modifierList
-          .findAnnotation("javax.annotation.Nullable");
+      PsiAnnotation javaxNullableAnnotation =
+          modifierList.findAnnotation("javax.annotation.Nullable");
       if (javaxNullableAnnotation != null) {
         javaxNullableAnnotation.delete();
       }
 
-      PsiAnnotation defaultValueAnnotation = modifierList
-          .findAnnotation(GctConstants.APP_ENGINE_ANNOTATION_DEFAULT_VALUE);
+      PsiAnnotation defaultValueAnnotation =
+          modifierList.findAnnotation(GctConstants.APP_ENGINE_ANNOTATION_DEFAULT_VALUE);
       if (defaultValueAnnotation != null) {
         defaultValueAnnotation.delete();
       }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,22 +39,73 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-
-/**
- * A visitor that has endpoint validation specific functionality.
- */
+/** A visitor that has endpoint validation specific functionality. */
 public class EndpointPsiElementVisitor extends JavaElementVisitor {
 
   // TODO: Add tests
   private static final String API_TRANSFORMER_ATTRIBUTE = "transformers";
 
   /**
+   * Returns set of supported parameter types.
+   *
+   * @param project The current project.
+   * @return Set of parameter types.
+   */
+  private static Set<PsiClassType> createParameterTypes(Project project) {
+    Set<PsiClassType> parameterTypes = new HashSet<PsiClassType>();
+    parameterTypes.add(
+        JavaPsiFacade.getElementFactory(project).createTypeByFQClassName("java.lang.Enum"));
+    parameterTypes.add(
+        JavaPsiFacade.getElementFactory(project).createTypeByFQClassName("java.lang.String"));
+    parameterTypes.add(
+        JavaPsiFacade.getElementFactory(project).createTypeByFQClassName("java.lang.Boolean"));
+    parameterTypes.add(
+        JavaPsiFacade.getElementFactory(project).createTypeByFQClassName("java.lang.Integer"));
+    parameterTypes.add(
+        JavaPsiFacade.getElementFactory(project).createTypeByFQClassName("java.lang.Long"));
+    parameterTypes.add(
+        JavaPsiFacade.getElementFactory(project).createTypeByFQClassName("java.lang.Float"));
+    parameterTypes.add(
+        JavaPsiFacade.getElementFactory(project).createTypeByFQClassName("java.lang.Double"));
+    parameterTypes.add(
+        JavaPsiFacade.getElementFactory(project).createTypeByFQClassName("java.util.Date"));
+    parameterTypes.add(
+        JavaPsiFacade.getElementFactory(project)
+            .createTypeByFQClassName("com.google.api.server.spi.types.DateAndTime"));
+    parameterTypes.add(
+        JavaPsiFacade.getElementFactory(project)
+            .createTypeByFQClassName("com.google.api.server.spi.types.SimpleDate"));
+
+    return Collections.unmodifiableSet(parameterTypes);
+  }
+
+  /**
+   * Returns set of endpoint injected types.
+   *
+   * @param project The current project.
+   * @return Set of injected types.
+   */
+  private static Set<PsiClassType> createInjectedClassTypes(Project project) {
+    Set<PsiClassType> injectedClassTypes = new HashSet<PsiClassType>();
+    injectedClassTypes.add(
+        JavaPsiFacade.getElementFactory(project)
+            .createTypeByFQClassName("com.google.appengine.api.users.User"));
+    injectedClassTypes.add(
+        JavaPsiFacade.getElementFactory(project)
+            .createTypeByFQClassName("javax.servlet.http.HttpServletRequest"));
+    injectedClassTypes.add(
+        JavaPsiFacade.getElementFactory(project)
+            .createTypeByFQClassName("javax.servlet.ServletContext"));
+
+    return Collections.unmodifiableSet(injectedClassTypes);
+  }
+
+  /**
    * Returns true if the class containing <code>psiElement</code> has a transformer specified by
    * using the @ApiTransformer annotation on a class or by using the transformer attribute of the
    *
    * @return True if the class containing <code>psiElement</code> has a transformer and false
-   *     otherwise.
-   * @Api annotation. Returns false otherwise.
+   *     otherwise. @Api annotation. Returns false otherwise.
    */
   public boolean hasTransformer(PsiElement psiElement) {
     PsiClass psiClass = PsiUtils.findClass(psiElement);
@@ -76,8 +127,8 @@ public class EndpointPsiElementVisitor extends JavaElementVisitor {
 
     // Check if class utilizes the transformer attribute of the @Api annotation
     // to specify its transformer
-    PsiAnnotation apiAnnotation = modifierList
-        .findAnnotation(GctConstants.APP_ENGINE_ANNOTATION_API);
+    PsiAnnotation apiAnnotation =
+        modifierList.findAnnotation(GctConstants.APP_ENGINE_ANNOTATION_API);
     if (apiAnnotation != null) {
       PsiAnnotationMemberValue transformerMember =
           apiAnnotation.findAttributeValue(API_TRANSFORMER_ATTRIBUTE);
@@ -122,59 +173,6 @@ public class EndpointPsiElementVisitor extends JavaElementVisitor {
     }
 
     return nameValuePairs[0].getValue();
-  }
-
-  /**
-   * Returns set of supported parameter types.
-   *
-   * @param project The current project.
-   * @return Set of parameter types.
-   */
-  private static Set<PsiClassType> createParameterTypes(Project project) {
-    Set<PsiClassType> parameterTypes = new HashSet<PsiClassType>();
-    parameterTypes
-        .add(JavaPsiFacade.getElementFactory(project).createTypeByFQClassName("java.lang.Enum"));
-    parameterTypes
-        .add(JavaPsiFacade.getElementFactory(project).createTypeByFQClassName("java.lang.String"));
-    parameterTypes
-        .add(JavaPsiFacade.getElementFactory(project).createTypeByFQClassName("java.lang.Boolean"));
-    parameterTypes
-        .add(JavaPsiFacade.getElementFactory(project).createTypeByFQClassName("java.lang.Integer"));
-    parameterTypes
-        .add(JavaPsiFacade.getElementFactory(project).createTypeByFQClassName("java.lang.Long"));
-    parameterTypes
-        .add(JavaPsiFacade.getElementFactory(project).createTypeByFQClassName("java.lang.Float"));
-    parameterTypes
-        .add(JavaPsiFacade.getElementFactory(project).createTypeByFQClassName("java.lang.Double"));
-    parameterTypes
-        .add(JavaPsiFacade.getElementFactory(project).createTypeByFQClassName("java.util.Date"));
-    parameterTypes.add(JavaPsiFacade.getElementFactory(project)
-        .createTypeByFQClassName("com.google.api.server.spi.types.DateAndTime"));
-    parameterTypes.add(JavaPsiFacade.getElementFactory(project)
-        .createTypeByFQClassName("com.google.api.server.spi.types.SimpleDate"));
-
-    return Collections.unmodifiableSet(parameterTypes);
-  }
-
-  /**
-   * Returns set of endpoint injected types.
-   *
-   * @param project The current project.
-   * @return Set of injected types.
-   */
-  private static Set<PsiClassType> createInjectedClassTypes(Project project) {
-    Set<PsiClassType> injectedClassTypes = new HashSet<PsiClassType>();
-    injectedClassTypes.add(
-        JavaPsiFacade.getElementFactory(project)
-            .createTypeByFQClassName("com.google.appengine.api.users.User"));
-    injectedClassTypes.add(
-        JavaPsiFacade.getElementFactory(project)
-            .createTypeByFQClassName("javax.servlet.http.HttpServletRequest"));
-    injectedClassTypes.add(
-        JavaPsiFacade.getElementFactory(project)
-            .createTypeByFQClassName("javax.servlet.ServletContext"));
-
-    return Collections.unmodifiableSet(injectedClassTypes);
   }
 
   /**

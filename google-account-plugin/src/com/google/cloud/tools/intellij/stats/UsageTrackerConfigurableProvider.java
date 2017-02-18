@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,16 +34,14 @@ public class UsageTrackerConfigurableProvider extends ConfigurableProvider {
     return new UsageTrackerConfigurable();
   }
 
-  /**
-   * @return true if running platform is IntelliJ and false otherwise.
-   */
+  /** @return true if running platform is IntelliJ and false otherwise. */
   @Override
   public boolean canCreateConfigurable() {
     // For now we can hide Google entirely if usage tracking isn't available as there are no
     // other Google related account settings in the IJ UI.
     // Create a sub-menu item for the cloud SDK and hide the usage tracker if not avaible
-    if (PlatformUtils.isIntelliJ() && UsageTrackerManager.getInstance()
-        .isUsageTrackingAvailable()) {
+    if (PlatformUtils.isIntelliJ()
+        && UsageTrackerManager.getInstance().isUsageTrackingAvailable()) {
       return true;
     } else {
       return false;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,11 +41,9 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-/**
- * @author nik
- */
-public class AppEngineRunConfigurationEditor extends SettingsEditor<CommonModel> implements
-    PanelWithAnchor {
+/** @author nik */
+public class AppEngineRunConfigurationEditor extends SettingsEditor<CommonModel>
+    implements PanelWithAnchor {
 
   private final Project myProject;
   private JPanel myMainPanel;
@@ -65,33 +63,35 @@ public class AppEngineRunConfigurationEditor extends SettingsEditor<CommonModel>
 
   public AppEngineRunConfigurationEditor(Project project) {
     myProject = project;
-    myArtifactComboBox.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent event) {
-        onArtifactChanged();
-      }
-    });
+    myArtifactComboBox.addActionListener(
+        new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent event) {
+            onArtifactChanged();
+          }
+        });
 
     setAnchor(myWebArtifactToDeployLabel);
-    appEngineSettingsPanel.setBorder(PlainSmallWithoutIndent.createTitledBorder(
-        null /* border - ignored */,
-        GctBundle.message("appengine.run.settings.title.label"),
-        0 /* titleJustification - ignored */,
-        0 /* titlePosition - ignored */,
-        null /* titleFont - ignored */,
-        null /* titleColor - ignored */));
+    appEngineSettingsPanel.setBorder(
+        PlainSmallWithoutIndent.createTitledBorder(
+            null /* border - ignored */,
+            GctBundle.message("appengine.run.settings.title.label"),
+            0 /* titleJustification - ignored */,
+            0 /* titlePosition - ignored */,
+            null /* titleFont - ignored */,
+            null /* titleColor - ignored */));
   }
 
   private void onArtifactChanged() {
     final Artifact selectedArtifact = getSelectedArtifact();
     if (!Comparing.equal(myLastSelectedArtifact, selectedArtifact)) {
       if (myLastSelectedArtifact != null) {
-        BuildArtifactsBeforeRunTaskProvider
-            .setBuildArtifactBeforeRunOption(myMainPanel, myProject, myLastSelectedArtifact, false);
+        BuildArtifactsBeforeRunTaskProvider.setBuildArtifactBeforeRunOption(
+            myMainPanel, myProject, myLastSelectedArtifact, false);
       }
       if (selectedArtifact != null) {
-        BuildArtifactsBeforeRunTaskProvider
-            .setBuildArtifactBeforeRunOption(myMainPanel, myProject, selectedArtifact, true);
+        BuildArtifactsBeforeRunTaskProvider.setBuildArtifactBeforeRunOption(
+            myMainPanel, myProject, selectedArtifact, true);
       }
       myLastSelectedArtifact = selectedArtifact;
     }
@@ -100,14 +100,13 @@ public class AppEngineRunConfigurationEditor extends SettingsEditor<CommonModel>
   /**
    * Resets the configuration editor form using the settings in the server model. The following
    * settings have been omitted from the form:
+   *
    * <ul>
    * <li> maxModuleInstances - we set this on behalf of the user to prevent breaking the dev app
-   * server in debug mode. See
-   * <a href="https://github.com/GoogleCloudPlatform/google-cloud-intellij/issues/928">#928</a>
-   * </li>
-   * <li> automaticRestart - it is set to false so that HotSwap doesn't break IJ's debug server.
-   * <a href="https://github.com/GoogleCloudPlatform/google-cloud-intellij/issues/972">#927</a>.
-   * </li>
+   *     server in debug mode. See <a
+   *     href="https://github.com/GoogleCloudPlatform/google-cloud-intellij/issues/928">#928</a>
+   * <li> automaticRestart - it is set to false so that HotSwap doesn't break IJ's debug server. <a
+   *     href="https://github.com/GoogleCloudPlatform/google-cloud-intellij/issues/972">#927</a>.
    * </ul>
    */
   @Override
@@ -163,7 +162,7 @@ public class AppEngineRunConfigurationEditor extends SettingsEditor<CommonModel>
   private Artifact getSelectedArtifact() {
     return (Artifact) myArtifactComboBox.getSelectedItem();
   }
-  
+
   @NotNull
   @Override
   protected JComponent createEditor() {

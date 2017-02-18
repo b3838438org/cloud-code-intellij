@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,9 +38,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-/**
- * Utility methods of Google Login.
- */
+/** Utility methods of Google Login. */
 public class GoogleLoginUtils {
 
   public static final Logger LOG = Logger.getInstance(GoogleLoginUtils.class);
@@ -53,8 +51,9 @@ public class GoogleLoginUtils {
    * @param userInfo the class to be parsed
    * @param pictureCallback the user image will be set on this callback
    */
-  public static void provideUserPicture(Userinfoplus userInfo,
-      final IUserPropertyCallback pictureCallback) {
+  @SuppressWarnings("FutureReturnValueIgnored")
+  public static void provideUserPicture(
+      Userinfoplus userInfo, final IUserPropertyCallback pictureCallback) {
     // set the size of the image before it is served
     String urlString = userInfo.getPicture() + "?sz=" + DEFAULT_PICTURE_SIZE;
     URL url = null;
@@ -67,48 +66,51 @@ public class GoogleLoginUtils {
 
     final URL newUrl = url;
 
-    ApplicationManager.getApplication().executeOnPooledThread(new Runnable() {
-      @Override
-      public void run() {
-        Image image = Toolkit.getDefaultToolkit().getImage(newUrl);
-        Toolkit.getDefaultToolkit().prepareImage(image, -1, -1, null);
-        pictureCallback.setProperty(image);
-      }
-    });
+    ApplicationManager.getApplication()
+        .executeOnPooledThread(
+            new Runnable() {
+              @Override
+              public void run() {
+                Image image = Toolkit.getDefaultToolkit().getImage(newUrl);
+                Toolkit.getDefaultToolkit().prepareImage(image, -1, -1, null);
+                pictureCallback.setProperty(image);
+              }
+            });
   }
 
-  /**
-   * Sets the user info on the callback.
-   */
-  public static void getUserInfo(@NotNull final Credential credential,
-      final IUserPropertyCallback callback) {
+  /** Sets the user info on the callback. */
+  @SuppressWarnings("FutureReturnValueIgnored")
+  public static void getUserInfo(
+      @NotNull final Credential credential, final IUserPropertyCallback callback) {
     final Oauth2 userInfoService =
         new Oauth2.Builder(new NetHttpTransport(), new JacksonFactory(), credential)
             .setApplicationName(
                 ServiceManager.getService(AccountPluginInfoService.class).getUserAgent())
             .build();
 
-    ApplicationManager.getApplication().executeOnPooledThread(new Runnable() {
-      @Override
-      public void run() {
-        Userinfoplus userInfo = null;
-        try {
-          userInfo = userInfoService.userinfo().get().execute();
-        } catch (IOException ex) {
-          //The core IDE functionality still works, so this does
-          //not affect anything right now. The user will receive
-          //error messages when they attempt to do something that
-          //requires a logged in state.
-          LOG.warn("Error retrieving user information.", ex);
-        }
+    ApplicationManager.getApplication()
+        .executeOnPooledThread(
+            new Runnable() {
+              @Override
+              public void run() {
+                Userinfoplus userInfo = null;
+                try {
+                  userInfo = userInfoService.userinfo().get().execute();
+                } catch (IOException ex) {
+                  //The core IDE functionality still works, so this does
+                  //not affect anything right now. The user will receive
+                  //error messages when they attempt to do something that
+                  //requires a logged in state.
+                  LOG.warn("Error retrieving user information.", ex);
+                }
 
-        if (userInfo != null && userInfo.getId() != null) {
-          callback.setProperty(userInfo);
-        } else {
-          callback.setProperty(null);
-        }
-      }
-    });
+                if (userInfo != null && userInfo.getId() != null) {
+                  callback.setProperty(userInfo);
+                } else {
+                  callback.setProperty(null);
+                }
+              }
+            });
   }
 
   /**
@@ -122,12 +124,15 @@ public class GoogleLoginUtils {
     if (ApplicationManager.getApplication().isDispatchThread()) {
       Messages.showErrorDialog(message, title);
     } else {
-      ApplicationManager.getApplication().invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          Messages.showErrorDialog(message, title);
-        }
-      }, ModalityState.defaultModalityState());
+      ApplicationManager.getApplication()
+          .invokeLater(
+              new Runnable() {
+                @Override
+                public void run() {
+                  Messages.showErrorDialog(message, title);
+                }
+              },
+              ModalityState.defaultModalityState());
     }
   }
 

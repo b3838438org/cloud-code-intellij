@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,9 +28,7 @@ import com.intellij.psi.PsiModifierList;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * Utility methods for endpoint validation checks.
- */
+/** Utility methods for endpoint validation checks. */
 public class EndpointUtilities {
 
   /**
@@ -63,8 +61,8 @@ public class EndpointUtilities {
 
     if (AnnotationUtil.isAnnotated(psiClass, GctConstants.APP_ENGINE_ANNOTATION_API, true)
         || AnnotationUtil.isAnnotated(psiClass, GctConstants.APP_ENGINE_ANNOTATION_API_CLASS, true)
-        || AnnotationUtil
-            .isAnnotated(psiClass, GctConstants.APP_ENGINE_ANNOTATION_API_REFERENCE, true)) {
+        || AnnotationUtil.isAnnotated(
+            psiClass, GctConstants.APP_ENGINE_ANNOTATION_API_REFERENCE, true)) {
       return true;
     } else {
       return false;
@@ -86,16 +84,12 @@ public class EndpointUtilities {
     return false;
   }
 
-  /**
-   * Replace sequence of dots with single dot.
-   */
+  /** Replace sequence of dots with single dot. */
   public static String collapseSequenceOfDots(@NotNull String word) {
     return word.replaceAll("[.]+", ".");
   }
 
-  /**
-   * Checks if the supplied method is a public constructor with no parameters.
-   */
+  /** Checks if the supplied method is a public constructor with no parameters. */
   public static boolean isPublicNullaryConstructor(PsiMethod method) {
     if (!method.isConstructor()) {
       return false;
@@ -112,5 +106,4 @@ public class EndpointUtilities {
 
     return false;
   }
-
 }

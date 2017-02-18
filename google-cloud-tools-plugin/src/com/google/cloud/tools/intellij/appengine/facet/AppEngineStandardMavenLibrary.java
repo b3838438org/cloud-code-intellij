@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,9 +29,8 @@ import org.jetbrains.idea.maven.utils.library.RepositoryUtils;
 
 import java.util.Arrays;
 
-/**
- * Defines the available App Engine standard maven-sourced libraries.
- */
+/** Defines the available App Engine standard maven-sourced libraries. */
+@SuppressWarnings("FutureReturnValueIgnored")
 public enum AppEngineStandardMavenLibrary {
   SERVLET_API(
       GctBundle.message("appengine.library.servlet.api.name"),
@@ -43,18 +42,18 @@ public enum AppEngineStandardMavenLibrary {
       DependencyScope.PROVIDED),
   APP_ENGINE_API(
       GctBundle.message("appengine.library.app.engine.api.name"),
-      new RepositoryLibraryProperties("com.google.appengine", "appengine-api-1.0-sdk",
-          RepositoryUtils.ReleaseVersionId),
+      new RepositoryLibraryProperties(
+          "com.google.appengine", "appengine-api-1.0-sdk", RepositoryUtils.ReleaseVersionId),
       DependencyScope.COMPILE),
   ENDPOINTS(
       GctBundle.message("appengine.library.endpoints.api.name"),
-      new RepositoryLibraryProperties("com.google.appengine", "appengine-endpoints",
-          RepositoryUtils.ReleaseVersionId),
+      new RepositoryLibraryProperties(
+          "com.google.appengine", "appengine-endpoints", RepositoryUtils.ReleaseVersionId),
       DependencyScope.COMPILE),
   OBJECTIFY(
       GctBundle.message("appengine.library.objectify.api.name"),
-      new RepositoryLibraryProperties("com.googlecode.objectify", "objectify",
-          RepositoryUtils.ReleaseVersionId),
+      new RepositoryLibraryProperties(
+          "com.googlecode.objectify", "objectify", RepositoryUtils.ReleaseVersionId),
       DependencyScope.COMPILE);
 
   private final String displayName;
@@ -62,11 +61,52 @@ public enum AppEngineStandardMavenLibrary {
   private final RepositoryLibraryProperties libraryProperties;
   private final DependencyScope scope;
 
-  AppEngineStandardMavenLibrary(String displayName, RepositoryLibraryProperties libraryProperties,
-      DependencyScope scope) {
+  AppEngineStandardMavenLibrary(
+      String displayName, RepositoryLibraryProperties libraryProperties, DependencyScope scope) {
     this.displayName = displayName;
     this.libraryProperties = libraryProperties;
     this.scope = scope;
+  }
+
+  @Nullable
+  public static AppEngineStandardMavenLibrary getLibraryByDisplayName(final String name) {
+    return getLibrary(
+        new Predicate<AppEngineStandardMavenLibrary>() {
+          @Override
+          public boolean apply(@Nullable AppEngineStandardMavenLibrary library) {
+            return library != null && name.equals(library.getDisplayName());
+          }
+        });
+  }
+
+  @Nullable
+  public static AppEngineStandardMavenLibrary getLibraryByMavenDisplayName(final String name) {
+    return getLibrary(
+        new Predicate<AppEngineStandardMavenLibrary>() {
+          @Override
+          public boolean apply(@Nullable AppEngineStandardMavenLibrary library) {
+            return library != null
+                && name.equals(toMavenDisplayVersion(library.getLibraryProperties()));
+          }
+        });
+  }
+
+  public static AppEngineStandardMavenLibrary getLibrary(
+      Predicate<AppEngineStandardMavenLibrary> predicate) {
+    return Iterables.find(
+        Arrays.asList(AppEngineStandardMavenLibrary.values()), predicate, null /*default value*/);
+  }
+
+  /**
+   * Certain maven versions like "LATEST" are displayed differently - e.g. "Latest", so we need to
+   * reconstruct the maven display name manually
+   */
+  public static String toMavenDisplayVersion(RepositoryLibraryProperties libraryProperties) {
+    return libraryProperties.getGroupId()
+        + ":"
+        + libraryProperties.getArtifactId()
+        + ":"
+        + WordUtils.capitalize(libraryProperties.getVersion().toLowerCase());
   }
 
   public String getDisplayName() {
@@ -79,44 +119,5 @@ public enum AppEngineStandardMavenLibrary {
 
   public DependencyScope getScope() {
     return scope;
-  }
-
-  @Nullable
-  public static AppEngineStandardMavenLibrary getLibraryByDisplayName(final String name) {
-    return getLibrary(new Predicate<AppEngineStandardMavenLibrary>() {
-      @Override
-      public boolean apply(@Nullable AppEngineStandardMavenLibrary library) {
-        return library != null && name.equals(library.getDisplayName());
-      }
-    });
-  }
-
-  @Nullable
-  public static AppEngineStandardMavenLibrary getLibraryByMavenDisplayName(final String name) {
-    return getLibrary(new Predicate<AppEngineStandardMavenLibrary>() {
-      @Override
-      public boolean apply(@Nullable AppEngineStandardMavenLibrary library) {
-        return library != null
-            && name.equals(toMavenDisplayVersion(library.getLibraryProperties()));
-      }
-    });
-  }
-
-  public static AppEngineStandardMavenLibrary getLibrary(
-      Predicate<AppEngineStandardMavenLibrary> predicate) {
-    return Iterables.find(
-        Arrays.asList(AppEngineStandardMavenLibrary.values()),
-        predicate,
-        null /*default value*/);
-  }
-
-  /**
-   * Certain maven versions like "LATEST" are displayed differently - e.g. "Latest", so we need to
-   * reconstruct the maven display name manually
-   */
-  public static String toMavenDisplayVersion(RepositoryLibraryProperties libraryProperties) {
-    return libraryProperties.getGroupId() + ":"
-        + libraryProperties.getArtifactId() + ":"
-        + WordUtils.capitalize(libraryProperties.getVersion().toLowerCase());
   }
 }

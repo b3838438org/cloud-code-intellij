@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,16 +16,12 @@
 
 package com.google.cloud.tools.intellij.stats;
 
-/**
- * For usage tracker of the Google Login actions.
- */
+/** For usage tracker of the Google Login actions. */
 public class LoginTracking {
-
-  private LoginTracking() {
-  }
 
   public static final String LOGIN_START = "user.login.start";
   public static final String LOGIN_CANCELLED = "user.login.cancelled";
   public static final String LOGIN_COMPLETE = "user.login.complete";
   public static final String LOGOUT_COMPLETE = "user.logout.complete";
+  private LoginTracking() {}
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,9 +39,7 @@ import java.util.Arrays;
 
 import javax.swing.Icon;
 
-/**
- * @author nik
- */
+/** @author nik */
 public class AppEngineServerConfigurationType extends J2EEConfigurationType {
 
   public static AppEngineServerConfigurationType getInstance() {
@@ -49,12 +47,12 @@ public class AppEngineServerConfigurationType extends J2EEConfigurationType {
   }
 
   @Override
-  protected RunConfiguration createJ2EEConfigurationTemplate(ConfigurationFactory factory,
-      Project project, boolean isLocal) {
+  protected RunConfiguration createJ2EEConfigurationTemplate(
+      ConfigurationFactory factory, Project project, boolean isLocal) {
     final AppEngineServerModel serverModel = new AppEngineServerModel();
     return J2EEConfigurationFactory.getInstance()
-        .createJ2EERunConfiguration(factory, project, serverModel,
-            getIntegration(), isLocal, new CloudSdkStartupPolicy());
+        .createJ2EERunConfiguration(
+            factory, project, serverModel, getIntegration(), isLocal, new CloudSdkStartupPolicy());
   }
 
   @Override
@@ -77,32 +75,34 @@ public class AppEngineServerConfigurationType extends J2EEConfigurationType {
   public ConfigurationFactory[] getConfigurationFactories() {
     final ConfigurationFactory configurationFactory = super.getConfigurationFactories()[0];
 
-    return new ConfigurationFactory[]{
-        new ConfigurationFactory(this) {
-          @Override
-          public String getName() {
-            return configurationFactory.getName();
-          }
-
-          @NotNull
-          @Override
-          public RunConfiguration createTemplateConfiguration(@NotNull Project project) {
-            return configurationFactory.createTemplateConfiguration(project);
-          }
-
-          /**
-           * If false, then this run configuration shows up under the "irrelevant" section. If it's
-           * not an App Engine Standard project (doesn't have an appengine-web.xml) then the run
-           * config should show up as "irrelevant".
-           */
-          @Override
-          public boolean isApplicable(@NotNull Project project) {
-            XmlFile webXml = AppEngineAssetProvider.getInstance().loadAppEngineStandardWebXml(
-                project, Arrays.asList(ModuleManager.getInstance(project).getModules()));
-
-            return webXml != null;
-          }
+    return new ConfigurationFactory[] {
+      new ConfigurationFactory(this) {
+        @Override
+        public String getName() {
+          return configurationFactory.getName();
         }
+
+        @NotNull
+        @Override
+        public RunConfiguration createTemplateConfiguration(@NotNull Project project) {
+          return configurationFactory.createTemplateConfiguration(project);
+        }
+
+        /**
+         * If false, then this run configuration shows up under the "irrelevant" section. If it's
+         * not an App Engine Standard project (doesn't have an appengine-web.xml) then the run
+         * config should show up as "irrelevant".
+         */
+        @Override
+        public boolean isApplicable(@NotNull Project project) {
+          XmlFile webXml =
+              AppEngineAssetProvider.getInstance()
+                  .loadAppEngineStandardWebXml(
+                      project, Arrays.asList(ModuleManager.getInstance(project).getModules()));
+
+          return webXml != null;
+        }
+      }
     };
   }
 

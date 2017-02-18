@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,7 +50,7 @@ dependencies {
     compile 'com.google.apis:google-api-services-clouddebugger:v2-rev7-1.21.0'
     compile 'com.google.apis:google-api-services-cloudresourcemanager:v1beta1-rev12-1.21.0'
     compile 'com.google.apis:google-api-services-appengine:v1-rev8-1.22.0'
-    compile ('com.google.cloud.tools:appengine-plugins-core:' + toolsLibVersion) {
+    compile('com.google.cloud.tools:appengine-plugins-core:' + toolsLibVersion) {
         exclude group: 'com.google.guava', module: 'guava'
     }
     compile files('lib/google-api-services-source.jar')
@@ -78,8 +78,8 @@ test {
     testLogging {
         events "skipped", "failed"
     }
-    doLast{
-       println "View report at file://$buildDir/reports/tests/index.html"
+    doLast {
+        println "View report at file://$buildDir/reports/tests/index.html"
     }
 }
 

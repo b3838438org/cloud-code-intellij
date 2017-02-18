@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,9 +31,7 @@ import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * Inspection to check that the return type of an API method is an entity (resource) type.
- */
+/** Inspection to check that the return type of an API method is an entity (resource) type. */
 public class MethodReturnTypeInspection extends EndpointInspectionBase {
 
   @Override
@@ -94,9 +92,12 @@ public class MethodReturnTypeInspection extends EndpointInspectionBase {
         }
 
         if (!isEntityParameter(returnType, project)) {
-          holder.registerProblem(method.getReturnTypeElement(),
-              "Invalid return type: " + returnType.getPresentableText()
-                  + ". Primitives and enums are not allowed.", LocalQuickFix.EMPTY_ARRAY);
+          holder.registerProblem(
+              method.getReturnTypeElement(),
+              "Invalid return type: "
+                  + returnType.getPresentableText()
+                  + ". Primitives and enums are not allowed.",
+              LocalQuickFix.EMPTY_ARRAY);
         }
       }
     };

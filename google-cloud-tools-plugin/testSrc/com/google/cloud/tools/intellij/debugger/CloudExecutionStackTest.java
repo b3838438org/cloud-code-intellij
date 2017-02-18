@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,8 +42,7 @@ import javax.swing.Icon;
 @RunWith(MockitoJUnitRunner.class)
 public class CloudExecutionStackTest {
 
-  @Mock
-  private Project project;
+  @Mock private Project project;
 
   @Test
   public void testGetTopFrame_nullFramesReturnsNull() {
@@ -93,25 +92,23 @@ public class CloudExecutionStackTest {
     }
 
     @Override
-    public void tooManyChildren(int remaining) {
-    }
+    public void tooManyChildren(int remaining) {}
 
     @Override
-    public void setAlreadySorted(boolean alreadySorted) {
-    }
+    public void setAlreadySorted(boolean alreadySorted) {}
 
     @Override
-    public void setErrorMessage(String errorMessage) {
-    }
+    public void setErrorMessage(String errorMessage) {}
 
     @Override
-    public void setErrorMessage(String errorMessage, XDebuggerTreeNodeHyperlink link) {
-    }
+    public void setErrorMessage(String errorMessage, XDebuggerTreeNodeHyperlink link) {}
 
     @Override
-    public void setMessage(String message, Icon icon,
-        SimpleTextAttributes attributes, XDebuggerTreeNodeHyperlink link) {
-    }
+    public void setMessage(
+        String message,
+        Icon icon,
+        SimpleTextAttributes attributes,
+        XDebuggerTreeNodeHyperlink link) {}
 
     @Override
     public boolean isObsolete() {

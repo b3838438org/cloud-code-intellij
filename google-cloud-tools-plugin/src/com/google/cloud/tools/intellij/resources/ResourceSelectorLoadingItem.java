@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,15 +30,13 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-/**
- * Displays UI similar to "loading..." when an resource manager call is in progress.
- */
+/** Displays UI similar to "loading..." when an resource manager call is in progress. */
 class ResourceSelectorLoadingItem extends JPanel {
 
   private JLabel progressIcon;
 
-  public ResourceSelectorLoadingItem(@NotNull Color backgroundNonSelectionColor,
-      @NotNull Color textNonSelectionColor) {
+  public ResourceSelectorLoadingItem(
+      @NotNull Color backgroundNonSelectionColor, @NotNull Color textNonSelectionColor) {
     this.setLayout(new FlowLayout());
     this.setOpaque(false);
 

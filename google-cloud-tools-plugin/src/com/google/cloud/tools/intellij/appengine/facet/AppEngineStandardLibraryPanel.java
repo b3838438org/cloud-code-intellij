@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,9 +35,7 @@ import javax.annotation.Nullable;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 
-/**
- * UI panel for configuring App Engine standard environment libraries.
- */
+/** UI panel for configuring App Engine standard environment libraries. */
 public class AppEngineStandardLibraryPanel {
 
   private JPanel mainPanel;
@@ -49,8 +47,13 @@ public class AppEngineStandardLibraryPanel {
   private JCheckBox endpointsCheckBox;
   private JCheckBox objectifyCheckBox;
 
-  private List<JCheckBox> libraries = ImmutableList.of(servletApiCheckbox, jstlCheckbox,
-      appEngineApiCheckBox, endpointsCheckBox, objectifyCheckBox);
+  private List<JCheckBox> libraries =
+      ImmutableList.of(
+          servletApiCheckbox,
+          jstlCheckbox,
+          appEngineApiCheckBox,
+          endpointsCheckBox,
+          objectifyCheckBox);
 
   private boolean enabled = true;
 
@@ -65,47 +68,51 @@ public class AppEngineStandardLibraryPanel {
     // Objectify and Endpoints are dependencies of the App Engine API.
     objectifyCheckBox.setSelected(false);
     endpointsCheckBox.setSelected(false);
-    appEngineApiCheckBox.addItemListener(new ItemListener() {
-      @Override
-      public void itemStateChanged(ItemEvent event) {
-        JCheckBox checkbox = (JCheckBox) event.getItem();
+    appEngineApiCheckBox.addItemListener(
+        new ItemListener() {
+          @Override
+          public void itemStateChanged(ItemEvent event) {
+            JCheckBox checkbox = (JCheckBox) event.getItem();
 
-        if (!checkbox.isSelected()) {
-          objectifyCheckBox.setSelected(false);
-          endpointsCheckBox.setSelected(false);
-        }
-      }
-    });
+            if (!checkbox.isSelected()) {
+              objectifyCheckBox.setSelected(false);
+              endpointsCheckBox.setSelected(false);
+            }
+          }
+        });
     objectifyCheckBox.addItemListener(new AppEngineApiDependencyCheckboxListener());
     endpointsCheckBox.addItemListener(new AppEngineApiDependencyCheckboxListener());
   }
 
   public Set<AppEngineStandardMavenLibrary> getSelectedLibraries() {
-    return Sets.newHashSet(Collections2.filter(
-        Collections2.transform(libraries,
-            new Function<JCheckBox, AppEngineStandardMavenLibrary>() {
-              @Nullable
-              @Override
-              public AppEngineStandardMavenLibrary apply(JCheckBox libraryCheckbox) {
-                return libraryCheckbox.isSelected()
-                    ? AppEngineStandardMavenLibrary
-                    .getLibraryByDisplayName(libraryCheckbox.getText())
-                    : null;
-              }
-            }),
-        Predicates.notNull()
-    ));
+    return Sets.newHashSet(
+        Collections2.filter(
+            Collections2.transform(
+                libraries,
+                new Function<JCheckBox, AppEngineStandardMavenLibrary>() {
+                  @Nullable
+                  @Override
+                  public AppEngineStandardMavenLibrary apply(JCheckBox libraryCheckbox) {
+                    return libraryCheckbox.isSelected()
+                        ? AppEngineStandardMavenLibrary.getLibraryByDisplayName(
+                            libraryCheckbox.getText())
+                        : null;
+                  }
+                }),
+            Predicates.notNull()));
   }
 
   public void setSelectedLibraries(Set<AppEngineStandardMavenLibrary> mavenLibraries) {
-    Collection<String> availableLibraryNames = Collections2.transform(mavenLibraries,
-        new Function<AppEngineStandardMavenLibrary, String>() {
-          @Nullable
-          @Override
-          public String apply(AppEngineStandardMavenLibrary mavenLibrary) {
-            return mavenLibrary.getDisplayName();
-          }
-        });
+    Collection<String> availableLibraryNames =
+        Collections2.transform(
+            mavenLibraries,
+            new Function<AppEngineStandardMavenLibrary, String>() {
+              @Nullable
+              @Override
+              public String apply(AppEngineStandardMavenLibrary mavenLibrary) {
+                return mavenLibrary.getDisplayName();
+              }
+            });
 
     for (JCheckBox libraryCheckbox : libraries) {
       libraryCheckbox.setSelected(availableLibraryNames.contains(libraryCheckbox.getText()));

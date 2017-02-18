@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,9 +20,7 @@ import com.intellij.openapi.components.ServiceManager;
 
 import org.jetbrains.annotations.NotNull;
 
-/**
- * Usage Tracker Provider (as a Service) for obtaining UsageTracker implementations.
- */
+/** Usage Tracker Provider (as a Service) for obtaining UsageTracker implementations. */
 public abstract class UsageTrackerProvider {
 
   @NotNull
@@ -30,10 +28,7 @@ public abstract class UsageTrackerProvider {
     return ServiceManager.getService(UsageTrackerProvider.class).getTracker();
   }
 
-  /**
-   * Do not return a tracker that includes PII.
-   */
+  /** Do not return a tracker that includes PII. */
   @NotNull
   protected abstract UsageTracker getTracker();
-
 }

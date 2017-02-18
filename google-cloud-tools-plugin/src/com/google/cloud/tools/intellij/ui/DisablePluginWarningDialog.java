@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,31 +39,29 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-/**
- * A Dialog that prompts a user to disable a plugin.
- */
+/** A Dialog that prompts a user to disable a plugin. */
 public class DisablePluginWarningDialog extends DialogWrapper {
-  private JLabel promptLabel;
-  private JLabel restartLabel;
-  private JPanel contentPane;
-
   private static final int DISABLE_EXIT_CODE = OK_EXIT_CODE;
   private static final int DISABLE_AND_RESTART_EXIT_CODE = NEXT_USER_EXIT_CODE;
   private final PluginId pluginId;
   private final boolean isRestartCapable;
+  private JLabel promptLabel;
+  private JLabel restartLabel;
+  private JPanel contentPane;
 
-  public DisablePluginWarningDialog(@NotNull PluginId pluginId,
-      @NotNull Component parentComponent) {
+  public DisablePluginWarningDialog(
+      @NotNull PluginId pluginId, @NotNull Component parentComponent) {
     super(parentComponent, false);
 
     this.pluginId = pluginId;
     IdeaPluginDescriptor plugin = PluginManager.getPlugin(pluginId);
     isRestartCapable = ApplicationManager.getApplication().isRestartCapable();
-    promptLabel.setText(
-        GctBundle.message("error.dialog.disable.plugin.prompt", plugin.getName()));
-    restartLabel
-        .setText(GctBundle.message(isRestartCapable
-            ? "error.dialog.disable.plugin.restart" : "error.dialog.disable.plugin.norestart",
+    promptLabel.setText(GctBundle.message("error.dialog.disable.plugin.prompt", plugin.getName()));
+    restartLabel.setText(
+        GctBundle.message(
+            isRestartCapable
+                ? "error.dialog.disable.plugin.restart"
+                : "error.dialog.disable.plugin.norestart",
             ApplicationNamesInfo.getInstance().getFullProductName()));
 
     setTitle(GctBundle.message("error.dialog.disable.plugin.title"));
@@ -96,15 +94,15 @@ public class DisablePluginWarningDialog extends DialogWrapper {
   protected Action[] createActions() {
     if (SystemInfo.isMac) {
       if (isRestartCapable) {
-        return new Action[]{getCancelAction(), new DisableAction(), new DisableAndRestartAction()};
+        return new Action[] {getCancelAction(), new DisableAction(), new DisableAndRestartAction()};
       } else {
-        return new Action[]{getCancelAction(), new DisableAction()};
+        return new Action[] {getCancelAction(), new DisableAction()};
       }
     } else {
       if (isRestartCapable) {
-        return new Action[]{new DisableAction(), new DisableAndRestartAction(), getCancelAction()};
+        return new Action[] {new DisableAction(), new DisableAndRestartAction(), getCancelAction()};
       } else {
-        return new Action[]{new DisableAction(), getCancelAction()};
+        return new Action[] {new DisableAction(), getCancelAction()};
       }
     }
   }

@@ -53,26 +53,17 @@ import java.util.Optional;
 
 import javax.swing.Icon;
 
-/**
- * Unit tests for {@link CloudSdkAppEngineHelper}
- */
+/** Unit tests for {@link CloudSdkAppEngineHelper} */
 public class CloudSdkAppEngineHelperTest extends BasePluginTestCase {
 
   CloudSdkAppEngineHelper helper;
-  @Mock
-  private AppEngineDeploymentConfiguration deploymentConfiguration;
-  @Mock
-  private GoogleLoginService googleLoginService;
-  @Mock
-  private CredentialedUser credentialedUser;
-  @Mock
-  private GoogleLoginState loginState;
-  @Mock
-  private LoggingHandler loggingHandler;
-  @Mock
-  private DeploymentOperationCallback callback;
-  @Mock
-  private CloudSdkService sdkService;
+  @Mock private AppEngineDeploymentConfiguration deploymentConfiguration;
+  @Mock private GoogleLoginService googleLoginService;
+  @Mock private CredentialedUser credentialedUser;
+  @Mock private GoogleLoginState loginState;
+  @Mock private LoggingHandler loggingHandler;
+  @Mock private DeploymentOperationCallback callback;
+  @Mock private CloudSdkService sdkService;
 
   @Before
   public void initialize() {
@@ -90,8 +81,7 @@ public class CloudSdkAppEngineHelperTest extends BasePluginTestCase {
     String refreshToken = "refreshToken";
     when(deploymentConfiguration.getGoogleUsername()).thenReturn(username);
     when(googleLoginService.ensureLoggedIn(username)).thenReturn(true);
-    when(googleLoginService.getLoggedInUser(username))
-        .thenReturn(Optional.of(credentialedUser));
+    when(googleLoginService.getLoggedInUser(username)).thenReturn(Optional.of(credentialedUser));
     when(credentialedUser.getGoogleLoginState()).thenReturn(loginState);
     when(loginState.fetchOAuth2ClientId()).thenReturn(clientId);
     when(loginState.fetchOAuth2ClientSecret()).thenReturn(clientSecret);
@@ -120,10 +110,7 @@ public class CloudSdkAppEngineHelperTest extends BasePluginTestCase {
   public void testCreateDeployRunnerInvalidDeploymentSourceType_throwsException() {
     try {
       helper.createDeployRunner(
-          loggingHandler,
-          new SimpleDeploymentSource(),
-          deploymentConfiguration,
-          callback);
+          loggingHandler, new SimpleDeploymentSource(), deploymentConfiguration, callback);
       fail("Expected RuntimeException");
     } catch (RuntimeException re) {
       verify(callback, times(1)).errorOccurred("Invalid deployment source.");
@@ -134,11 +121,9 @@ public class CloudSdkAppEngineHelperTest extends BasePluginTestCase {
   public void testCreateDeployRunnerInvalidDeploymentSourceFile_returnsNull() {
     when(sdkService.validateCloudSdk()).thenReturn(ImmutableSet.of());
 
-    Runnable runner = helper.createDeployRunner(
-        loggingHandler,
-        new DeployableDeploymentSource(),
-        deploymentConfiguration,
-        callback);
+    Runnable runner =
+        helper.createDeployRunner(
+            loggingHandler, new DeployableDeploymentSource(), deploymentConfiguration, callback);
 
     assertNull(runner);
     verify(callback, times(1)).errorOccurred("Deployment source not found: null.");
@@ -146,23 +131,19 @@ public class CloudSdkAppEngineHelperTest extends BasePluginTestCase {
 
   @Test
   public void testCreateDeployRunnerInvalidSdk() {
-    when(sdkService.validateCloudSdk()).thenReturn(
-        ImmutableSet.of(CloudSdkValidationResult.CLOUD_SDK_NOT_FOUND));
+    when(sdkService.validateCloudSdk())
+        .thenReturn(ImmutableSet.of(CloudSdkValidationResult.CLOUD_SDK_NOT_FOUND));
     Path path = Paths.get(("/this/path"));
     when(sdkService.getSdkHomePath()).thenReturn(path);
 
-    Runnable runner = helper.createDeployRunner(
-        loggingHandler,
-        new DeployableDeploymentSource(),
-        deploymentConfiguration,
-        callback);
+    Runnable runner =
+        helper.createDeployRunner(
+            loggingHandler, new DeployableDeploymentSource(), deploymentConfiguration, callback);
 
     assertNull(runner);
     verify(callback, times(1))
-        .errorOccurred(
-            "No Cloud SDK was found in the specified directory. " + path.toString());
+        .errorOccurred("No Cloud SDK was found in the specified directory. " + path.toString());
   }
-
 
   private static class SimpleDeploymentSource implements DeploymentSource {
 
@@ -220,9 +201,7 @@ public class CloudSdkAppEngineHelperTest extends BasePluginTestCase {
     }
 
     @Override
-    public void setProjectName(String projectName) {
-
-    }
+    public void setProjectName(String projectName) {}
 
     @Override
     public String getVersion() {
@@ -230,9 +209,7 @@ public class CloudSdkAppEngineHelperTest extends BasePluginTestCase {
     }
 
     @Override
-    public void setVersion(String version) {
-
-    }
+    public void setVersion(String version) {}
 
     @Nullable
     @Override
@@ -274,5 +251,4 @@ public class CloudSdkAppEngineHelperTest extends BasePluginTestCase {
       return null;
     }
   }
-
 }

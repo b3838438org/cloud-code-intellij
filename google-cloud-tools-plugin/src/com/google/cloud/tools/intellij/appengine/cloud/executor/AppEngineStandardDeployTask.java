@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,7 +48,7 @@ public class AppEngineStandardDeployTask extends AppEngineTask {
 
   /**
    * @param isFlexCompat does not change any behavior of actual deployment. Provided solely for the
-   *                     purpose of Analytics usage reporting.
+   *     purpose of Analytics usage reporting.
    */
   public AppEngineStandardDeployTask(
       @NotNull AppEngineDeploy deploy,
@@ -70,45 +70,51 @@ public class AppEngineStandardDeployTask extends AppEngineTask {
     AppEngineHelper helper = deploy.getHelper();
 
     try {
-      stagingDirectory = helper.createStagingDirectory(
-          deploy.getLoggingHandler(),
-          deploy.getDeploymentConfiguration().getCloudProjectName());
+      stagingDirectory =
+          helper.createStagingDirectory(
+              deploy.getLoggingHandler(),
+              deploy.getDeploymentConfiguration().getCloudProjectName());
     } catch (IOException ioe) {
-      deploy.getCallback().errorOccurred(
-          GctBundle.message("appengine.deployment.error.creating.staging.directory"));
+      deploy
+          .getCallback()
+          .errorOccurred(
+              GctBundle.message("appengine.deployment.error.creating.staging.directory"));
       logger.error(ioe);
       return;
     }
 
     try {
-      if (helper.stageCredentials(
-          deploy.getDeploymentConfiguration().getGoogleUsername()) == null) {
-        deploy.getCallback().errorOccurred(
-            GctBundle.message("appengine.staging.credentials.error.message"));
+      if (helper.stageCredentials(deploy.getDeploymentConfiguration().getGoogleUsername())
+          == null) {
+        deploy
+            .getCallback()
+            .errorOccurred(GctBundle.message("appengine.staging.credentials.error.message"));
         return;
       }
 
-      stageStandard.stage(
-          stagingDirectory,
-          startListener,
-          deploy(stagingDirectory, startListener));
+      stageStandard.stage(stagingDirectory, startListener, deploy(stagingDirectory, startListener));
     } catch (AppEngineJavaComponentsNotInstalledException ex) {
-      deploy.getCallback().errorOccurred(
-          GctBundle.message("appengine.cloudsdk.java.components.missing") + "\n"
-              + GctBundle.message("appengine.cloudsdk.java.components.howtoinstall"));
+      deploy
+          .getCallback()
+          .errorOccurred(
+              GctBundle.message("appengine.cloudsdk.java.components.missing")
+                  + "\n"
+                  + GctBundle.message("appengine.cloudsdk.java.components.howtoinstall"));
       logger.warn(ex);
     } catch (RuntimeException re) {
-      deploy.getCallback()
-          .errorOccurred(GctBundle.message("appengine.deployment.exception.during.staging") + "\n"
-              + GctBundle.message("appengine.action.error.update.message"));
+      deploy
+          .getCallback()
+          .errorOccurred(
+              GctBundle.message("appengine.deployment.exception.during.staging")
+                  + "\n"
+                  + GctBundle.message("appengine.action.error.update.message"));
       logger.error(re);
     }
   }
 
   @VisibleForTesting
   ProcessExitListener deploy(
-      @NotNull final Path stagingDirectory,
-      @NotNull final ProcessStartListener startListener) {
+      @NotNull final Path stagingDirectory, @NotNull final ProcessStartListener startListener) {
     return new ProcessExitListener() {
       @Override
       public void onExit(int exitCode) {
@@ -116,14 +122,19 @@ public class AppEngineStandardDeployTask extends AppEngineTask {
           try {
             deploy.deploy(stagingDirectory, startListener);
           } catch (RuntimeException re) {
-            deploy.getCallback()
-                .errorOccurred(GctBundle.message("appengine.deployment.exception") + "\n"
-                    + GctBundle.message("appengine.action.error.update.message"));
+            deploy
+                .getCallback()
+                .errorOccurred(
+                    GctBundle.message("appengine.deployment.exception")
+                        + "\n"
+                        + GctBundle.message("appengine.action.error.update.message"));
             logger.error(re);
           }
         } else {
-          deploy.getCallback()
-              .errorOccurred(GctBundle.message("appengine.deployment.error.during.staging", exitCode));
+          deploy
+              .getCallback()
+              .errorOccurred(
+                  GctBundle.message("appengine.deployment.error.during.staging", exitCode));
           logger.warn(
               "App engine standard staging process exited with an error. Exit Code:" + exitCode);
         }

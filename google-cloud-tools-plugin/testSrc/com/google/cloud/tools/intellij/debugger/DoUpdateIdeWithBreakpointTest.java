@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,19 +55,13 @@ public class DoUpdateIdeWithBreakpointTest extends BasePluginTestCase {
   private static final String MOCK_BREAKPOINT_CONDITION = "mock breakpoint condition";
   private static final String MOCK_BREAKPOINT_EXPRESSION = "mock breakpoint expression";
 
-  @Mock
-  private XLineBreakpoint<CloudLineBreakpointProperties> xLineBreakpoint;
-  @Mock
-  private CloudLineBreakpoint cloudLineBreakpoint;
-  @Mock
-  private XBreakpointManager breakpointManager;
-  @Mock
-  private CloudDebugProcess cloudDebugProcess;
-  @Mock
-  private VirtualFile virtualFile;
+  @Mock private XLineBreakpoint<CloudLineBreakpointProperties> xLineBreakpoint;
+  @Mock private CloudLineBreakpoint cloudLineBreakpoint;
+  @Mock private XBreakpointManager breakpointManager;
+  @Mock private CloudDebugProcess cloudDebugProcess;
+  @Mock private VirtualFile virtualFile;
 
-  @Captor
-  private ArgumentCaptor<Key<String>> keyArgumentCaptor;
+  @Captor private ArgumentCaptor<Key<String>> keyArgumentCaptor;
 
   private CloudLineBreakpointProperties cloudLineBreakpointProperties;
 
@@ -87,14 +81,16 @@ public class DoUpdateIdeWithBreakpointTest extends BasePluginTestCase {
         .thenReturn(cloudLineBreakpoint);
     when(xLineBreakpoint.getProperties()).thenReturn(cloudLineBreakpointProperties);
 
-    when(breakpointManager.addLineBreakpoint(any(CloudLineBreakpointType.class),
-                                             anyString(),
-                                             anyInt(),
-                                             eq(cloudLineBreakpointProperties)))
+    when(breakpointManager.addLineBreakpoint(
+            any(CloudLineBreakpointType.class),
+            anyString(),
+            anyInt(),
+            eq(cloudLineBreakpointProperties)))
         .thenReturn(xLineBreakpoint);
 
     Breakpoint serverBreakpoint = new Breakpoint();
-    serverBreakpoint.setId("mock-breakpoint-id")
+    serverBreakpoint
+        .setId("mock-breakpoint-id")
         .setCondition(MOCK_BREAKPOINT_CONDITION)
         .setExpressions(Lists.newArrayList(MOCK_BREAKPOINT_EXPRESSION));
 
@@ -102,36 +98,38 @@ public class DoUpdateIdeWithBreakpointTest extends BasePluginTestCase {
 
     int line = 1;
 
-    new DoUpdateIdeWithBreakpoint(breakpointManager,
-                                      virtualFile,
-                                      line,
-                                      cloudLineBreakpointProperties,
-                                      serverBreakpoint,
-                                      ideBreakpoints,
-                                      cloudDebugProcess)
+    new DoUpdateIdeWithBreakpoint(
+            breakpointManager,
+            virtualFile,
+            line,
+            cloudLineBreakpointProperties,
+            serverBreakpoint,
+            ideBreakpoints,
+            cloudDebugProcess)
         .run();
 
-    verify(breakpointManager).addLineBreakpoint(any(CloudLineBreakpointType.class),
-                                                eq(MOCK_FILE_URL),
-                                                eq(line),
-                                                eq(cloudLineBreakpointProperties));
+    verify(breakpointManager)
+        .addLineBreakpoint(
+            any(CloudLineBreakpointType.class),
+            eq(MOCK_FILE_URL),
+            eq(line),
+            eq(cloudLineBreakpointProperties));
 
     verify(xLineBreakpoint).putUserData(keyArgumentCaptor.capture(), eq("mock-breakpoint-id"));
-    assertThat(keyArgumentCaptor.getValue().toString(), equalTo("CloudId")); //CloudBreakpointHandler.CLOUD_ID
+    assertThat(
+        keyArgumentCaptor.getValue().toString(),
+        equalTo("CloudId")); //CloudBreakpointHandler.CLOUD_ID
 
-    assertThat(ideBreakpoints.get("mock-breakpoint-id"),
-               IsEqual.<XBreakpoint>equalTo(xLineBreakpoint));
+    assertThat(
+        ideBreakpoints.get("mock-breakpoint-id"), IsEqual.<XBreakpoint>equalTo(xLineBreakpoint));
 
     verify(xLineBreakpoint).setCondition(eq(MOCK_BREAKPOINT_CONDITION));
 
-    assertThat(cloudLineBreakpointProperties.getWatchExpressions(),
-               arrayWithSize(1));
-    assertThat(cloudLineBreakpointProperties.getWatchExpressions()[0],
-               is(MOCK_BREAKPOINT_EXPRESSION));
+    assertThat(cloudLineBreakpointProperties.getWatchExpressions(), arrayWithSize(1));
+    assertThat(
+        cloudLineBreakpointProperties.getWatchExpressions()[0], is(MOCK_BREAKPOINT_EXPRESSION));
     assertFalse(cloudLineBreakpointProperties.isCreatedByServer());
 
     verify(cloudDebugProcess).updateBreakpointPresentation(cloudLineBreakpoint);
   }
-
-
 }

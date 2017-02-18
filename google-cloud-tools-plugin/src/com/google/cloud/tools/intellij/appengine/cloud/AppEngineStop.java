@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,9 +36,7 @@ import java.util.Collections;
 
 import javax.swing.SwingUtilities;
 
-/**
- * Stops a module & version of an application running on App Engine.
- */
+/** Stops a module & version of an application running on App Engine. */
 public class AppEngineStop {
 
   private static final Logger logger = Logger.getInstance(AppEngineStop.class);
@@ -48,9 +46,7 @@ public class AppEngineStop {
   private AppEngineDeploymentConfiguration deploymentConfiguration;
   private UndeploymentTaskCallback callback;
 
-  /**
-   * Initialize the stop dependencies.
-   */
+  /** Initialize the stop dependencies. */
   public AppEngineStop(
       @NotNull AppEngineHelper helper,
       @NotNull LoggingHandler loggingHandler,
@@ -62,28 +58,24 @@ public class AppEngineStop {
     this.callback = callback;
   }
 
-  /**
-   * Stops the given module / version of an App Engine application.
-   */
+  /** Stops the given module / version of an App Engine application. */
   public void stop(
       @NotNull String module,
       @NotNull String version,
       @NotNull ProcessStartListener startListener) {
-    ProcessOutputLineListener outputListener = new ProcessOutputLineListener() {
-      @Override
-      public void onOutputLine(String line) {
-        loggingHandler.print(line + "\n");
-      }
-    };
+    ProcessOutputLineListener outputListener =
+        new ProcessOutputLineListener() {
+          @Override
+          public void onOutputLine(String line) {
+            loggingHandler.print(line + "\n");
+          }
+        };
 
     ProcessExitListener stopExitListener = new StopExitListener();
 
-    CloudSdk sdk = helper.createSdk(
-        loggingHandler,
-        startListener,
-        outputListener,
-        outputListener,
-        stopExitListener);
+    CloudSdk sdk =
+        helper.createSdk(
+            loggingHandler, startListener, outputListener, outputListener, stopExitListener);
 
     DefaultVersionsSelectionConfiguration configuration =
         new DefaultVersionsSelectionConfiguration();
@@ -115,21 +107,21 @@ public class AppEngineStop {
         if (exitCode == 0) {
           callback.succeeded();
 
-          SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-              Messages.showMessageDialog(
-                  GctBundle.message("appengine.stop.modules.version.success.dialog.message"),
-                  GctBundle.message("appengine.stop.modules.version.success.dialog.title"),
-                  General.Information);
-            }
-          });
+          SwingUtilities.invokeLater(
+              new Runnable() {
+                @Override
+                public void run() {
+                  Messages.showMessageDialog(
+                      GctBundle.message("appengine.stop.modules.version.success.dialog.message"),
+                      GctBundle.message("appengine.stop.modules.version.success.dialog.title"),
+                      General.Information);
+                }
+              });
         } else {
-          logger.warn(
-              "Application stop process exited with an error. Exit Code:" + exitCode);
+          logger.warn("Application stop process exited with an error. Exit Code:" + exitCode);
           callback.errorOccurred(
-              GctBundle.message("appengine.stop.modules.version.execution.error.with.code",
-                  exitCode));
+              GctBundle.message(
+                  "appengine.stop.modules.version.execution.error.with.code", exitCode));
         }
       } finally {
         helper.deleteCredentials();

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,8 +40,7 @@ public class AppEngineArtifactDeploymentSource extends ArtifactDeploymentSourceI
    * artifact pointer.
    */
   public AppEngineArtifactDeploymentSource(
-      @Nullable AppEngineEnvironment environment,
-      @NotNull ArtifactPointer pointer) {
+      @Nullable AppEngineEnvironment environment, @NotNull ArtifactPointer pointer) {
     super(pointer);
     this.environment = environment;
   }

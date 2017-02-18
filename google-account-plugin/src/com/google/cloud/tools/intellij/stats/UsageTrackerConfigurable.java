@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,9 +26,7 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.JComponent;
 
-/**
- * Creates a Usage Tracking item in the settings.
- */
+/** Creates a Usage Tracking item in the settings. */
 public class UsageTrackerConfigurable implements Configurable {
 
   private UsageTrackerPanel usageTrackerPanel;

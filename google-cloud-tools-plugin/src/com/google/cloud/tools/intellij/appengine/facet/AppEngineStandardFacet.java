@@ -19,6 +19,7 @@ package com.google.cloud.tools.intellij.appengine.facet;
 import com.google.cloud.tools.intellij.appengine.descriptor.dom.AppEngineStandardWebApp;
 import com.google.cloud.tools.intellij.appengine.project.AppEngineAssetProvider;
 import com.google.common.collect.ImmutableList;
+
 import com.intellij.facet.Facet;
 import com.intellij.facet.FacetManager;
 import com.intellij.facet.FacetType;
@@ -28,6 +29,7 @@ import com.intellij.openapi.module.Module;
 import com.intellij.psi.xml.XmlFile;
 import com.intellij.util.xml.DomFileElement;
 import com.intellij.util.xml.DomManager;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

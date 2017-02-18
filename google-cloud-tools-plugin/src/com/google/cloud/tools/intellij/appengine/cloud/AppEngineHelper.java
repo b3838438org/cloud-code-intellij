@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,26 +30,20 @@ import com.intellij.remoteServer.runtime.log.LoggingHandler;
 import java.io.IOException;
 import java.nio.file.Path;
 
-/**
- * Provides basic Gcloud based App Engine functionality for our Cloud Tools plugin.
- */
+/** Provides basic Gcloud based App Engine functionality for our Cloud Tools plugin. */
 public interface AppEngineHelper {
 
-  /**
-   * The project within the context of this helper.
-   */
+  /** The project within the context of this helper. */
   Project getProject();
 
-  /**
-   * The default app.yaml to use.
-   */
+  /** The default app.yaml to use. */
   Path defaultAppYaml();
 
   /**
    * The default Dockerfile we suggest for custom flexible deployments.
    *
    * @param deploymentArtifactType depending on the artifact type we provide a different default
-   *                               Dockerfile
+   *     Dockerfile
    * @return A {@link java.io.File} path to the default Dockerfile
    */
   Path defaultDockerfile(AppEngineFlexDeploymentArtifactType deploymentArtifactType);
@@ -78,9 +72,8 @@ public interface AppEngineHelper {
    * @return the file representing the staging directory
    * @throws IOException if the staging fails
    */
-  Path createStagingDirectory(
-      LoggingHandler loggingHandler,
-      String cloudProjectName) throws IOException;
+  Path createStagingDirectory(LoggingHandler loggingHandler, String cloudProjectName)
+      throws IOException;
 
   /**
    * Creates a {@link CloudSdk} object that is used in execution of various App Engine actions.
@@ -106,8 +99,6 @@ public interface AppEngineHelper {
    */
   Path stageCredentials(String googleUsername);
 
-  /**
-   * Deletes the locally staged credentials, if they exist.
-   */
+  /** Deletes the locally staged credentials, if they exist. */
   void deleteCredentials();
 }

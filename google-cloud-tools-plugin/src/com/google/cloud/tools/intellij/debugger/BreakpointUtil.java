@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,21 +30,16 @@ import org.joda.time.format.ISODateTimeFormat;
 import java.util.Collection;
 import java.util.Date;
 
-/**
- * Utility functions for cloud debug data.
- */
+/** Utility functions for cloud debug data. */
 public class BreakpointUtil {
-
-  private static final Logger LOG = Logger.getInstance(BreakpointUtil.class);
 
   // TODO(joaomartins): Check with API team on when the rollout to the NO_MS format is done,
   // so we can use only one parser.
   public static final Collection<DateTimeFormatter> FORMATS =
       ImmutableList.of(ISODateTimeFormat.dateTimeNoMillis(), ISODateTimeFormat.dateTime());
+  private static final Logger LOG = Logger.getInstance(BreakpointUtil.class);
 
-  /**
-   * This is a helper routine that converts a server {@link StatusMessage} to descriptive text.
-   */
+  /** This is a helper routine that converts a server {@link StatusMessage} to descriptive text. */
   @Nullable
   public static String getUserErrorMessage(@Nullable StatusMessage statusMessage) {
     if (statusMessage == null || !Boolean.TRUE.equals(statusMessage.getIsError())) {
@@ -52,13 +47,12 @@ public class BreakpointUtil {
     }
 
     String errorDescription = getUserMessage(statusMessage);
-    return !Strings.isNullOrEmpty(errorDescription) ? errorDescription
+    return !Strings.isNullOrEmpty(errorDescription)
+        ? errorDescription
         : GctBundle.getString("clouddebug.fallbackerrormessage");
   }
 
-  /**
-   * Formats and returns the user message.
-   */
+  /** Formats and returns the user message. */
   @Nullable
   public static String getUserMessage(@Nullable StatusMessage statusMessage) {
     if (statusMessage != null && statusMessage.getDescription() != null) {
@@ -80,10 +74,9 @@ public class BreakpointUtil {
    * Parses a date time string to a {@link java.util.Date}.
    *
    * <p>This method is currently only needed because the CDB service is returning ambiguous DateTime
-   * formats. https://github.com/GoogleCloudPlatform/google-cloud-intellij/issues/917.
-   * When the root cause is fixed, we should be able to replace this method with direct invocations
-   * to {@code DateTimeFormatter.parse()} or {@code java.time.ZonedDateTime.parse()}, if we're
-   * using Java8.
+   * formats. https://github.com/GoogleCloudPlatform/google-cloud-intellij/issues/917. When the root
+   * cause is fixed, we should be able to replace this method with direct invocations to {@code
+   * DateTimeFormatter.parse()} or {@code java.time.ZonedDateTime.parse()}, if we're using Java8.
    */
   @Nullable
   public static Date parseDateTime(@Nullable String dateString) {

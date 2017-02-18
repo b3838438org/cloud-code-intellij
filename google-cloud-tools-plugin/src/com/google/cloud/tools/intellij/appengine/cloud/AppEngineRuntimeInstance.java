@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,11 +36,8 @@ import org.joda.time.DateTime;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * A {@link ServerRuntimeInstance} for the {@link AppEngineCloudType}.
- */
-class AppEngineRuntimeInstance extends
-    ServerRuntimeInstance<AppEngineDeploymentConfiguration> {
+/** A {@link ServerRuntimeInstance} for the {@link AppEngineCloudType}. */
+class AppEngineRuntimeInstance extends ServerRuntimeInstance<AppEngineDeploymentConfiguration> {
 
   private final Set<CancellableRunnable> createdDeployments;
 
@@ -49,7 +46,8 @@ class AppEngineRuntimeInstance extends
   }
 
   @Override
-  public void deploy(@NotNull final DeploymentTask<AppEngineDeploymentConfiguration> task,
+  public void deploy(
+      @NotNull final DeploymentTask<AppEngineDeploymentConfiguration> task,
       @NotNull final DeploymentLogManager logManager,
       @NotNull final DeploymentOperationCallback callback) {
 
@@ -65,11 +63,9 @@ class AppEngineRuntimeInstance extends
 
     AppEngineDeploymentConfiguration deploymentConfig = task.getConfiguration();
 
-    final CancellableRunnable deployRunner =  appEngineHelper.createDeployRunner(
-        logManager.getMainLoggingHandler(),
-        task.getSource(),
-        deploymentConfig,
-        callback);
+    final CancellableRunnable deployRunner =
+        appEngineHelper.createDeployRunner(
+            logManager.getMainLoggingHandler(), task.getSource(), deploymentConfig, callback);
 
     if (deployRunner != null) {
       // keep track of any active deployments
@@ -78,25 +74,28 @@ class AppEngineRuntimeInstance extends
       }
 
       ProgressManager.getInstance()
-          .run(new Task.Backgroundable(task.getProject(), GctBundle.message(
-              "appengine.deployment.status.deploying"), true,
-              null) {
-            @Override
-            public void run(@NotNull ProgressIndicator indicator) {
-              ApplicationManager.getApplication().invokeLater(deployRunner);
-            }
-          });
+          .run(
+              new Task.Backgroundable(
+                  task.getProject(),
+                  GctBundle.message("appengine.deployment.status.deploying"),
+                  true,
+                  null) {
+                @Override
+                public void run(@NotNull ProgressIndicator indicator) {
+                  ApplicationManager.getApplication().invokeLater(deployRunner);
+                }
+              });
     }
   }
 
   /**
-   * Disambiguates running deployment line items by prepending a timestamp. Also appends the
-   * cloud project and version id's to the deployment string.
+   * Disambiguates running deployment line items by prepending a timestamp. Also appends the cloud
+   * project and version id's to the deployment string.
    */
   @NotNull
   @Override
-  public String getDeploymentName(@NotNull DeploymentSource source,
-      AppEngineDeploymentConfiguration configuration) {
+  public String getDeploymentName(
+      @NotNull DeploymentSource source, AppEngineDeploymentConfiguration configuration) {
     String deploymentName = String.format("[%s] ", DateTime.now().toString("yyyy-MM-dd HH:mm:ss"));
 
     // If its a user specified archive source then we want to label it by the name of the archive
@@ -122,8 +121,7 @@ class AppEngineRuntimeInstance extends
   }
 
   @Override
-  public void computeDeployments(@NotNull ComputeDeploymentsCallback callback) {
-  }
+  public void computeDeployments(@NotNull ComputeDeploymentsCallback callback) {}
 
   @Override
   public void disconnect() {
@@ -135,5 +133,4 @@ class AppEngineRuntimeInstance extends
       createdDeployments.clear();
     }
   }
-
 }

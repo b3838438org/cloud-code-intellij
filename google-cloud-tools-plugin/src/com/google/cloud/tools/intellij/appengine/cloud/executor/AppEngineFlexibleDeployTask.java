@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,8 +30,8 @@ import java.io.IOException;
 import java.nio.file.Path;
 
 /**
- * Runnable that executes a task responsible for deploying an application to the App Engine
- * flexible environment.
+ * Runnable that executes a task responsible for deploying an application to the App Engine flexible
+ * environment.
  */
 public class AppEngineFlexibleDeployTask extends AppEngineTask {
   private static final Logger logger = Logger.getInstance(AppEngineFlexibleDeployTask.class);
@@ -39,9 +39,7 @@ public class AppEngineFlexibleDeployTask extends AppEngineTask {
   private AppEngineDeploy deploy;
   private AppEngineFlexibleStage flexibleStage;
 
-  public AppEngineFlexibleDeployTask(
-      AppEngineDeploy deploy,
-      AppEngineFlexibleStage flexibleStage) {
+  public AppEngineFlexibleDeployTask(AppEngineDeploy deploy, AppEngineFlexibleStage flexibleStage) {
     this.deploy = deploy;
     this.flexibleStage = flexibleStage;
   }
@@ -50,7 +48,8 @@ public class AppEngineFlexibleDeployTask extends AppEngineTask {
   public void execute(ProcessStartListener startListener) {
     UsageTrackerProvider.getInstance()
         .trackEvent(GctTracking.APP_ENGINE_DEPLOY)
-        .addMetadata(GctTracking.METADATA_LABEL_KEY,
+        .addMetadata(
+            GctTracking.METADATA_LABEL_KEY,
             "flex." + (deploy.getDeploymentConfiguration().isAuto() ? "auto" : "custom"))
         .ping();
 
@@ -58,12 +57,15 @@ public class AppEngineFlexibleDeployTask extends AppEngineTask {
     AppEngineHelper helper = deploy.getHelper();
 
     try {
-      stagingDirectory = helper.createStagingDirectory(
-          deploy.getLoggingHandler(),
-          deploy.getDeploymentConfiguration().getCloudProjectName());
+      stagingDirectory =
+          helper.createStagingDirectory(
+              deploy.getLoggingHandler(),
+              deploy.getDeploymentConfiguration().getCloudProjectName());
     } catch (IOException ioe) {
-      deploy.getCallback().errorOccurred(
-          GctBundle.message("appengine.deployment.error.creating.staging.directory"));
+      deploy
+          .getCallback()
+          .errorOccurred(
+              GctBundle.message("appengine.deployment.error.creating.staging.directory"));
       logger.warn(ioe);
       return;
     }
@@ -71,24 +73,30 @@ public class AppEngineFlexibleDeployTask extends AppEngineTask {
     try {
       flexibleStage.stage(stagingDirectory);
     } catch (RuntimeException re) {
-      deploy.getCallback()
+      deploy
+          .getCallback()
           .errorOccurred(GctBundle.message("appengine.deployment.exception.during.staging"));
       logger.error(re);
       return;
     }
 
     try {
-      if (helper.stageCredentials(
-          deploy.getDeploymentConfiguration().getGoogleUsername()) == null) {
-        deploy.getCallback().errorOccurred(
-            GctBundle.message("appengine.staging.credentials.error.message"));
+      if (helper.stageCredentials(deploy.getDeploymentConfiguration().getGoogleUsername())
+          == null) {
+        deploy
+            .getCallback()
+            .errorOccurred(GctBundle.message("appengine.staging.credentials.error.message"));
         return;
       }
 
       deploy.deploy(stagingDirectory, startListener);
     } catch (RuntimeException re) {
-      deploy.getCallback().errorOccurred(GctBundle.message("appengine.deployment.exception") + "\n"
-          + GctBundle.message("appengine.action.error.update.message"));
+      deploy
+          .getCallback()
+          .errorOccurred(
+              GctBundle.message("appengine.deployment.exception")
+                  + "\n"
+                  + GctBundle.message("appengine.action.error.update.message"));
       logger.error(re);
     }
   }

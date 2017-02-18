@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,9 +32,7 @@ import org.jetbrains.idea.maven.utils.library.RepositoryLibraryProperties;
 import org.jetbrains.idea.maven.utils.library.RepositoryLibrarySupport;
 import org.jetbrains.idea.maven.utils.library.propertiesEditor.RepositoryLibraryPropertiesModel;
 
-/**
- * Downloads a maven library and adds it to a module.
- */
+/** Downloads a maven library and adds it to a module. */
 public class MavenRepositoryLibraryDownloader {
 
   public static MavenRepositoryLibraryDownloader getInstance() {
@@ -42,30 +40,35 @@ public class MavenRepositoryLibraryDownloader {
   }
 
   @Nullable
-  public Library downloadLibrary(Module module, RepositoryLibraryDescription libraryDescription,
-      RepositoryLibraryProperties libraryProperties, String version) {
-    RepositoryLibraryPropertiesModel model = new RepositoryLibraryPropertiesModel(
-        version,
-        true /*downloadSources*/,
-        true /*downloadJavaDocs*/);
+  public Library downloadLibrary(
+      Module module,
+      RepositoryLibraryDescription libraryDescription,
+      RepositoryLibraryProperties libraryProperties,
+      String version) {
+    RepositoryLibraryPropertiesModel model =
+        new RepositoryLibraryPropertiesModel(
+            version, true /*downloadSources*/, true /*downloadJavaDocs*/);
 
     IdeaModifiableModelsProvider modifiableModelsProvider = new IdeaModifiableModelsProvider();
-    final ModifiableRootModel modifiableModel
-        = ModuleRootManager.getInstance(module).getModifiableModel();
-    RepositoryLibrarySupport librarySupport = new RepositoryLibrarySupport(module.getProject(),
-        libraryDescription, model);
+    final ModifiableRootModel modifiableModel =
+        ModuleRootManager.getInstance(module).getModifiableModel();
+    RepositoryLibrarySupport librarySupport =
+        new RepositoryLibrarySupport(module.getProject(), libraryDescription, model);
 
     librarySupport.addSupport(module, modifiableModel, modifiableModelsProvider);
-    ApplicationManager.getApplication().runWriteAction(new Runnable() {
-      @Override
-      public void run() {
-        modifiableModel.commit();
-      }
-    });
+    ApplicationManager.getApplication()
+        .runWriteAction(
+            new Runnable() {
+              @Override
+              public void run() {
+                modifiableModel.commit();
+              }
+            });
 
-    LibraryTable.ModifiableModel libraryTableModifiableModel
-        = ModifiableModelsProvider.SERVICE.getInstance()
-          .getLibraryTableModifiableModel(module.getProject());
+    LibraryTable.ModifiableModel libraryTableModifiableModel =
+        ModifiableModelsProvider.SERVICE
+            .getInstance()
+            .getLibraryTableModifiableModel(module.getProject());
 
     return libraryTableModifiableModel.getLibraryByName(
         AppEngineStandardMavenLibrary.toMavenDisplayVersion(libraryProperties));

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -90,35 +90,44 @@ public class BreakpointConfigurationPanel
   private JBLabel watchLabel;
   private JPanel watchPanel;
 
-  /**
-   * Initialize the panel.
-   */
+  /** Initialize the panel. */
   public BreakpointConfigurationPanel(@NotNull CloudLineBreakpointType cloudLineBreakpointType) {
     this.cloudLineBreakpointType = cloudLineBreakpointType;
 
     // We conditionally show the "custom watches" panel only if we are shown in the dialog.
-    watchPanel.addAncestorListener(new AncestorListener() {
-      @Override
-      public void ancestorAdded(AncestorEvent event) {
-        JRootPane pane = watchPanel.getRootPane();
-        if (pane != null) {
-          watchPanel.setVisible(UIUtil.isDialogRootPane(pane));
-        }
-      }
+    watchPanel.addAncestorListener(
+        new AncestorListener() {
+          @Override
+          public void ancestorAdded(AncestorEvent event) {
+            JRootPane pane = watchPanel.getRootPane();
+            if (pane != null) {
+              watchPanel.setVisible(UIUtil.isDialogRootPane(pane));
+            }
+          }
 
-      @Override
-      public void ancestorMoved(AncestorEvent event) {
-      }
+          @Override
+          public void ancestorMoved(AncestorEvent event) {}
 
-      @Override
-      public void ancestorRemoved(AncestorEvent event) {
+          @Override
+          public void ancestorRemoved(AncestorEvent event) {}
+        });
+  }
+
+  @Nullable
+  private static Language getFileTypeLanguage(
+      XLineBreakpoint<CloudLineBreakpointProperties> breakpoint) {
+    if (breakpoint.getSourcePosition() != null) {
+      FileType fileType = breakpoint.getSourcePosition().getFile().getFileType();
+      if (fileType instanceof LanguageFileType) {
+        return ((LanguageFileType) fileType).getLanguage();
       }
-    });
+    }
+    return null;
   }
 
   @Override
-  public void addWatchExpression(@NotNull XExpression expression, int index,
-      boolean navigateToWatchNode) {
+  public void addWatchExpression(
+      @NotNull XExpression expression, int index, boolean navigateToWatchNode) {
     rootNode.addWatchExpression((XDebuggerEvaluator) null, expression, index, navigateToWatchNode);
   }
 
@@ -153,47 +162,59 @@ public class BreakpointConfigurationPanel
         cloudLineBreakpointType.getEditorsProvider(breakpoint, cloudBreakpoint.getProject());
 
     if (debuggerEditorsProvider != null) {
-      treePanel = new XDebuggerTreePanel(cloudBreakpoint.getProject(),
-          debuggerEditorsProvider,
-          this,
-          breakpoint.getSourcePosition(),
-          "GoogleCloudTools.BreakpointWatchContextMenu",
-          null);
+      treePanel =
+          new XDebuggerTreePanel(
+              cloudBreakpoint.getProject(),
+              debuggerEditorsProvider,
+              this,
+              breakpoint.getSourcePosition(),
+              "GoogleCloudTools.BreakpointWatchContextMenu",
+              null);
       List<XExpression> watches = new ArrayList<XExpression>();
       for (String watchExpression : breakpoint.getProperties().getWatchExpressions()) {
-        watches.add(debuggerEditorsProvider
-            .createExpression(((XBreakpointBase) breakpoint).getProject(),
+        watches.add(
+            debuggerEditorsProvider.createExpression(
+                ((XBreakpointBase) breakpoint).getProject(),
                 new DocumentImpl(watchExpression),
                 getFileTypeLanguage(breakpoint),
                 EvaluationMode.EXPRESSION));
       }
 
-      rootNode = new WatchesRootNode(treePanel.getTree(), this,
-          watches.toArray(new XExpression[watches.size()]));
+      rootNode =
+          new WatchesRootNode(
+              treePanel.getTree(), this, watches.toArray(new XExpression[watches.size()]));
       treePanel.getTree().setRoot(rootNode, false);
 
       watchPanel.removeAll();
       watchPanel.add(watchLabel, BorderLayout.NORTH);
-      treePanel.getTree().getEmptyText()
+      treePanel
+          .getTree()
+          .getEmptyText()
           .setText("There are no custom watches for this snapshot location.");
-      final ToolbarDecorator decorator = ToolbarDecorator.createDecorator(treePanel.getTree())
-          .disableUpDownActions();
+      final ToolbarDecorator decorator =
+          ToolbarDecorator.createDecorator(treePanel.getTree()).disableUpDownActions();
       decorator.setToolbarPosition(ActionToolbarPosition.RIGHT);
-      decorator.setAddAction(new AnActionButtonRunnable() {
-        @Override
-        public void run(AnActionButton button) {
-          executeAction(XDebuggerActions.XNEW_WATCH);
-        }
-      });
-      decorator.setRemoveAction(new AnActionButtonRunnable() {
-        @Override
-        public void run(AnActionButton button) {
-          executeAction(XDebuggerActions.XREMOVE_WATCH);
-        }
-      });
-      CustomLineBorder border = new CustomLineBorder(CaptionPanel.CNT_ACTIVE_BORDER_COLOR,
-          SystemInfo.isMac ? 1 : 0, 0,
-          SystemInfo.isMac ? 0 : 1, 0);
+      decorator.setAddAction(
+          new AnActionButtonRunnable() {
+            @Override
+            public void run(AnActionButton button) {
+              executeAction(XDebuggerActions.XNEW_WATCH);
+            }
+          });
+      decorator.setRemoveAction(
+          new AnActionButtonRunnable() {
+            @Override
+            public void run(AnActionButton button) {
+              executeAction(XDebuggerActions.XREMOVE_WATCH);
+            }
+          });
+      CustomLineBorder border =
+          new CustomLineBorder(
+              CaptionPanel.CNT_ACTIVE_BORDER_COLOR,
+              SystemInfo.isMac ? 1 : 0,
+              0,
+              SystemInfo.isMac ? 0 : 1,
+              0);
       decorator.setToolbarBorder(border);
       watchPanel.add(decorator.createPanel(), BorderLayout.CENTER);
     }
@@ -211,7 +232,8 @@ public class BreakpointConfigurationPanel
     List<XDebuggerTreeNode> toRemove = new ArrayList<XDebuggerTreeNode>();
     if (children != null) {
       for (XDebuggerTreeNode node : nodes) {
-        @SuppressWarnings("SuspiciousMethodCalls") int index = children.indexOf(node);
+        @SuppressWarnings("SuspiciousMethodCalls")
+        int index = children.indexOf(node);
         if (index != -1) {
           toRemove.add(node);
           minIndex = Math.min(minIndex, index);
@@ -223,7 +245,8 @@ public class BreakpointConfigurationPanel
     List<? extends WatchNode> newChildren = rootNode.getAllChildren();
     if (newChildren != null && !newChildren.isEmpty()) {
       WatchNode node =
-          minIndex < newChildren.size() ? newChildren.get(minIndex)
+          minIndex < newChildren.size()
+              ? newChildren.get(minIndex)
               : newChildren.get(newChildren.size() - 1);
       TreeUtil.selectNode(treePanel.getTree(), node);
     }
@@ -250,47 +273,38 @@ public class BreakpointConfigurationPanel
         for (WatchNode node : rootNode.getAllChildren()) {
           expressionsToSave.add(node.getExpression().getExpression());
         }
-        if (properties
-            .setWatchExpressions(expressionsToSave.toArray(new String[expressionsToSave.size()]))) {
+        if (properties.setWatchExpressions(
+            expressionsToSave.toArray(new String[expressionsToSave.size()]))) {
           lineBreakpointImpl.fireBreakpointChanged();
         }
       }
     }
   }
 
-  @Nullable
-  private static Language getFileTypeLanguage(
-      XLineBreakpoint<CloudLineBreakpointProperties> breakpoint) {
-    if (breakpoint.getSourcePosition() != null) {
-      FileType fileType = breakpoint.getSourcePosition().getFile().getFileType();
-      if (fileType instanceof LanguageFileType) {
-        return ((LanguageFileType) fileType).getLanguage();
-      }
-    }
-    return null;
-  }
-
   private void createUIComponents() {
     watchPanel = new MyPanel();
   }
 
-  /**
-   * Executes the standard add and remove watch from the watch list.
-   */
+  /** Executes the standard add and remove watch from the watch list. */
   private void executeAction(@NotNull String watch) {
     AnAction action = ActionManager.getInstance().getAction(watch);
     Presentation presentation = action.getTemplatePresentation().clone();
     DataContext context = DataManager.getInstance().getDataContext(treePanel.getTree());
 
     AnActionEvent actionEvent =
-        new AnActionEvent(null, context, ActionPlaces.DEBUGGER_TOOLBAR, presentation,
-            ActionManager.getInstance(), 0);
+        new AnActionEvent(
+            null,
+            context,
+            ActionPlaces.DEBUGGER_TOOLBAR,
+            presentation,
+            ActionManager.getInstance(),
+            0);
     action.actionPerformed(actionEvent);
   }
 
   /**
    * The XWatchesView contract is used to actually perform the add/remove watch when the item is
-   * added or removed from the watches view.  It is supplied somewhat indirectly through the visual
+   * added or removed from the watches view. It is supplied somewhat indirectly through the visual
    * hierarchy via getData.
    */
   private class MyPanel extends JPanel implements DataProvider {

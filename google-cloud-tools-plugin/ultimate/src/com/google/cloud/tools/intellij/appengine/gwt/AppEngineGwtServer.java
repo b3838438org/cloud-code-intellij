@@ -1,11 +1,11 @@
 /*
- * Copyright 2000-2016 JetBrains s.r.o.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -33,9 +33,7 @@ import java.io.File;
 
 import javax.swing.Icon;
 
-/**
- * @author nik
- */
+/** @author nik */
 public class AppEngineGwtServer extends GwtDevModeServer {
 
   public AppEngineGwtServer(@NotNull ApplicationServer server) {
@@ -48,8 +46,8 @@ public class AppEngineGwtServer extends GwtDevModeServer {
   }
 
   @Override
-  public void patchParameters(@NotNull JavaParameters parameters, String originalOutputDir,
-      @NotNull GwtFacet gwtFacet) {
+  public void patchParameters(
+      @NotNull JavaParameters parameters, String originalOutputDir, @NotNull GwtFacet gwtFacet) {
     final ParametersList programParameters = parameters.getProgramParametersList();
     programParameters.add("-server");
     programParameters.add("com.google.appengine.tools.development.gwt.AppEngineLauncher");
@@ -61,8 +59,8 @@ public class AppEngineGwtServer extends GwtDevModeServer {
     // added to classpath before gwt-dev.jar, because otherwise wrong jsp compiler version will be
     // used (see IDEA-63068)
     if (sdkService.getLibraries() != null) {
-      for (File jar : ArrayUtil.mergeArrays(sdkService.getLibraries(),
-          sdkService.getJspLibraries())) {
+      for (File jar :
+          ArrayUtil.mergeArrays(sdkService.getLibraries(), sdkService.getJspLibraries())) {
         parameters.getClassPath().addFirst(FileUtil.toSystemIndependentName(jar.getAbsolutePath()));
       }
     }

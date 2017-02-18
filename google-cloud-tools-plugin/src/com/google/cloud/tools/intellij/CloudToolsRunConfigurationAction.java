@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,25 +59,27 @@ public class CloudToolsRunConfigurationAction extends AnAction {
       return;
     }
 
-    final RunnerAndConfigurationSettings settings = RunManagerImpl.getInstanceImpl(project)
-        .findConfigurationByName(configType.getDisplayName());
+    final RunnerAndConfigurationSettings settings =
+        RunManagerImpl.getInstanceImpl(project)
+            .findConfigurationByName(configType.getDisplayName());
 
-    ApplicationManager.getApplication().invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        if (settings == null) {
-          createNewConfiguration(project);
-        } else {
-          runExistingConfiguration(project, settings);
-        }
-      }
-    });
-
+    ApplicationManager.getApplication()
+        .invokeLater(
+            new Runnable() {
+              @Override
+              public void run() {
+                if (settings == null) {
+                  createNewConfiguration(project);
+                } else {
+                  runExistingConfiguration(project, settings);
+                }
+              }
+            });
   }
 
   private void runExistingConfiguration(Project project, RunnerAndConfigurationSettings settings) {
-    ProgramRunnerUtil
-        .executeConfiguration(project, settings, DefaultRunExecutor.getRunExecutorInstance());
+    ProgramRunnerUtil.executeConfiguration(
+        project, settings, DefaultRunExecutor.getRunExecutorInstance());
   }
 
   private void createNewConfiguration(Project project) {
@@ -96,5 +98,4 @@ public class CloudToolsRunConfigurationAction extends AnAction {
       }
     }
   }
-
 }

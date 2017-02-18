@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,9 +27,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 
-/**
- * Service to retrieve assets used by Google App Engine.
- */
+/** Service to retrieve assets used by Google App Engine. */
 public abstract class AppEngineAssetProvider {
 
   public static AppEngineAssetProvider getInstance() {
@@ -42,14 +40,15 @@ public abstract class AppEngineAssetProvider {
    * WEB-INF directory.
    */
   @Nullable
-  public abstract XmlFile loadAppEngineStandardWebXml(@NotNull Project project,
-      @NotNull Artifact artifact);
+  public abstract XmlFile loadAppEngineStandardWebXml(
+      @NotNull Project project, @NotNull Artifact artifact);
 
   /**
    * Loads the configuration at the module level.
+   *
    * @see AppEngineAssetProvider#loadAppEngineStandardWebXml(Project, Artifact).
    */
   @Nullable
-  public abstract XmlFile loadAppEngineStandardWebXml(@NotNull Project project,
-      @NotNull Collection<Module> module);
+  public abstract XmlFile loadAppEngineStandardWebXml(
+      @NotNull Project project, @NotNull Collection<Module> module);
 }

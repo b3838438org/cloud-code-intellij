@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,19 +35,14 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.nio.file.Path;
 
-/**
- * Unit tests for {@link CloudSdkVersionStartupCheck}
- */
+/** Unit tests for {@link CloudSdkVersionStartupCheck} */
 @RunWith(MockitoJUnitRunner.class)
 public class CloudSdkVersionStartupCheckTest extends BasePluginTestCase {
 
-  @Mock
-  Project project;
+  @Mock Project project;
 
-  @Mock
-  CloudSdkVersionNotifier cloudSdkVersionNotifier;
-  @Mock
-  CloudSdkService cloudSdkService;
+  @Mock CloudSdkVersionNotifier cloudSdkVersionNotifier;
+  @Mock CloudSdkService cloudSdkService;
 
   CloudSdkVersionStartupCheck cloudSdkVersionStartupCheck;
 

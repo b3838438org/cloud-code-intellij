@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,9 +37,7 @@ import org.jetbrains.plugins.gradle.util.GradleConstants;
 
 import java.util.Collections;
 
-/**
- * Implementation of methods for inspecting an App Engine project's structure and configuration.
- */
+/** Implementation of methods for inspecting an App Engine project's structure and configuration. */
 public class DefaultAppEngineProjectService extends AppEngineProjectService {
 
   private static final String AE_WEB_XML_RUNTIME_TAG = "runtime";
@@ -57,8 +55,6 @@ public class DefaultAppEngineProjectService extends AppEngineProjectService {
     return appEngineWebXml != null && isFlexCompat(appEngineWebXml);
   }
 
-
-
   @Override
   public boolean isFlexCompat(@Nullable XmlFile appEngineWebXml) {
     if (appEngineWebXml == null) {
@@ -72,8 +68,8 @@ public class DefaultAppEngineProjectService extends AppEngineProjectService {
 
   @Override
   public boolean isFlexCompatEnvFlex(@NotNull Project project, @NotNull DeploymentSource source) {
-    XmlTag compatConfig = getFlexCompatXmlConfiguration(
-        loadAppEngineStandardWebXml(project, source));
+    XmlTag compatConfig =
+        getFlexCompatXmlConfiguration(loadAppEngineStandardWebXml(project, source));
 
     return isFlexCompatEnvFlex(compatConfig);
   }
@@ -117,8 +113,7 @@ public class DefaultAppEngineProjectService extends AppEngineProjectService {
     MavenProjectsManager projectsManager = MavenProjectsManager.getInstance(module.getProject());
     MavenProject mavenProject = projectsManager.findProject(module);
 
-    return mavenProject != null
-        && projectsManager.isMavenizedModule(module);
+    return mavenProject != null && projectsManager.isMavenizedModule(module);
   }
 
   @Override
@@ -134,17 +129,15 @@ public class DefaultAppEngineProjectService extends AppEngineProjectService {
     return mavenProject != null
         && isMavenModule(module)
         && ("jar".equalsIgnoreCase(mavenProject.getPackaging())
-        || "war".equalsIgnoreCase(mavenProject.getPackaging()));
+            || "war".equalsIgnoreCase(mavenProject.getPackaging()));
   }
 
   @Nullable
-  private XmlFile loadAppEngineStandardWebXml(@NotNull Project project,
-      @Nullable DeploymentSource source) {
+  private XmlFile loadAppEngineStandardWebXml(
+      @NotNull Project project, @Nullable DeploymentSource source) {
     if (source instanceof ArtifactDeploymentSource) {
       Artifact artifact = ((ArtifactDeploymentSource) source).getArtifact();
-      return artifact != null
-          ? assetProvider.loadAppEngineStandardWebXml(project, artifact)
-          : null;
+      return artifact != null ? assetProvider.loadAppEngineStandardWebXml(project, artifact) : null;
     } else if (source instanceof ModuleDeploymentSource) {
       Module module = ((ModuleDeploymentSource) source).getModule();
       return module != null
@@ -156,8 +149,8 @@ public class DefaultAppEngineProjectService extends AppEngineProjectService {
   }
 
   /**
-   * Given an artifact, returns the xml tag corresponding to the artifact's
-   * appengine-web.xml compat configuration or null if there isn't one.
+   * Given an artifact, returns the xml tag corresponding to the artifact's appengine-web.xml compat
+   * configuration or null if there isn't one.
    */
   @Nullable
   private XmlTag getFlexCompatXmlConfiguration(@Nullable XmlFile webXml) {
@@ -196,5 +189,4 @@ public class DefaultAppEngineProjectService extends AppEngineProjectService {
       return null;
     }
   }
-
 }

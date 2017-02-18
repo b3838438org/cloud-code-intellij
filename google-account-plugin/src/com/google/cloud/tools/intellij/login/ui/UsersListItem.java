@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,9 +20,7 @@ import com.google.cloud.tools.intellij.login.CredentialedUser;
 
 import java.awt.Image;
 
-/**
- * A single user item in the Google Login panel.
- */
+/** A single user item in the Google Login panel. */
 public class UsersListItem {
   private final CredentialedUser user;
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,8 +48,9 @@ public abstract class AppEngineAdminService {
    * @throws IOException if there was a transient error connecting to the API
    */
   @Nullable
-  public abstract Application getApplicationForProjectId(@NotNull String projectId,
-      @NotNull Credential credential) throws IOException, GoogleApiException;
+  public abstract Application getApplicationForProjectId(
+      @NotNull String projectId, @NotNull Credential credential)
+      throws IOException, GoogleApiException;
 
   /**
    * Returns a list of all available App Engine Locations
@@ -59,8 +60,8 @@ public abstract class AppEngineAdminService {
    * @throws GoogleApiException if the desired operation could not be completed
    */
   @NotNull
-  public abstract List<Location> getAllAppEngineLocations(Credential credential) throws IOException,
-      GoogleApiException;
+  public abstract List<Location> getAllAppEngineLocations(Credential credential)
+      throws IOException, GoogleApiException;
 
   /**
    * Creates an Application for the given project in the given location. This is a long-running
@@ -73,8 +74,9 @@ public abstract class AppEngineAdminService {
    * @throws GoogleApiException if the desired operation could not be completed
    */
   @NotNull
-  public abstract Application createApplication(@NotNull String locationId,
-      @NotNull final String projectId, @NotNull final Credential credential)
+  public abstract Application createApplication(
+      @NotNull String locationId,
+      @NotNull final String projectId,
+      @NotNull final Credential credential)
       throws IOException, GoogleApiException;
-
 }
