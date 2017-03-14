@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,15 +18,11 @@ package com.google.cloud.tools.intellij.login;
 
 import com.intellij.openapi.extensions.ExtensionPointName;
 
-/**
- * Listener for changes in the login status.
- */
+/** Listener for changes in the login status. */
 public interface GoogleLoginListener {
   ExtensionPointName<GoogleLoginListener> EP_NAME =
       new ExtensionPointName<GoogleLoginListener>("com.google.gct.login.googleLoginListener");
 
-  /**
-   * Called when the login or active status of the user changes.
-   */
+  /** Called when the login or active status of the user changes. */
   void statusChanged();
 }

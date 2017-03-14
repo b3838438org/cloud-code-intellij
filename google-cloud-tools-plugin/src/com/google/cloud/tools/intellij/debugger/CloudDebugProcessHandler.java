@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,10 +19,8 @@ package com.google.cloud.tools.intellij.debugger;
 import com.google.cloud.tools.intellij.debugger.ui.LogoutDebugProcessDetacher;
 import com.google.cloud.tools.intellij.login.CredentialedUser;
 import com.google.cloud.tools.intellij.login.Services;
-
 import com.intellij.execution.process.ProcessHandler;
 import com.intellij.openapi.diagnostic.Logger;
-
 import java.io.OutputStream;
 
 /**
@@ -35,9 +33,7 @@ public class CloudDebugProcessHandler extends ProcessHandler {
 
   private final CloudDebugProcess process;
 
-  /**
-   * Initialize the cloud debug process handler.
-   */
+  /** Initialize the cloud debug process handler. */
   public CloudDebugProcessHandler(CloudDebugProcess process) {
     this.process = process;
     if (process != null && process.getProcessState() != null) {

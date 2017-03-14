@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,13 +17,10 @@
 package com.google.cloud.tools.intellij.debugger;
 
 import com.google.cloud.tools.intellij.debugger.ui.CloudDebugRunConfigurationPanel;
-
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.options.SettingsEditor;
-
-import org.jetbrains.annotations.NotNull;
-
 import javax.swing.JComponent;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Creates the UI to change Run Configuration settings and applies those to our {@link
@@ -41,7 +38,6 @@ public class CloudDebugSettingsEditor extends SettingsEditor<CloudDebugRunConfig
   protected void applyEditorTo(CloudDebugRunConfiguration runConfiguration)
       throws ConfigurationException {
     runConfiguration.setCloudProjectName(settingsPanel.getProjectName());
-
   }
 
   @NotNull

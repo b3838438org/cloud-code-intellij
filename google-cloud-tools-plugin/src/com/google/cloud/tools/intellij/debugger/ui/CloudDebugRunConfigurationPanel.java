@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,15 +18,11 @@ package com.google.cloud.tools.intellij.debugger.ui;
 
 import com.google.cloud.tools.intellij.resources.ProjectSelector;
 import com.google.cloud.tools.intellij.util.GctBundle;
-
 import com.intellij.ui.HyperlinkLabel;
-
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-/**
- * This is the config UI for cloud debug run configs.
- */
+/** This is the config UI for cloud debug run configs. */
 public class CloudDebugRunConfigurationPanel {
 
   private ProjectSelector elysiumProjectId;

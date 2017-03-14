@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,6 @@ import com.google.cloud.tools.intellij.appengine.project.AppEngineProjectService
 import com.google.cloud.tools.intellij.appengine.sdk.CloudSdkPanel;
 import com.google.cloud.tools.intellij.appengine.sdk.CloudSdkService;
 import com.google.cloud.tools.intellij.appengine.sdk.CloudSdkValidationResult;
-
 import com.intellij.execution.RunManager;
 import com.intellij.execution.RunnerAndConfigurationSettings;
 import com.intellij.facet.FacetManager;
@@ -47,16 +46,12 @@ import com.intellij.remoteServer.impl.configuration.deployment.DeployToServerCon
 import com.intellij.remoteServer.impl.configuration.deployment.DeployToServerConfigurationTypesRegistrar;
 import com.intellij.remoteServer.impl.configuration.deployment.DeployToServerRunConfiguration;
 import com.intellij.util.containers.ContainerUtil;
-
+import javax.swing.JComponent;
+import javax.swing.JPanel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.swing.JComponent;
-import javax.swing.JPanel;
-
-/**
- * Adds Flexible support to new or existing IJ modules.
- */
+/** Adds Flexible support to new or existing IJ modules. */
 public class AppEngineFlexibleSupportProvider extends FrameworkSupportInModuleProvider {
 
   @NotNull
@@ -78,8 +73,8 @@ public class AppEngineFlexibleSupportProvider extends FrameworkSupportInModulePr
   }
 
   @Override
-  public boolean isSupportAlreadyAdded(@NotNull Module module,
-      @NotNull FacetsProvider facetsProvider) {
+  public boolean isSupportAlreadyAdded(
+      @NotNull Module module, @NotNull FacetsProvider facetsProvider) {
     return !facetsProvider.getFacetsByType(module, AppEngineFlexibleFacetType.ID).isEmpty()
         || !facetsProvider.getFacetsByType(module, AppEngineStandardFacet.ID).isEmpty();
   }
@@ -96,21 +91,28 @@ public class AppEngineFlexibleSupportProvider extends FrameworkSupportInModulePr
     }
 
     @Override
-    public void addSupport(@NotNull Module module, @NotNull ModifiableRootModel rootModel,
+    public void addSupport(
+        @NotNull Module module,
+        @NotNull ModifiableRootModel rootModel,
         @NotNull ModifiableModelsProvider modifiableModelsProvider) {
       FacetType<AppEngineFlexibleFacet, AppEngineFlexibleFacetConfiguration> facetType =
           AppEngineFlexibleFacet.getFacetType();
-      AppEngineFlexibleFacet facet = FacetManager.getInstance(module).addFacet(
-          facetType, facetType.getPresentableName(), null /* underlyingFacet */);
+      AppEngineFlexibleFacet facet =
+          FacetManager.getInstance(module)
+              .addFacet(facetType, facetType.getPresentableName(), null /* underlyingFacet */);
 
       // Allows suggesting app.yaml and Dockerfile locations in facet and deployment UIs.
       VirtualFile[] contentRoots = rootModel.getContentRoots();
       AppEngineProjectService appEngineProjectService = AppEngineProjectService.getInstance();
       if (contentRoots.length > 0) {
-        facet.getConfiguration().setAppYamlPath(
-            appEngineProjectService.getDefaultAppYamlPath(contentRoots[0].getPath()));
-        facet.getConfiguration().setDockerfilePath(
-            appEngineProjectService.getDefaultDockerfilePath(contentRoots[0].getPath()));
+        facet
+            .getConfiguration()
+            .setAppYamlPath(
+                appEngineProjectService.getDefaultAppYamlPath(contentRoots[0].getPath()));
+        facet
+            .getConfiguration()
+            .setDockerfilePath(
+                appEngineProjectService.getDefaultDockerfilePath(contentRoots[0].getPath()));
       }
 
       // TODO(joaomartins): Add other run configurations here too.
@@ -118,7 +120,8 @@ public class AppEngineFlexibleSupportProvider extends FrameworkSupportInModulePr
       setupDeploymentRunConfiguration(module);
 
       CloudSdkService sdkService = CloudSdkService.getInstance();
-      if (!sdkService.validateCloudSdk(cloudSdkPanel.getCloudSdkDirectoryText())
+      if (!sdkService
+          .validateCloudSdk(cloudSdkPanel.getCloudSdkDirectoryText())
           .contains(CloudSdkValidationResult.MALFORMED_PATH)) {
         sdkService.setSdkHomePath(cloudSdkPanel.getCloudSdkDirectoryText());
       }
@@ -126,13 +129,13 @@ public class AppEngineFlexibleSupportProvider extends FrameworkSupportInModulePr
 
     private void setupDeploymentRunConfiguration(Module module) {
       RunManager runManager = RunManager.getInstance(module.getProject());
-      AppEngineCloudType serverType =
-          ServerType.EP_NAME.findExtension(AppEngineCloudType.class);
-      DeployToServerConfigurationType configurationType
-          = DeployToServerConfigurationTypesRegistrar.getDeployConfigurationType(serverType);
+      AppEngineCloudType serverType = ServerType.EP_NAME.findExtension(AppEngineCloudType.class);
+      DeployToServerConfigurationType configurationType =
+          DeployToServerConfigurationTypesRegistrar.getDeployConfigurationType(serverType);
 
-      RunnerAndConfigurationSettings settings = runManager.createRunConfiguration(
-          configurationType.getDisplayName(), configurationType.getFactory());
+      RunnerAndConfigurationSettings settings =
+          runManager.createRunConfiguration(
+              configurationType.getDisplayName(), configurationType.getFactory());
 
       // Sets the GAE Flex server, if any exists, in the run config.
       DeployToServerRunConfiguration<?, AppEngineDeploymentConfiguration> runConfiguration =

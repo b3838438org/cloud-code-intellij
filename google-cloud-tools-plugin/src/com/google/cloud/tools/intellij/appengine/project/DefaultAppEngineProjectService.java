@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@ import com.google.cloud.tools.intellij.appengine.facet.flexible.AppEngineFlexibl
 import com.google.cloud.tools.intellij.appengine.facet.standard.AppEngineStandardFacet;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
-
 import com.intellij.facet.FacetManager;
 import com.intellij.openapi.externalSystem.util.ExternalSystemApiUtil;
 import com.intellij.openapi.module.Module;
@@ -33,14 +32,6 @@ import com.intellij.psi.xml.XmlTag;
 import com.intellij.remoteServer.configuration.deployment.ArtifactDeploymentSource;
 import com.intellij.remoteServer.configuration.deployment.DeploymentSource;
 import com.intellij.remoteServer.configuration.deployment.ModuleDeploymentSource;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.idea.maven.project.MavenProject;
-import org.jetbrains.idea.maven.project.MavenProjectsManager;
-import org.jetbrains.plugins.gradle.util.GradleConstants;
-import org.yaml.snakeyaml.Yaml;
-
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -50,10 +41,14 @@ import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.idea.maven.project.MavenProject;
+import org.jetbrains.idea.maven.project.MavenProjectsManager;
+import org.jetbrains.plugins.gradle.util.GradleConstants;
+import org.yaml.snakeyaml.Yaml;
 
-/**
- * Implementation of methods for inspecting an App Engine project's structure and configuration.
- */
+/** Implementation of methods for inspecting an App Engine project's structure and configuration. */
 public class DefaultAppEngineProjectService extends AppEngineProjectService {
 
   private static final String RUNTIME_TAG_NAME = "runtime";
@@ -101,8 +96,9 @@ public class DefaultAppEngineProjectService extends AppEngineProjectService {
     // The order here is important -- Standard must come before Flexible so that when both Standard
     // and Flexible are selected from the New Project/Module dialog, Standard takes precedence.
     if (FacetManager.getInstance(module).getFacetByType(AppEngineStandardFacet.ID) != null) {
-      if (isFlexCompat(AppEngineAssetProvider.getInstance().loadAppEngineStandardWebXml(
-          module.getProject(), ImmutableList.of(module)))) {
+      if (isFlexCompat(
+          AppEngineAssetProvider.getInstance()
+              .loadAppEngineStandardWebXml(module.getProject(), ImmutableList.of(module)))) {
         return Optional.of(AppEngineEnvironment.APP_ENGINE_FLEX_COMPAT);
       }
 
@@ -133,8 +129,7 @@ public class DefaultAppEngineProjectService extends AppEngineProjectService {
     MavenProjectsManager projectsManager = MavenProjectsManager.getInstance(module.getProject());
     MavenProject mavenProject = projectsManager.findProject(module);
 
-    return mavenProject != null
-        && projectsManager.isMavenizedModule(module);
+    return mavenProject != null && projectsManager.isMavenizedModule(module);
   }
 
   @Override
@@ -150,17 +145,15 @@ public class DefaultAppEngineProjectService extends AppEngineProjectService {
     return mavenProject != null
         && isMavenModule(module)
         && ("jar".equalsIgnoreCase(mavenProject.getPackaging())
-        || "war".equalsIgnoreCase(mavenProject.getPackaging()));
+            || "war".equalsIgnoreCase(mavenProject.getPackaging()));
   }
 
   @Nullable
-  private XmlFile loadAppEngineStandardWebXml(@NotNull Project project,
-      @Nullable DeploymentSource source) {
+  private XmlFile loadAppEngineStandardWebXml(
+      @NotNull Project project, @Nullable DeploymentSource source) {
     if (source instanceof ArtifactDeploymentSource) {
       Artifact artifact = ((ArtifactDeploymentSource) source).getArtifact();
-      return artifact != null
-          ? assetProvider.loadAppEngineStandardWebXml(project, artifact)
-          : null;
+      return artifact != null ? assetProvider.loadAppEngineStandardWebXml(project, artifact) : null;
     } else if (source instanceof ModuleDeploymentSource) {
       Module module = ((ModuleDeploymentSource) source).getModule();
       return module != null
@@ -172,8 +165,8 @@ public class DefaultAppEngineProjectService extends AppEngineProjectService {
   }
 
   /**
-   * Given an artifact, returns the xml tag corresponding to the artifact's
-   * appengine-web.xml compat configuration or null if there isn't one.
+   * Given an artifact, returns the xml tag corresponding to the artifact's appengine-web.xml compat
+   * configuration or null if there isn't one.
    */
   @Nullable
   private XmlTag getFlexCompatXmlConfiguration(@Nullable XmlFile webXml) {
@@ -222,15 +215,14 @@ public class DefaultAppEngineProjectService extends AppEngineProjectService {
   public Optional<FlexibleRuntime> getFlexibleRuntimeFromAppYaml(
       @NotNull String appYamlPathString) {
     try {
-      return getValueFromAppYaml(appYamlPathString, RUNTIME_TAG_NAME)
-          .map(FlexibleRuntime::valueOf);
+      return getValueFromAppYaml(appYamlPathString, RUNTIME_TAG_NAME).map(FlexibleRuntime::valueOf);
     } catch (IllegalArgumentException iae) {
       return Optional.empty();
     }
   }
 
-  private Optional<String> getValueFromAppYaml(@NotNull String appYamlPathString,
-      @NotNull String key) {
+  private Optional<String> getValueFromAppYaml(
+      @NotNull String appYamlPathString, @NotNull String key) {
     Yaml yamlParser = new Yaml();
     try {
       Path appYamlPath = Paths.get(appYamlPathString);

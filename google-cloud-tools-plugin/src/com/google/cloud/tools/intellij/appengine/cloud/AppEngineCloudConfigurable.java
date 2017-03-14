@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,23 +21,18 @@ import com.google.cloud.tools.intellij.appengine.sdk.CloudSdkService;
 import com.google.cloud.tools.intellij.ui.BrowserOpeningHyperLinkListener;
 import com.google.cloud.tools.intellij.util.GctBundle;
 import com.google.common.annotations.VisibleForTesting;
-
 import com.intellij.execution.configurations.RuntimeConfigurationError;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.remoteServer.RemoteServerConfigurable;
-
-import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.Nullable;
-
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JTextPane;
+import org.jetbrains.annotations.Nls;
+import org.jetbrains.annotations.Nullable;
 
-/**
- * GCP App Engine Cloud configuration UI.
- */
+/** GCP App Engine Cloud configuration UI. */
 public class AppEngineCloudConfigurable extends RemoteServerConfigurable implements Configurable {
 
   private static final String MORE_INFO_URI_OPEN_TAG =
@@ -49,15 +44,10 @@ public class AppEngineCloudConfigurable extends RemoteServerConfigurable impleme
   private JTextPane appEngineMoreInfoLabel;
   private CloudSdkPanel cloudSdkPanel;
 
-  /**
-   * Initialize the UI.
-   */
+  /** Initialize the UI. */
   public AppEngineCloudConfigurable() {
     appEngineMoreInfoLabel.setText(
-        GctBundle.message(
-            "appengine.more.info",
-            MORE_INFO_URI_OPEN_TAG,
-            MORE_INFO_URI_CLOSE_TAG));
+        GctBundle.message("appengine.more.info", MORE_INFO_URI_OPEN_TAG, MORE_INFO_URI_CLOSE_TAG));
     appEngineMoreInfoLabel.addHyperlinkListener(new BrowserOpeningHyperLinkListener());
     appEngineMoreInfoLabel.setBackground(mainPanel.getBackground());
   }
@@ -88,18 +78,17 @@ public class AppEngineCloudConfigurable extends RemoteServerConfigurable impleme
         || !CloudSdkService.getInstance().isValidCloudSdk(cloudSdkPanel.getCloudSdkDirectoryText());
   }
 
-  /**
-   * Users shouldn't be able to save a cloud configuration without a valid Cloud SDK configured.
-   */
+  /** Users shouldn't be able to save a cloud configuration without a valid Cloud SDK configured. */
   @Override
   public void apply() throws ConfigurationException {
-    String message = cloudSdkPanel.buildSdkMessage(cloudSdkPanel.getCloudSdkDirectoryText(),
-        false /*htmlEnabled*/);
+    String message =
+        cloudSdkPanel.buildSdkMessage(
+            cloudSdkPanel.getCloudSdkDirectoryText(), false /*htmlEnabled*/);
 
     if (!StringUtil.isEmpty(message)) {
       throw new RuntimeConfigurationError(message);
     }
-    
+
     if (cloudSdkPanel != null) {
       cloudSdkPanel.apply();
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,12 +21,9 @@ import com.google.cloud.tools.intellij.appengine.cloud.AppEngineStop;
 import com.google.cloud.tools.intellij.stats.UsageTrackerProvider;
 import com.google.cloud.tools.intellij.util.GctBundle;
 import com.google.cloud.tools.intellij.util.GctTracking;
-
 import com.intellij.openapi.diagnostic.Logger;
 
-/**
- * Runnable that executes task responsible for stopping an App Engine application.
- */
+/** Runnable that executes task responsible for stopping an App Engine application. */
 public class AppEngineStopTask extends AppEngineTask {
   private static final Logger logger = Logger.getInstance(AppEngineStopTask.class);
 
@@ -34,9 +31,7 @@ public class AppEngineStopTask extends AppEngineTask {
   private String module;
   private String version;
 
-  /**
-   * Initialize the stop runner's dependencies.
-   */
+  /** Initialize the stop runner's dependencies. */
   public AppEngineStopTask(AppEngineStop stop, String module, String version) {
     this.stop = stop;
     this.module = module;
@@ -48,10 +43,10 @@ public class AppEngineStopTask extends AppEngineTask {
     UsageTrackerProvider.getInstance().trackEvent(GctTracking.APP_ENGINE_STOP).ping();
 
     try {
-      if (stop.getHelper().stageCredentials(
-          stop.getDeploymentConfiguration().getGoogleUsername()) == null) {
-        stop.getCallback().errorOccurred(
-            GctBundle.message("appengine.staging.credentials.error.message"));
+      if (stop.getHelper().stageCredentials(stop.getDeploymentConfiguration().getGoogleUsername())
+          == null) {
+        stop.getCallback()
+            .errorOccurred(GctBundle.message("appengine.staging.credentials.error.message"));
         return;
       }
 
@@ -61,5 +56,4 @@ public class AppEngineStopTask extends AppEngineTask {
       logger.error(re);
     }
   }
-
 }

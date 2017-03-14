@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,17 +17,12 @@
 package com.google.cloud.tools.intellij.resources;
 
 import com.intellij.openapi.util.text.StringUtil;
-
-import org.jetbrains.annotations.Nullable;
-
+import git4idea.repo.GitRepository;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import org.jetbrains.annotations.Nullable;
 
-import git4idea.repo.GitRepository;
-
-/**
- * UI panel for selecting a remote name for a GCP repository.
- */
+/** UI panel for selecting a remote name for a GCP repository. */
 public class RepositoryRemotePanel {
 
   private JPanel remotePanel;
@@ -68,8 +63,8 @@ public class RepositoryRemotePanel {
   /**
    * Auto-populates the remote name field with a suggested remote name.
    *
-   * If there is no remote named "origin", then this is the default suggestion.
-   * Otherwise, it follows the strategy of prefixing the cloud repository name with a GCP namespace.
+   * <p>If there is no remote named "origin", then this is the default suggestion. Otherwise, it
+   * follows the strategy of prefixing the cloud repository name with a GCP namespace.
    */
   private String getRemoteNameSuggestion(String cloudRepository) {
     if (gitRepository != null && hasOriginRemote()) {
@@ -80,9 +75,9 @@ public class RepositoryRemotePanel {
   }
 
   private boolean hasOriginRemote() {
-    return gitRepository.getRemotes()
+    return gitRepository
+        .getRemotes()
         .stream()
-        .anyMatch(remote ->
-            "origin".equals(remote.getName()));
+        .anyMatch(remote -> "origin".equals(remote.getName()));
   }
 }

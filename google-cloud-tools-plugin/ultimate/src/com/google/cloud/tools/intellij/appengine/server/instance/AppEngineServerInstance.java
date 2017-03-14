@@ -1,11 +1,11 @@
 /*
- * Copyright 2000-2016 JetBrains s.r.o.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -27,9 +27,7 @@ import com.intellij.javaee.run.configuration.CommonModel;
 import com.intellij.javaee.serverInstances.DefaultServerInstance;
 import com.intellij.openapi.project.Project;
 
-/**
- * @author nik
- */
+/** @author nik */
 public class AppEngineServerInstance extends DefaultServerInstance {
 
   public AppEngineServerInstance(CommonModel runConfiguration) {
@@ -41,18 +39,21 @@ public class AppEngineServerInstance extends DefaultServerInstance {
     super.start(processHandler);
     final Project project = getCommonModel().getProject();
     DebuggerManager.getInstance(project)
-        .addDebugProcessListener(processHandler, new DebugProcessAdapter() {
-          @Override
-          public void processAttached(DebugProcess process) {
-            process.appendPositionManager(new DefaultJSPPositionManager(process,
-                JavaeeFacetUtil.getInstance().getAllJavaeeFacets(project)) {
+        .addDebugProcessListener(
+            processHandler,
+            new DebugProcessAdapter() {
               @Override
-              protected String getGeneratedClassesPackage() {
-                return "org.apache.jsp";
+              public void processAttached(DebugProcess process) {
+                process.appendPositionManager(
+                    new DefaultJSPPositionManager(
+                        process, JavaeeFacetUtil.getInstance().getAllJavaeeFacets(project)) {
+                      @Override
+                      protected String getGeneratedClassesPackage() {
+                        return "org.apache.jsp";
+                      }
+                    });
               }
             });
-          }
-        });
   }
 
   @Override

@@ -26,37 +26,27 @@ import com.google.cloud.tools.intellij.appengine.facet.flexible.AppEngineFlexibl
 import com.google.cloud.tools.intellij.appengine.project.AppEngineProjectService;
 import com.google.cloud.tools.intellij.appengine.project.AppEngineProjectService.FlexibleRuntime;
 import com.google.cloud.tools.intellij.testing.BasePluginTestCase;
-
 import com.intellij.facet.FacetManager;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.remoteServer.configuration.RemoteServer;
-
+import java.util.Optional;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.Optional;
-
 @RunWith(MockitoJUnitRunner.class)
 public class AppEngineDeploymentConfiguratorTest extends BasePluginTestCase {
-  @Mock
-  Project project;
-  @Mock
-  AppEngineDeployable deployable;
-  @Mock
-  RemoteServer<AppEngineServerConfiguration> server;
-  @Mock
-  AppEngineProjectService projectService;
-  @Mock
-  ModuleManager moduleManager;
-  @Mock
-  Module module;
-  @Mock
-  FacetManager facetManager;
+  @Mock Project project;
+  @Mock AppEngineDeployable deployable;
+  @Mock RemoteServer<AppEngineServerConfiguration> server;
+  @Mock AppEngineProjectService projectService;
+  @Mock ModuleManager moduleManager;
+  @Mock Module module;
+  @Mock FacetManager facetManager;
 
   @Before
   public void setUp() {
@@ -64,10 +54,10 @@ public class AppEngineDeploymentConfiguratorTest extends BasePluginTestCase {
 
     when(projectService.getServiceNameFromAppEngineWebXml(project, deployable))
         .thenReturn("service");
-    when(projectService.getFlexibleRuntimeFromAppYaml(isA(String.class))).thenReturn(
-        Optional.of(FlexibleRuntime.java));
+    when(projectService.getFlexibleRuntimeFromAppYaml(isA(String.class)))
+        .thenReturn(Optional.of(FlexibleRuntime.java));
     when(project.getComponent(ModuleManager.class)).thenReturn(moduleManager);
-    when(moduleManager.getModules()).thenReturn(new Module[]{module});
+    when(moduleManager.getModules()).thenReturn(new Module[] {module});
     when(module.getComponent(FacetManager.class)).thenReturn(facetManager);
     when(facetManager.getFacetByType(AppEngineFlexibleFacetType.ID)).thenReturn(null);
   }
@@ -77,7 +67,8 @@ public class AppEngineDeploymentConfiguratorTest extends BasePluginTestCase {
     when(deployable.getEnvironment()).thenReturn(AppEngineEnvironment.APP_ENGINE_FLEX);
     AppEngineDeploymentConfigurator configurator = new AppEngineDeploymentConfigurator(project);
 
-    assertTrue(configurator.createEditor(deployable, server) instanceof AppEngineFlexibleDeploymentEditor);
+    assertTrue(
+        configurator.createEditor(deployable, server) instanceof AppEngineFlexibleDeploymentEditor);
   }
 
   @Test
@@ -85,6 +76,7 @@ public class AppEngineDeploymentConfiguratorTest extends BasePluginTestCase {
     when(deployable.getEnvironment()).thenReturn(AppEngineEnvironment.APP_ENGINE_STANDARD);
     AppEngineDeploymentConfigurator configurator = new AppEngineDeploymentConfigurator(project);
 
-    assertTrue(configurator.createEditor(deployable, server) instanceof AppEngineStandardDeploymentEditor);
+    assertTrue(
+        configurator.createEditor(deployable, server) instanceof AppEngineStandardDeploymentEditor);
   }
 }

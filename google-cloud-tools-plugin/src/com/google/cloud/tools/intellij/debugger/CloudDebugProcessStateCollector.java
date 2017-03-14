@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@
 package com.google.cloud.tools.intellij.debugger;
 
 import com.google.common.annotations.VisibleForTesting;
-
 import com.intellij.execution.RunManager;
 import com.intellij.execution.RunnerAndConfigurationSettings;
 import com.intellij.execution.configurations.RunConfiguration;
@@ -27,29 +26,21 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
 import com.intellij.xdebugger.XDebugSession;
 import com.intellij.xdebugger.XDebuggerManager;
-
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.jetbrains.annotations.NotNull;
 
-/**
- * Retrieves {@link CloudDebugProcessState} objects from application run configurations.
- */
+/** Retrieves {@link CloudDebugProcessState} objects from application run configurations. */
 public class CloudDebugProcessStateCollector {
 
-  /**
-   * Returns an instance of this from the container.
-   */
+  /** Returns an instance of this from the container. */
   public static CloudDebugProcessStateCollector getInstance() {
     return ServiceManager.getService(CloudDebugProcessStateCollector.class);
   }
 
-  /**
-   *  Get all the background snapshot states.
-   */
+  /** Get all the background snapshot states. */
   public List<CloudDebugProcessState> getBackgroundListeningStates() {
     List<CloudDebugProcessState> states = new ArrayList<CloudDebugProcessState>();
 
@@ -103,5 +94,4 @@ public class CloudDebugProcessStateCollector {
   boolean listensInBackground(CloudDebugProcessState state) {
     return state != null && state.isListenInBackground();
   }
-
 }

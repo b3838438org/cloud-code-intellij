@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,6 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import com.google.cloud.tools.intellij.debugger.CloudDebugProcessHandler;
 import com.google.cloud.tools.intellij.testing.BasePluginTestCase;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -29,8 +28,7 @@ import org.mockito.MockitoAnnotations;
 
 public class LogoutDebugProcessDetacherTest extends BasePluginTestCase {
 
-  @Mock
-  private CloudDebugProcessHandler processHandler;
+  @Mock private CloudDebugProcessHandler processHandler;
 
   @Before
   public void setUp() throws Exception {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2016 JetBrains s.r.o.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ package com.google.cloud.tools.intellij.appengine.facet.standard;
 import com.google.cloud.tools.intellij.appengine.util.AppEngineUtil;
 import com.google.cloud.tools.intellij.stats.UsageTrackerProvider;
 import com.google.cloud.tools.intellij.util.GctTracking;
-
 import com.intellij.facet.FacetType;
 import com.intellij.framework.FrameworkType;
 import com.intellij.framework.detection.FacetBasedFrameworkDetector;
@@ -29,14 +28,12 @@ import com.intellij.openapi.fileTypes.StdFileTypes;
 import com.intellij.openapi.roots.ModifiableRootModel;
 import com.intellij.patterns.ElementPattern;
 import com.intellij.util.indexing.FileContent;
-
 import org.jetbrains.annotations.NotNull;
 
-/**
- * @author nik
- */
-public class AppEngineStandardFrameworkDetector extends
-    FacetBasedFrameworkDetector<AppEngineStandardFacet, AppEngineStandardFacetConfiguration> {
+/** @author nik */
+public class AppEngineStandardFrameworkDetector
+    extends FacetBasedFrameworkDetector<
+        AppEngineStandardFacet, AppEngineStandardFacetConfiguration> {
 
   public AppEngineStandardFrameworkDetector() {
     super("appengine-java");
@@ -44,10 +41,11 @@ public class AppEngineStandardFrameworkDetector extends
 
   @Override
   public void setupFacet(@NotNull AppEngineStandardFacet facet, ModifiableRootModel model) {
-    AppEngineStandardWebIntegration.getInstance().setupRunConfigurations(
-        AppEngineUtil.findOneAppEngineStandardArtifact(facet.getModule()),
-        model.getModule(),
-        null /*existingConfiguration*/);
+    AppEngineStandardWebIntegration.getInstance()
+        .setupRunConfigurations(
+            AppEngineUtil.findOneAppEngineStandardArtifact(facet.getModule()),
+            model.getModule(),
+            null /*existingConfiguration*/);
 
     UsageTrackerProvider.getInstance()
         .trackEvent(GctTracking.APP_ENGINE_ADD_STANDARD_FACET)
@@ -74,7 +72,8 @@ public class AppEngineStandardFrameworkDetector extends
   @NotNull
   @Override
   public ElementPattern<FileContent> createSuitableFilePattern() {
-    return FileContentPattern.fileContent().withName(AppEngineUtil.APP_ENGINE_WEB_XML_NAME)
+    return FileContentPattern.fileContent()
+        .withName(AppEngineUtil.APP_ENGINE_WEB_XML_NAME)
         .xmlWithRootTag("appengine-web-app");
   }
 }

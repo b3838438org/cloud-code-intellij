@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ package com.google.cloud.tools.intellij.appengine.cloud;
 import com.intellij.packaging.artifacts.ArtifactPointer;
 import com.intellij.remoteServer.configuration.deployment.DeploymentSourceType;
 import com.intellij.remoteServer.impl.configuration.deployment.ArtifactDeploymentSourceImpl;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -40,8 +39,7 @@ public class AppEngineArtifactDeploymentSource extends ArtifactDeploymentSourceI
    * artifact pointer.
    */
   public AppEngineArtifactDeploymentSource(
-      @Nullable AppEngineEnvironment environment,
-      @NotNull ArtifactPointer pointer) {
+      @Nullable AppEngineEnvironment environment, @NotNull ArtifactPointer pointer) {
     super(pointer);
     this.environment = environment;
   }

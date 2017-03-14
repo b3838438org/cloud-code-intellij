@@ -1,11 +1,11 @@
 /*
- * Copyright 2000-2016 JetBrains s.r.o.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -17,17 +17,13 @@
 package com.google.cloud.tools.intellij.appengine.server.integration;
 
 import com.google.cloud.tools.intellij.ui.GoogleCloudToolsIcons;
-
 import com.intellij.javaee.appServerIntegrations.AppServerIntegration;
 import com.intellij.javaee.appServerIntegrations.ApplicationServerHelper;
 import com.intellij.javaee.appServerIntegrations.ApplicationServerPersistentDataEditor;
 import com.intellij.javaee.openapi.ex.AppServerIntegrationsManager;
-
 import javax.swing.Icon;
 
-/**
- * @author nik
- */
+/** @author nik */
 public class AppEngineServerIntegration extends AppServerIntegration {
 
   private final AppEngineServerHelper serverHelper;

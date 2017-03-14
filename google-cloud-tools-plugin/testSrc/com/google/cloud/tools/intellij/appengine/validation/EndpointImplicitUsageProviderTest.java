@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,13 +18,10 @@ package com.google.cloud.tools.intellij.appengine.validation;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiMethod;
-
 import java.io.FileInputStream;
 import java.io.IOException;
 
-/**
- * Tests for {@link EndpointImplicitUsageProvider}.
- */
+/** Tests for {@link EndpointImplicitUsageProvider}. */
 public class EndpointImplicitUsageProviderTest extends EndpointTestBase {
 
   private final String ASSERT_IMPLICIT_USAGE_TRUE = "assert_isImplicitUsage";
@@ -52,8 +49,10 @@ public class EndpointImplicitUsageProviderTest extends EndpointTestBase {
 
   private void doTest() throws IOException {
     PsiClass psiClass = getPsiClassForTest();
-    PsiMethod[] implicitUsageMethods = psiClass.findMethodsByName(ASSERT_IMPLICIT_USAGE_TRUE, false);
-    PsiMethod[] notImplicitUsageMethods = psiClass.findMethodsByName(ASSERT_IMPLICIT_USAGE_FALSE, false);
+    PsiMethod[] implicitUsageMethods =
+        psiClass.findMethodsByName(ASSERT_IMPLICIT_USAGE_TRUE, false);
+    PsiMethod[] notImplicitUsageMethods =
+        psiClass.findMethodsByName(ASSERT_IMPLICIT_USAGE_FALSE, false);
 
     // Perform assertions on loaded test data, based on the presence of assertion keys in class and
     // method names.
@@ -62,8 +61,12 @@ public class EndpointImplicitUsageProviderTest extends EndpointTestBase {
     } else if (psiClass.getName().contains(ASSERT_IMPLICIT_USAGE_FALSE)) {
       assertFalse(endpointUsageProvider.isImplicitUsage(psiClass));
     } else {
-      fail("Class name must contain an assertion key. (Either '" +
-          ASSERT_IMPLICIT_USAGE_TRUE+"' or '"+ASSERT_IMPLICIT_USAGE_FALSE+"')");
+      fail(
+          "Class name must contain an assertion key. (Either '"
+              + ASSERT_IMPLICIT_USAGE_TRUE
+              + "' or '"
+              + ASSERT_IMPLICIT_USAGE_FALSE
+              + "')");
     }
 
     for (PsiMethod method : implicitUsageMethods) {
@@ -75,9 +78,12 @@ public class EndpointImplicitUsageProviderTest extends EndpointTestBase {
   }
 
   private PsiClass getPsiClassForTest() throws IOException {
-    String path = getTestDataPath() + "implicitUsageProviders/endpointImplicitUsageProvider/" + getTestName(false) + ".java";
+    String path =
+        getTestDataPath()
+            + "implicitUsageProviders/endpointImplicitUsageProvider/"
+            + getTestName(false)
+            + ".java";
     String classText = FileUtil.loadTextAndClose(new FileInputStream(path));
     return myFixture.addClass(classText);
   }
-
 }

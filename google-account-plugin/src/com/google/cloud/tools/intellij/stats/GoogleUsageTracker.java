@@ -24,7 +24,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.escape.CharEscaperBuilder;
 import com.google.common.escape.Escaper;
-
 import com.intellij.openapi.application.ApplicationInfo;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.PermanentInstallationID;
@@ -32,7 +31,10 @@ import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.SystemInfo;
 import com.intellij.util.PlatformUtils;
-
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import org.apache.http.NameValuePair;
 import org.apache.http.StatusLine;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -44,11 +46,6 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 /** Google Usage Tracker that reports to Cloud Tools Analytics backend. */
 public class GoogleUsageTracker implements UsageTracker, SendsEvents {
@@ -95,9 +92,7 @@ public class GoogleUsageTracker implements UsageTracker, SendsEvents {
           // Apparently the hit type should always be of type 'pageview'.
           new BasicNameValuePair(HIT_TYPE_KEY, PAGE_VIEW_VALUE),
           new BasicNameValuePair(IS_NON_INTERACTIVE_KEY, STRING_FALSE_VALUE),
-          new BasicNameValuePair(
-              UNIQUE_CLIENT_ID_KEY,
-              PermanentInstallationID.get()),
+          new BasicNameValuePair(UNIQUE_CLIENT_ID_KEY, PermanentInstallationID.get()),
           new BasicNameValuePair(PAGE_HOST_KEY, PAGE_HOST_VALUE));
   private final String analyticsId;
   private final String externalPluginName;

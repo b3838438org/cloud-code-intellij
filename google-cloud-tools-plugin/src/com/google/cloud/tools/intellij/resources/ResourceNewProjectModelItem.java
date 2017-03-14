@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,11 +18,8 @@ package com.google.cloud.tools.intellij.resources;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
-/**
- * This model item represents the "Click here to create a project" node in the project selector.
- */
+/** This model item represents the "Click here to create a project" node in the project selector. */
 class ResourceNewProjectModelItem extends DefaultMutableTreeNode {
 
-  public ResourceNewProjectModelItem() {
-  }
+  public ResourceNewProjectModelItem() {}
 }

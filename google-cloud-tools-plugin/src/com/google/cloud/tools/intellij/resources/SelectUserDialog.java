@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,20 +20,16 @@ import com.google.api.client.repackaged.com.google.common.base.Strings;
 import com.google.cloud.tools.intellij.login.IntellijGoogleLoginService;
 import com.google.cloud.tools.intellij.util.GctBundle;
 import com.google.common.annotations.VisibleForTesting;
-
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.ui.DocumentAdapter;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import java.awt.Dimension;
 import java.awt.Window;
-
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.event.DocumentEvent;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * A dialog that prompts the user to select a {@link IntellijGoogleLoginService} or click "Login
@@ -45,20 +41,21 @@ public class SelectUserDialog extends DialogWrapper {
   private UserSelector login;
   private String selectedUser;
 
-  /**
-   * Initializes the dialog.
-   */
+  /** Initializes the dialog. */
   public SelectUserDialog(@Nullable Project project, @NotNull String title) {
     super(project, true);
     init();
     setTitle(title);
 
-    login.getDocument().addDocumentListener(new DocumentAdapter() {
-      @Override
-      protected void textChanged(DocumentEvent event) {
-        setOKActionEnabled(login.getSelectedUser() != null);
-      }
-    });
+    login
+        .getDocument()
+        .addDocumentListener(
+            new DocumentAdapter() {
+              @Override
+              protected void textChanged(DocumentEvent event) {
+                setOKActionEnabled(login.getSelectedUser() != null);
+              }
+            });
     setOKButtonText(GctBundle.message("select.user.continue"));
     setCancelButtonText(GctBundle.message("select.user.manuallogin"));
     setOKActionEnabled(false);
@@ -68,9 +65,7 @@ public class SelectUserDialog extends DialogWrapper {
     }
   }
 
-  /**
-   * Returns the currently selected user.
-   */
+  /** Returns the currently selected user. */
   @NotNull
   public String getSelectedUser() {
     if (!Strings.isNullOrEmpty(selectedUser)) {

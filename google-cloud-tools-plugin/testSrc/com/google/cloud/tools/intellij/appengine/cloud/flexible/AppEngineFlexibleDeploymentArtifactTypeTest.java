@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,32 +18,32 @@ package com.google.cloud.tools.intellij.appengine.cloud.flexible;
 
 import static org.junit.Assert.assertEquals;
 
+import java.nio.file.Paths;
 import org.junit.Test;
 
-import java.nio.file.Paths;
-
-/**
- * Test cases for {@link AppEngineFlexibleDeploymentArtifactType}.
- */
+/** Test cases for {@link AppEngineFlexibleDeploymentArtifactType}. */
 public class AppEngineFlexibleDeploymentArtifactTypeTest {
 
   @Test
   public void testTypeForPath_jar() throws Exception {
-    assertEquals(AppEngineFlexibleDeploymentArtifactType.JAR,
+    assertEquals(
+        AppEngineFlexibleDeploymentArtifactType.JAR,
         AppEngineFlexibleDeploymentArtifactType.typeForPath(
             Paths.get("some", "path", "to", "a.jar")));
   }
 
   @Test
   public void testTypeForPath_war() throws Exception {
-    assertEquals(AppEngineFlexibleDeploymentArtifactType.WAR,
+    assertEquals(
+        AppEngineFlexibleDeploymentArtifactType.WAR,
         AppEngineFlexibleDeploymentArtifactType.typeForPath(
             Paths.get("some", "path", "to", "a.war")));
   }
 
   @Test
   public void testTypeForPath_anythingElse() throws Exception {
-    assertEquals(AppEngineFlexibleDeploymentArtifactType.UNKNOWN,
+    assertEquals(
+        AppEngineFlexibleDeploymentArtifactType.UNKNOWN,
         AppEngineFlexibleDeploymentArtifactType.typeForPath(
             Paths.get("some", "path", "to", "a.txt")));
   }

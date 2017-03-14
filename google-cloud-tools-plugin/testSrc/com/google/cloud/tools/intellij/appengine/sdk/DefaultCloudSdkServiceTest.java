@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,10 @@ import com.google.cloud.tools.appengine.cloudsdk.CloudSdkNotFoundException;
 import com.google.cloud.tools.appengine.cloudsdk.CloudSdkOutOfDateException;
 import com.google.cloud.tools.appengine.cloudsdk.serialization.CloudSdkVersion;
 import com.google.cloud.tools.intellij.testing.BasePluginTestCase;
-
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Set;
 import org.jetbrains.annotations.Nullable;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,14 +39,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Set;
-
-/**
- * Unit tests for {@link DefaultCloudSdkService}
- */
+/** Unit tests for {@link DefaultCloudSdkService} */
 @RunWith(MockitoJUnitRunner.class)
 public class DefaultCloudSdkServiceTest extends BasePluginTestCase {
 
@@ -54,11 +50,9 @@ public class DefaultCloudSdkServiceTest extends BasePluginTestCase {
 
   private DefaultCloudSdkService service;
 
-  @Mock
-  private CloudSdk mockSdk;
+  @Mock private CloudSdk mockSdk;
 
-  @Mock
-  private Path mockPath;
+  @Mock private Path mockPath;
 
   @Before
   public void setUp() throws Exception {
@@ -66,7 +60,7 @@ public class DefaultCloudSdkServiceTest extends BasePluginTestCase {
   }
 
   @Test
-  public void testValidateCloudSdk_cloudSdkNotFound() throws  IOException {
+  public void testValidateCloudSdk_cloudSdkNotFound() throws IOException {
     when(mockSdk.getVersion()).thenReturn(supportedVersion);
     doThrow(CloudSdkNotFoundException.class).when(mockSdk).validateCloudSdk();
     Set<CloudSdkValidationResult> results = service.validateCloudSdk();
@@ -80,8 +74,8 @@ public class DefaultCloudSdkServiceTest extends BasePluginTestCase {
     doThrow(CloudSdkOutOfDateException.class).when(mockSdk).validateCloudSdk();
     Set<CloudSdkValidationResult> results = service.validateCloudSdk();
     assertEquals(1, results.size());
-    assertEquals(CloudSdkValidationResult.CLOUD_SDK_VERSION_NOT_SUPPORTED,
-        results.iterator().next());
+    assertEquals(
+        CloudSdkValidationResult.CLOUD_SDK_VERSION_NOT_SUPPORTED, results.iterator().next());
     assertFalse(service.isValidCloudSdk());
   }
 
@@ -133,7 +127,8 @@ public class DefaultCloudSdkServiceTest extends BasePluginTestCase {
 
   @Test
   public void testValidateJavaComponents() throws IOException {
-    doThrow(AppEngineJavaComponentsNotInstalledException.class).when(mockSdk)
+    doThrow(AppEngineJavaComponentsNotInstalledException.class)
+        .when(mockSdk)
         .validateAppEngineJavaComponents();
     Set<CloudSdkValidationResult> results = service.validateCloudSdk("/good/path");
     assertEquals(1, results.size());
@@ -142,7 +137,8 @@ public class DefaultCloudSdkServiceTest extends BasePluginTestCase {
 
   @Test
   public void testValidateCloudSdk_multipleResults() throws IOException {
-    doThrow(AppEngineJavaComponentsNotInstalledException.class).when(mockSdk)
+    doThrow(AppEngineJavaComponentsNotInstalledException.class)
+        .when(mockSdk)
         .validateAppEngineJavaComponents();
     doThrow(CloudSdkOutOfDateException.class).when(mockSdk).validateCloudSdk();
 

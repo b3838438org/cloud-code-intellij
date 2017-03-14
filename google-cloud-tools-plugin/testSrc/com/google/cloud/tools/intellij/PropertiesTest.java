@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,32 +16,32 @@
 
 package com.google.cloud.tools.intellij;
 
-import org.junit.Assert;
-import org.junit.Test;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Properties;
+import org.junit.Assert;
+import org.junit.Test;
 
 public class PropertiesTest {
 
   @Test
   public void testSpace() throws IOException {
-      File f = new File("resources/messages/CloudToolsBundle.properties");
-      InputStream in = null;
-      try {
-          in = new FileInputStream(f);
-          Properties p = new Properties();
-          p.load(new InputStreamReader(in, "UTF-8"));
-          Assert.assertEquals("Do you want to checkout branch {0} and restore the saved stash?",
-                  p.getProperty("clouddebug.restorestash"));
-      } finally {
-          if (in != null) {
-              in.close();
-          }
+    File f = new File("resources/messages/CloudToolsBundle.properties");
+    InputStream in = null;
+    try {
+      in = new FileInputStream(f);
+      Properties p = new Properties();
+      p.load(new InputStreamReader(in, "UTF-8"));
+      Assert.assertEquals(
+          "Do you want to checkout branch {0} and restore the saved stash?",
+          p.getProperty("clouddebug.restorestash"));
+    } finally {
+      if (in != null) {
+        in.close();
       }
+    }
   }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,33 +26,25 @@ import static org.mockito.Mockito.when;
 
 import com.google.cloud.tools.intellij.login.GoogleLoginService;
 import com.google.cloud.tools.intellij.testing.BasePluginTestCase;
-
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-/**
- * Tests to validate initialization on supported platforms
- */
+/** Tests to validate initialization on supported platforms */
 @RunWith(MockitoJUnitRunner.class)
 public class AccountPluginInitializationComponentTest extends BasePluginTestCase {
 
   private static final String PLUGIN_ID_STRING = "com.google.gct.login";
-  @Mock
-  AccountPluginInfoService pluginInfoService;
-  @Mock
-  AccountPluginConfigurationService pluginConfigurationService;
-  @Mock
-  GoogleLoginService googleLoginService;
+  @Mock AccountPluginInfoService pluginInfoService;
+  @Mock AccountPluginConfigurationService pluginConfigurationService;
+  @Mock GoogleLoginService googleLoginService;
 
   AccountPluginInitializationComponent testComponent;
-
 
   @Before
   public void registerMockServices() {
@@ -83,7 +75,8 @@ public class AccountPluginInitializationComponentTest extends BasePluginTestCase
     Application mockApplication = spy(ApplicationManager.getApplication());
     when(mockApplication.isUnitTestMode()).thenReturn(false);
     ApplicationManager.setApplication(mockApplication, mock(Disposable.class));
-    AccountPluginInitializationComponent testComponent = spy(new AccountPluginInitializationComponent());
+    AccountPluginInitializationComponent testComponent =
+        spy(new AccountPluginInitializationComponent());
     doNothing().when(testComponent).configureUsageTracking();
     testComponent.initComponent();
     verify(testComponent).configureUsageTracking();
@@ -94,7 +87,8 @@ public class AccountPluginInitializationComponentTest extends BasePluginTestCase
     Application mockApplication = spy(ApplicationManager.getApplication());
     when(mockApplication.isUnitTestMode()).thenReturn(true);
     ApplicationManager.setApplication(mockApplication, mock(Disposable.class));
-    AccountPluginInitializationComponent testComponent = spy(new AccountPluginInitializationComponent());
+    AccountPluginInitializationComponent testComponent =
+        spy(new AccountPluginInitializationComponent());
     testComponent.initComponent();
     verify(testComponent, never()).configureUsageTracking();
   }

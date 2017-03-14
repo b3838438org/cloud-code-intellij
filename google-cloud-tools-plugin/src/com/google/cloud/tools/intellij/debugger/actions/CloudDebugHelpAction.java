@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,12 +22,9 @@ import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.Presentation;
 import com.intellij.openapi.util.IconLoader;
-
 import javax.swing.Icon;
 
-/**
- * Opens the Cloud Debugger help page.
- */
+/** Opens the Cloud Debugger help page. */
 public class CloudDebugHelpAction extends AnAction {
 
   private static final Icon icon = IconLoader.getIcon("/actions/help.png");
@@ -42,16 +39,12 @@ public class CloudDebugHelpAction extends AnAction {
     openUrl();
   }
 
-  /**
-   * Opens the URL in a browser with BrowserUtil.
-   */
+  /** Opens the URL in a browser with BrowserUtil. */
   protected void openUrl() {
     BrowserUtil.browse(url);
   }
 
-  /**
-   * Sets the help button's icon and label text.
-   */
+  /** Sets the help button's icon and label text. */
   @Override
   public void update(AnActionEvent event) {
     Presentation presentation = event.getPresentation();

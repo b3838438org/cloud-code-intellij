@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@
 package com.google.cloud.tools.intellij.appengine.facet.flexible;
 
 import com.google.cloud.tools.intellij.appengine.cloud.AppEngineDeploymentConfiguration;
-
 import com.intellij.facet.FacetConfiguration;
 import com.intellij.facet.ui.FacetEditorContext;
 import com.intellij.facet.ui.FacetEditorTab;
@@ -25,7 +24,6 @@ import com.intellij.facet.ui.FacetValidatorsManager;
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.util.InvalidDataException;
 import com.intellij.openapi.util.WriteExternalException;
-
 import org.jdom.Element;
 import org.jetbrains.annotations.Nullable;
 
@@ -34,20 +32,20 @@ import org.jetbrains.annotations.Nullable;
  *
  * <p>Stores the Flexible configuration files locations.
  */
-public class AppEngineFlexibleFacetConfiguration implements FacetConfiguration,
-    PersistentStateComponent<AppEngineFlexibleFacetConfiguration> {
+public class AppEngineFlexibleFacetConfiguration
+    implements FacetConfiguration, PersistentStateComponent<AppEngineFlexibleFacetConfiguration> {
 
   private String appYamlPath = "";
   private String dockerfilePath = "";
 
   @Override
-  public FacetEditorTab[] createEditorTabs(FacetEditorContext editorContext,
-      FacetValidatorsManager validatorsManager) {
+  public FacetEditorTab[] createEditorTabs(
+      FacetEditorContext editorContext, FacetValidatorsManager validatorsManager) {
     AppEngineDeploymentConfiguration deploymentConfiguration =
         new AppEngineDeploymentConfiguration();
     deploymentConfiguration.setAppYamlPath(appYamlPath);
     deploymentConfiguration.setDockerFilePath(dockerfilePath);
-    return new FacetEditorTab[]{
+    return new FacetEditorTab[] {
       new FlexibleFacetEditor(deploymentConfiguration, editorContext.getProject())
     };
   }

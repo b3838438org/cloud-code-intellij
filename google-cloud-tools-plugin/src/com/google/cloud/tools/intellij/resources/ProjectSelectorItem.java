@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,25 +18,22 @@ package com.google.cloud.tools.intellij.resources;
 
 import com.intellij.ui.UI;
 import com.intellij.ui.components.JBLabel;
-
-import org.jetbrains.annotations.NotNull;
-
 import java.awt.Color;
-
 import javax.swing.BorderFactory;
 import javax.swing.SwingConstants;
+import org.jetbrains.annotations.NotNull;
 
-/**
- * Represents a single GCP project ui.
- */
+/** Represents a single GCP project ui. */
 class ProjectSelectorItem extends JBLabel {
 
   private Color textSelectionColor;
   private Color textNonSelectionColor;
   private Color hoverColor;
 
-  public ProjectSelectorItem(@NotNull Color backgroundNonSelectionColor,
-      @NotNull Color textSelectionColor, @NotNull Color textNonSelectionColor) {
+  public ProjectSelectorItem(
+      @NotNull Color backgroundNonSelectionColor,
+      @NotNull Color textSelectionColor,
+      @NotNull Color textNonSelectionColor) {
     setBorder(BorderFactory.createEmptyBorder(2, 15, 2, 0));
     setOpaque(false);
     setHorizontalAlignment(SwingConstants.LEFT);

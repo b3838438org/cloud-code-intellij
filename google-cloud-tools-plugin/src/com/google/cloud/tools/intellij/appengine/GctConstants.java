@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,10 @@
 
 package com.google.cloud.tools.intellij.appengine;
 
-/**
- * A list of constants used by the CloudTools Plugin.
- */
+/** A list of constants used by the CloudTools Plugin. */
 public final class GctConstants {
 
-  public static final String APP_ENGINE_ANNOTATION_API =
-      "com.google.api.server.spi.config.Api";
+  public static final String APP_ENGINE_ANNOTATION_API = "com.google.api.server.spi.config.Api";
   public static final String APP_ENGINE_ANNOTATION_API_CLASS =
       "com.google.api.server.spi.config.ApiClass";
   public static final String APP_ENGINE_ANNOTATION_API_METHOD =
@@ -37,8 +34,7 @@ public final class GctConstants {
       "com.google.api.server.spi.config.ApiTransformer";
   public static final String APP_ENGINE_ANNOTATION_DEFAULT_VALUE =
       "com.google.api.server.spi.config.DefaultValue";
-  public static final String APP_ENGINE_ANNOTATION_NAMED =
-      "com.google.api.server.spi.config.Named";
+  public static final String APP_ENGINE_ANNOTATION_NAMED = "com.google.api.server.spi.config.Named";
   public static final String APP_ENGINE_ANNOTATION_NULLABLE =
       "com.google.api.server.spi.config.Nullable";
 }

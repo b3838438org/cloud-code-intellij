@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,25 +25,21 @@ import static org.mockito.Mockito.when;
 import com.google.cloud.tools.intellij.debugger.CloudDebugProcessState;
 import com.google.cloud.tools.intellij.debugger.CloudDebugProcessStateCollector;
 import com.google.cloud.tools.intellij.testing.BasePluginTestCase;
-
+import java.util.Collections;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.Collections;
-
 @RunWith(MockitoJUnitRunner.class)
 public class IntelliJGoogleLoginMessageExtenderTest extends BasePluginTestCase {
 
-  @Mock
-  private CloudDebugProcessStateCollector stateCollector;
+  @Mock private CloudDebugProcessStateCollector stateCollector;
 
   @Before
   public void setUp() throws Exception {
     registerService(CloudDebugProcessStateCollector.class, stateCollector);
-
   }
 
   @Test
@@ -55,8 +51,8 @@ public class IntelliJGoogleLoginMessageExtenderTest extends BasePluginTestCase {
   public void testAdditionalLogoutMessage_returnsMessageWhenAStateListens() throws Exception {
     when(stateCollector.getBackgroundListeningStates())
         .thenReturn(Collections.singletonList(mock(CloudDebugProcessState.class)));
-    assertThat(new IntelliJGoogleLoginMessageExtender().additionalLogoutMessage(),
+    assertThat(
+        new IntelliJGoogleLoginMessageExtender().additionalLogoutMessage(),
         is("Any Stackdriver Debug sessions listening in the background will be stopped."));
   }
-
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,14 +27,10 @@ import com.intellij.openapi.ui.popup.ComponentPopupBuilder;
 import com.intellij.openapi.ui.popup.JBPopup;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.ui.awt.RelativePoint;
-
 import java.awt.Point;
-
 import javax.swing.JComponent;
 
-/**
- * Action to open the Google Login panel.
- */
+/** Action to open the Google Login panel. */
 public class GoogleLoginAction extends AnAction
     implements DumbAware, CustomComponentAction, RightAlignedToolbarAction {
 
@@ -49,9 +45,7 @@ public class GoogleLoginAction extends AnAction
         this, presentation, presentation.getText(), ActionToolbar.DEFAULT_MINIMUM_BUTTON_SIZE);
   }
 
-  /**
-   * Opens up the Google Login panel as a popup.
-   */
+  /** Opens up the Google Login panel as a popup. */
   private static void showPopup(AnActionEvent event) {
     GoogleLoginUsersPanel usersPanel = new GoogleLoginUsersPanel();
     JComponent source = (JComponent) event.getInputEvent().getSource();
@@ -59,7 +53,7 @@ public class GoogleLoginAction extends AnAction
         JBPopupFactory.getInstance().createComponentPopupBuilder(usersPanel, usersPanel.getList());
     JBPopup popup = popupBuilder.createPopup();
     JComponent component = popup.getContent();
-    int startingPoint = (int)(source.getWidth() - component.getPreferredSize().getWidth());
+    int startingPoint = (int) (source.getWidth() - component.getPreferredSize().getWidth());
     popup.show(new RelativePoint(source, new Point(startingPoint, source.getHeight() - 1)));
   }
 }

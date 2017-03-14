@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,25 +17,19 @@
 package com.google.cloud.tools.intellij.resources;
 
 import com.google.cloud.tools.intellij.login.ui.GoogleLoginIcons;
-
 import com.intellij.ui.components.JBLabel;
 import com.intellij.util.ui.UIUtil;
-
-import org.jetbrains.annotations.NotNull;
-
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
+import org.jetbrains.annotations.NotNull;
 
-/**
- * UI for the node that prompts for Google Login.
- */
+/** UI for the node that prompts for Google Login. */
 class BaseGoogleLoginUi extends JPanel {
 
   public static final int PREFERRED_HEIGHT = 150;

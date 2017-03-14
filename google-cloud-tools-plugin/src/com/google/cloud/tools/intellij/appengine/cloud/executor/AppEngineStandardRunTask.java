@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,13 +25,10 @@ import com.google.cloud.tools.intellij.appengine.sdk.CloudSdkVersionNotifier;
 import com.google.cloud.tools.intellij.stats.UsageTrackerProvider;
 import com.google.cloud.tools.intellij.util.GctTracking;
 import com.google.common.base.Strings;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * Represents an App Engine Standard run task. (i.e., devappserver)
- */
+/** Represents an App Engine Standard run task. (i.e., devappserver) */
 public class AppEngineStandardRunTask extends AppEngineTask {
 
   private RunConfiguration runConfig;
@@ -56,11 +53,12 @@ public class AppEngineStandardRunTask extends AppEngineTask {
     // show a warning notification if the cloud sdk version is not supported
     CloudSdkVersionNotifier.getInstance().notifyIfUnsupportedVersion();
 
-    CloudSdk sdk = new CloudSdk.Builder()
-        .sdkPath(sdkService.getSdkHomePath())
-        .async(true)
-        .startListener(startListener)
-        .build();
+    CloudSdk sdk =
+        new CloudSdk.Builder()
+            .sdkPath(sdkService.getSdkHomePath())
+            .async(true)
+            .startListener(startListener)
+            .build();
 
     CloudSdkAppEngineDevServer devServer = new CloudSdkAppEngineDevServer(sdk);
     devServer.run(runConfig);
@@ -69,6 +67,5 @@ public class AppEngineStandardRunTask extends AppEngineTask {
         .trackEvent(GctTracking.APP_ENGINE_RUN)
         .addMetadata(GctTracking.METADATA_LABEL_KEY, Strings.nullToEmpty(runnerId))
         .ping();
-
   }
 }

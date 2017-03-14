@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@
 package com.google.cloud.tools.intellij.debugger;
 
 import git4idea.repo.GitRepository;
-
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -35,7 +34,8 @@ public class SyncResult {
   private final String targetSyncSha;
   private final String repoType;
 
-  SyncResult(boolean invalidDebuggee,
+  SyncResult(
+      boolean invalidDebuggee,
       boolean needsStash,
       boolean needsSync,
       @Nullable String targetSyncSha,
@@ -72,26 +72,19 @@ public class SyncResult {
     return !invalidDebuggee;
   }
 
-  /**
-   * Whether the local repository has uncommitted changes we need to stash.
-   */
+  /** Whether the local repository has uncommitted changes we need to stash. */
   public boolean needsStash() {
     return needsStash;
   }
 
-  /**
-   * Return the kind of remote repository found, or null if no matching repository was found.
-   */
+  /** Return the kind of remote repository found, or null if no matching repository was found. */
   @Nullable
   public String getRepositoryType() {
     return repoType;
   }
 
-  /**
-   * Whether the local repository needs to be synced with the remote repository.
-   */
+  /** Whether the local repository needs to be synced with the remote repository. */
   public boolean needsSync() {
     return needsSync;
   }
-
 }

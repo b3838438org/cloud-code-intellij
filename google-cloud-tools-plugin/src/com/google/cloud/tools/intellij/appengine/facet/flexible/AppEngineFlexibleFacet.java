@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,23 +20,21 @@ import com.intellij.facet.Facet;
 import com.intellij.facet.FacetType;
 import com.intellij.facet.FacetTypeRegistry;
 import com.intellij.openapi.module.Module;
-
 import org.jetbrains.annotations.NotNull;
 
-/**
- * The App Engine Flexible facet.
- */
+/** The App Engine Flexible facet. */
 public class AppEngineFlexibleFacet extends Facet<AppEngineFlexibleFacetConfiguration> {
 
-  public AppEngineFlexibleFacet(@NotNull FacetType facetType,
+  public AppEngineFlexibleFacet(
+      @NotNull FacetType facetType,
       @NotNull Module module,
       @NotNull String name,
       @NotNull AppEngineFlexibleFacetConfiguration configuration) {
     super(facetType, module, name, configuration, null /* underlyingFacet */);
   }
 
-  public static FacetType<AppEngineFlexibleFacet,
-      AppEngineFlexibleFacetConfiguration> getFacetType() {
+  public static FacetType<AppEngineFlexibleFacet, AppEngineFlexibleFacetConfiguration>
+      getFacetType() {
     return FacetTypeRegistry.getInstance().findFacetType(AppEngineFlexibleFacetType.ID);
   }
 }

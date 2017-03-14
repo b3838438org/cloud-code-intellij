@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,12 +19,9 @@ package com.google.cloud.tools.intellij.stats;
 import com.google.api.client.repackaged.com.google.common.base.Preconditions;
 import com.google.api.client.util.Maps;
 import com.google.cloud.tools.intellij.stats.UsageTracker.FluentTrackingEventWithMetadata;
-
 import java.util.Map;
 
-/**
- * Implements the fluent interface exposed for tracking by {@link UsageTracker}.
- */
+/** Implements the fluent interface exposed for tracking by {@link UsageTracker}. */
 class TrackingEventBuilder implements FluentTrackingEventWithMetadata {
 
   private SendsEvents eventSender;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,19 +17,13 @@
 package com.google.cloud.tools.intellij.appengine.facet.standard;
 
 import com.google.cloud.tools.intellij.util.GctBundle;
-
 import com.intellij.openapi.roots.DependencyScope;
-
-import org.apache.commons.lang.WordUtils;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.idea.maven.utils.library.RepositoryUtils;
-
 import java.util.Arrays;
 import java.util.Optional;
+import org.apache.commons.lang.WordUtils;
+import org.jetbrains.idea.maven.utils.library.RepositoryUtils;
 
-/**
- * Defines the available App Engine standard maven-sourced libraries.
- */
+/** Defines the available App Engine standard maven-sourced libraries. */
 public enum AppEngineStandardMavenLibrary {
   SERVLET_API(
       GctBundle.message("appengine.library.servlet.api.name"),
@@ -68,7 +62,8 @@ public enum AppEngineStandardMavenLibrary {
   private final String version;
   private final DependencyScope scope;
 
-  AppEngineStandardMavenLibrary(String displayName,
+  AppEngineStandardMavenLibrary(
+      String displayName,
       String groupId,
       String artifactId,
       String version,

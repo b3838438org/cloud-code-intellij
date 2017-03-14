@@ -24,9 +24,7 @@ import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiJavaFile;
 import com.intellij.testFramework.fixtures.JavaCodeInsightFixtureTestCase;
-
 import org.junit.Ignore;
-import org.junit.Test;
 
 /** Unit tests for {@link ServerToIdeFileResolver}. */
 public class ServerToIDEFileResolverTest extends JavaCodeInsightFixtureTestCase {

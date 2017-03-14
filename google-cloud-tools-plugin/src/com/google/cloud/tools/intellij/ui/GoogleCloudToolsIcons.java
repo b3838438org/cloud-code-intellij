@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,12 +17,9 @@
 package com.google.cloud.tools.intellij.ui;
 
 import com.google.common.collect.ImmutableList;
-
 import com.intellij.openapi.util.IconLoader;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.swing.Icon;
 
 /**
@@ -43,8 +40,8 @@ public final class GoogleCloudToolsIcons {
   public static final Icon CLOUD_BREAKPOINT_ERROR = load("/icons/cloudbreakpointerror.png");
   public static final Icon CLOUD_BREAKPOINT_DISABLED = load("/icons/cloudbreakpointdisabled.png");
   public static final Icon CLOUD_DEBUG_SAVE_EXIT = load("/icons/debugsaveexit.png");
-  public static final Icon CLOUD_DEBUG_REACTIVATE_BREAKPOINT = load(
-      "/icons/debugreactivatebreakpoint.png");
+  public static final Icon CLOUD_DEBUG_REACTIVATE_BREAKPOINT =
+      load("/icons/debugreactivatebreakpoint.png");
   public static final Icon CLOUD_DEBUG_DELETE_ALL_BREAKPOINTS = load("/icons/debugdeleteall.png");
   public static final Icon STACKDRIVER_DEBUGGER = load("/icons/stackdriverdebugger.png");
 

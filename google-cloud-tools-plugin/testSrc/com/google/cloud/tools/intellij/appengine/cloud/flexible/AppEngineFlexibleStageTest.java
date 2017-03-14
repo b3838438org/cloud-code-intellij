@@ -21,20 +21,16 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 
 import com.google.cloud.tools.intellij.appengine.cloud.AppEngineDeploymentConfiguration;
-
 import com.intellij.remoteServer.runtime.log.LoggingHandler;
 import com.intellij.testFramework.PlatformTestCase;
-
-import org.mockito.Mock;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import org.mockito.Mock;
 
 public class AppEngineFlexibleStageTest extends PlatformTestCase {
 
-  @Mock
-  private LoggingHandler loggingHandler;
+  @Mock private LoggingHandler loggingHandler;
 
   private Path artifact;
   private AppEngineDeploymentConfiguration deploymentConfiguration;
@@ -49,7 +45,8 @@ public class AppEngineFlexibleStageTest extends PlatformTestCase {
 
     artifact = createTempFile("artifact.war", "").toPath();
     deploymentConfiguration = new AppEngineDeploymentConfiguration();
-    deploymentConfiguration.setAppYamlPath(createTempFile("custom.yaml", "runtime: custom").getPath());
+    deploymentConfiguration.setAppYamlPath(
+        createTempFile("custom.yaml", "runtime: custom").getPath());
     deploymentConfiguration.setDockerFilePath(createTempFile("Dockerfile", "").getPath());
     stagingDirectory = createTempDirectory().toPath();
   }
@@ -62,7 +59,9 @@ public class AppEngineFlexibleStageTest extends PlatformTestCase {
       stage.stage(stagingDirectory);
       fail("No yaml file.");
     } catch (RuntimeException re) {
-      assertEquals("The specified app.yaml configuration file does not exist or is not a valid file.", re.getMessage());
+      assertEquals(
+          "The specified app.yaml configuration file does not exist or is not a valid file.",
+          re.getMessage());
     }
   }
 
@@ -74,7 +73,9 @@ public class AppEngineFlexibleStageTest extends PlatformTestCase {
       stage.stage(stagingDirectory);
       fail("No Dockerfile.");
     } catch (RuntimeException re) {
-      assertEquals("The specified Dockerfile configuration file does not exist or is not a valid file.", re.getMessage());
+      assertEquals(
+          "The specified Dockerfile configuration file does not exist or is not a valid file.",
+          re.getMessage());
     }
   }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@ import com.google.api.client.repackaged.com.google.common.base.Strings;
 import com.google.cloud.tools.intellij.stats.UsageTrackerProvider;
 import com.google.cloud.tools.intellij.util.GctBundle;
 import com.google.cloud.tools.intellij.util.GctTracking;
-
 import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.notification.NotificationListener.UrlOpeningListener;
 import com.intellij.openapi.diagnostic.Logger;
@@ -34,13 +33,6 @@ import com.intellij.openapi.vcs.VcsNotifier;
 import com.intellij.openapi.vcs.changes.VcsDirtyScopeManager;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.io.File;
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import git4idea.DialogManager;
 import git4idea.GitVcs;
 import git4idea.actions.BasicAction;
@@ -48,10 +40,12 @@ import git4idea.commands.Git;
 import git4idea.commands.GitCommandResult;
 import git4idea.commands.GitLineHandlerListener;
 import git4idea.commands.GitStandardProgressAnalyzer;
+import java.io.File;
+import java.util.concurrent.atomic.AtomicBoolean;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-/**
- * Checkout provider for the Google Cloud Platform.
- */
+/** Checkout provider for the Google Cloud Platform. */
 public class GcpCheckoutProvider implements CheckoutProvider {
 
   private static final Logger LOG = Logger.getInstance(GcpCheckoutProvider.class);
@@ -100,26 +94,38 @@ public class GcpCheckoutProvider implements CheckoutProvider {
       LOG.error("unexpected blank username during checkout");
       return;
     }
-    clone(project, git, listener, destinationParent, sourceRepositoryUrl, directoryName,
-        parentDirectory, gcpUserName);
+    clone(
+        project,
+        git,
+        listener,
+        destinationParent,
+        sourceRepositoryUrl,
+        directoryName,
+        parentDirectory,
+        gcpUserName);
   }
 
-  private static void clone(@NotNull final Project project, @NotNull final Git git,
+  private static void clone(
+      @NotNull final Project project,
+      @NotNull final Git git,
       @Nullable final Listener listener,
-      @NotNull final VirtualFile destinationParent, @NotNull final String sourceRepositoryUrl,
-      @NotNull final String directoryName, @NotNull final String parentDirectory,
+      @NotNull final VirtualFile destinationParent,
+      @NotNull final String sourceRepositoryUrl,
+      @NotNull final String directoryName,
+      @NotNull final String parentDirectory,
       @Nullable final String gcpUserName) {
 
     final AtomicBoolean cloneResult = new AtomicBoolean();
-    new Task.Backgroundable(project,
-        GctBundle.message("clonefromgcp.repository", sourceRepositoryUrl)) {
+    new Task.Backgroundable(
+        project, GctBundle.message("clonefromgcp.repository", sourceRepositoryUrl)) {
       @Override
       public void run(@NotNull ProgressIndicator indicator) {
-        GcpHttpAuthDataProvider.Context context = GcpHttpAuthDataProvider
-            .createContext(gcpUserName);
+        GcpHttpAuthDataProvider.Context context =
+            GcpHttpAuthDataProvider.createContext(gcpUserName);
         try {
-          cloneResult.set(doClone(project, indicator, git, directoryName, parentDirectory,
-              sourceRepositoryUrl));
+          cloneResult.set(
+              doClone(
+                  project, indicator, git, directoryName, parentDirectory, sourceRepositoryUrl));
         } finally {
           context.close();
         }
@@ -131,38 +137,43 @@ public class GcpCheckoutProvider implements CheckoutProvider {
           return;
         }
 
-        destinationParent.refresh(true, true, new Runnable() {
-          @Override
-          public void run() {
-            if (project.isOpen() && (!project.isDisposed()) && (!project.isDefault())) {
-              final VcsDirtyScopeManager mgr = VcsDirtyScopeManager.getInstance(project);
-              mgr.fileDirty(destinationParent);
-            }
-          }
-        });
+        destinationParent.refresh(
+            true,
+            true,
+            new Runnable() {
+              @Override
+              public void run() {
+                if (project.isOpen() && (!project.isDisposed()) && (!project.isDefault())) {
+                  final VcsDirtyScopeManager mgr = VcsDirtyScopeManager.getInstance(project);
+                  mgr.fileDirty(destinationParent);
+                }
+              }
+            });
 
-        ProjectManagerListener configWriter = new ProjectManagerListener() {
-          @Override
-          public void projectOpened(Project project) {
-            PropertiesComponent.getInstance(project)
-                .setValue(GcpHttpAuthDataProvider.GCP_USER, gcpUserName == null ? "" : gcpUserName);
-          }
+        ProjectManagerListener configWriter =
+            new ProjectManagerListener() {
+              @Override
+              public void projectOpened(Project project) {
+                PropertiesComponent.getInstance(project)
+                    .setValue(
+                        GcpHttpAuthDataProvider.GCP_USER, gcpUserName == null ? "" : gcpUserName);
+              }
 
-          @Override
-          public boolean canCloseProject(Project project) {
-            return true;
-          }
+              @Override
+              public boolean canCloseProject(Project project) {
+                return true;
+              }
 
-          @Override
-          public void projectClosed(Project project) {
-            //no-op
-          }
+              @Override
+              public void projectClosed(Project project) {
+                //no-op
+              }
 
-          @Override
-          public void projectClosing(Project project) {
-            //no-op
-          }
-        };
+              @Override
+              public void projectClosing(Project project) {
+                //no-op
+              }
+            };
 
         ProjectManager.getInstance().addProjectManagerListener(configWriter);
         try {
@@ -177,22 +188,31 @@ public class GcpCheckoutProvider implements CheckoutProvider {
     }.queue();
   }
 
-  private static boolean doClone(@NotNull Project project, @NotNull ProgressIndicator indicator,
+  private static boolean doClone(
+      @NotNull Project project,
+      @NotNull ProgressIndicator indicator,
       @NotNull Git git,
-      @NotNull String directoryName, @NotNull String parentDirectory,
+      @NotNull String directoryName,
+      @NotNull String parentDirectory,
       @NotNull String sourceRepositoryUrl) {
     indicator.setIndeterminate(false);
     GitLineHandlerListener progressListener = GitStandardProgressAnalyzer.createListener(indicator);
 
-    GitCommandResult result = git
-        .clone(project, new File(parentDirectory), sourceRepositoryUrl, directoryName,
+    GitCommandResult result =
+        git.clone(
+            project,
+            new File(parentDirectory),
+            sourceRepositoryUrl,
+            directoryName,
             progressListener);
     if (result.success()) {
       return true;
     }
     VcsNotifier.getInstance(project)
-        .notifyError(GctBundle.message("clonefromgcp.failed"),
-            result.getErrorOutputAsHtmlString() + "<br>"
+        .notifyError(
+            GctBundle.message("clonefromgcp.failed"),
+            result.getErrorOutputAsHtmlString()
+                + "<br>"
                 + result.getOutputAsJoinedString().replaceAll(URL_REGEX, "<a href=\"$0\">$0</a>"),
             new UrlOpeningListener(true));
     return false;

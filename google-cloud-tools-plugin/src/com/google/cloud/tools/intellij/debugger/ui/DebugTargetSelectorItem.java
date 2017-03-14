@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,4 @@ package com.google.cloud.tools.intellij.debugger.ui;
  * Parent class to serve as a base for actual debug targets or specific child classes used e.g. for
  * error handling
  */
-interface DebugTargetSelectorItem {
-
-}
+interface DebugTargetSelectorItem {}

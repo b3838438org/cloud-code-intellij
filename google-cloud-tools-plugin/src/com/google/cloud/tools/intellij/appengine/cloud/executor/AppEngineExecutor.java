@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,12 +17,9 @@
 package com.google.cloud.tools.intellij.appengine.cloud.executor;
 
 import com.google.cloud.tools.appengine.cloudsdk.process.ProcessStartListener;
-
 import com.intellij.openapi.vcs.impl.CancellableRunnable;
 
-/**
- * Executor of {@link AppEngineTask}'s.
- */
+/** Executor of {@link AppEngineTask}'s. */
 public class AppEngineExecutor implements CancellableRunnable {
 
   private Process process;
@@ -34,12 +31,13 @@ public class AppEngineExecutor implements CancellableRunnable {
 
   @Override
   public void run() {
-    task.execute(new ProcessStartListener() {
-      @Override
-      public void onStart(Process process) {
-        setProcess(process);
-      }
-    });
+    task.execute(
+        new ProcessStartListener() {
+          @Override
+          public void onStart(Process process) {
+            setProcess(process);
+          }
+        });
   }
 
   @Override

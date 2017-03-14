@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,28 +20,21 @@ import com.google.cloud.tools.intellij.appengine.cloud.AppEngineDeploymentConfig
 import com.google.cloud.tools.intellij.appengine.project.AppEngineProjectService;
 import com.google.cloud.tools.intellij.appengine.project.AppEngineProjectService.FlexibleRuntime;
 import com.google.cloud.tools.intellij.util.GctBundle;
-
 import com.intellij.remoteServer.runtime.log.LoggingHandler;
-
-import org.jetbrains.annotations.NotNull;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import org.jetbrains.annotations.NotNull;
 
-/**
- * Stages an application in preparation for deployment to the App Engine flexible environment.
- */
+/** Stages an application in preparation for deployment to the App Engine flexible environment. */
 public class AppEngineFlexibleStage {
   private LoggingHandler loggingHandler;
   private Path deploymentArtifactPath;
   private AppEngineDeploymentConfiguration deploymentConfiguration;
 
-  /**
-   * Initialize the staging dependencies.
-   */
+  /** Initialize the staging dependencies. */
   public AppEngineFlexibleStage(
       @NotNull LoggingHandler loggingHandler,
       @NotNull Path deploymentArtifactPath,
@@ -52,8 +45,8 @@ public class AppEngineFlexibleStage {
   }
 
   /**
-   * Given a local staging directory, stage the application in preparation for deployment to the
-   * App Engine flexible environment.
+   * Given a local staging directory, stage the application in preparation for deployment to the App
+   * Engine flexible environment.
    */
   public void stage(@NotNull Path stagingDirectory) {
     try {
@@ -61,14 +54,13 @@ public class AppEngineFlexibleStage {
       // This should only happen in special circumstances, since the deployment UI prevents the
       // run config from being ran is the specified configuration files don't exist.
       boolean isCustomRuntime =
-          AppEngineProjectService.getInstance().getFlexibleRuntimeFromAppYaml(
-              deploymentConfiguration.getAppYamlPath())
-          .filter(runtime -> runtime == FlexibleRuntime.custom)
-          .isPresent();
+          AppEngineProjectService.getInstance()
+              .getFlexibleRuntimeFromAppYaml(deploymentConfiguration.getAppYamlPath())
+              .filter(runtime -> runtime == FlexibleRuntime.custom)
+              .isPresent();
 
       if (!Files.exists(Paths.get(deploymentConfiguration.getAppYamlPath()))) {
-        throw new RuntimeException(
-            GctBundle.getString("appengine.deployment.error.staging.yaml"));
+        throw new RuntimeException(GctBundle.getString("appengine.deployment.error.staging.yaml"));
       }
       if (isCustomRuntime
           && !Files.exists(Paths.get(deploymentConfiguration.getDockerFilePath()))) {
@@ -76,8 +68,10 @@ public class AppEngineFlexibleStage {
             GctBundle.getString("appengine.deployment.error.staging.dockerfile"));
       }
 
-      Path stagedArtifactPath = stagingDirectory.resolve(
-          "target" + AppEngineFlexibleDeploymentArtifactType.typeForPath(deploymentArtifactPath));
+      Path stagedArtifactPath =
+          stagingDirectory.resolve(
+              "target"
+                  + AppEngineFlexibleDeploymentArtifactType.typeForPath(deploymentArtifactPath));
       Files.copy(deploymentArtifactPath, stagedArtifactPath);
 
       Path appYamlPath = Paths.get(deploymentConfiguration.getAppYamlPath());

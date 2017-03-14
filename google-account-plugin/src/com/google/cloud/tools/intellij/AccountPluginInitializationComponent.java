@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,19 +21,15 @@ import com.google.cloud.tools.intellij.login.util.TrackerMessageBundle;
 import com.google.cloud.tools.intellij.stats.UsageTrackerManager;
 import com.google.cloud.tools.intellij.stats.UsageTrackerNotification;
 import com.google.common.annotations.VisibleForTesting;
-
 import com.intellij.notification.NotificationDisplayType;
 import com.intellij.notification.NotificationsConfiguration;
 import com.intellij.notification.NotificationsManager;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ApplicationComponent;
 import com.intellij.openapi.components.ServiceManager;
-
 import org.jetbrains.annotations.NotNull;
 
-/**
- * Performs runtime initialization for the Google Login plugin.
- */
+/** Performs runtime initialization for the Google Login plugin. */
 public class AccountPluginInitializationComponent implements ApplicationComponent {
 
   @NotNull
@@ -46,11 +42,11 @@ public class AccountPluginInitializationComponent implements ApplicationComponen
   public void initComponent() {
     AccountPluginInfoService pluginInfoService =
         ServiceManager.getService(AccountPluginInfoService.class);
-    AccountPluginConfigurationService pluginConfigurationService = ServiceManager
-        .getService(AccountPluginConfigurationService.class);
+    AccountPluginConfigurationService pluginConfigurationService =
+        ServiceManager.getService(AccountPluginConfigurationService.class);
     if (pluginInfoService.shouldEnableErrorFeedbackReporting()) {
-      pluginConfigurationService
-          .enabledGoogleFeedbackErrorReporting(pluginInfoService.getPluginId());
+      pluginConfigurationService.enabledGoogleFeedbackErrorReporting(
+          pluginInfoService.getPluginId());
     }
     if (!ApplicationManager.getApplication().isUnitTestMode()) {
       configureUsageTracking();
@@ -63,13 +59,11 @@ public class AccountPluginInitializationComponent implements ApplicationComponen
     // no-op
   }
 
-
   /**
-   * For Google Usage Tracker
-   * Ensure that the notification manager (also an application component) is registered first;
-   * otherwise this component's initComponent() call will fire a notification event bus
-   * to show the opt-in dialog, but the notification component may not yet have been initialized
-   * and is therefore not subscribed and listening.
+   * For Google Usage Tracker Ensure that the notification manager (also an application component)
+   * is registered first; otherwise this component's initComponent() call will fire a notification
+   * event bus to show the opt-in dialog, but the notification component may not yet have been
+   * initialized and is therefore not subscribed and listening.
    */
   @VisibleForTesting
   void configureUsageTracking() {
@@ -77,9 +71,10 @@ public class AccountPluginInitializationComponent implements ApplicationComponen
     if (usageTrackerManager.isUsageTrackingAvailable()
         && !usageTrackerManager.hasUserRecordedTrackingPreference()) {
       NotificationsManager.getNotificationsManager();
-      NotificationsConfiguration.getNotificationsConfiguration().register(
-          TrackerMessageBundle.message("notification.group.display.id"),
-          NotificationDisplayType.STICKY_BALLOON);
+      NotificationsConfiguration.getNotificationsConfiguration()
+          .register(
+              TrackerMessageBundle.message("notification.group.display.id"),
+              NotificationDisplayType.STICKY_BALLOON);
       UsageTrackerNotification.getInstance().showNotification();
     }
   }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,21 +20,17 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.google.api.client.repackaged.javax.annotation.concurrent.Immutable;
 import com.google.cloud.tools.intellij.appengine.sdk.CloudSdkPanel;
 import com.google.cloud.tools.intellij.appengine.sdk.CloudSdkService;
 import com.google.cloud.tools.intellij.appengine.sdk.CloudSdkValidationResult;
 import com.google.common.collect.ImmutableSet;
-
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 import com.intellij.testFramework.PlatformTestCase;
-
-import org.picocontainer.MutablePicoContainer;
-
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import org.picocontainer.MutablePicoContainer;
 
 public class AppEngineCloudConfigurableTest extends PlatformTestCase {
   private AppEngineCloudConfigurable appEngineCloudConfigurable;
@@ -49,8 +45,8 @@ public class AppEngineCloudConfigurableTest extends PlatformTestCase {
   public void setUp() throws Exception {
     super.setUp();
 
-    MutablePicoContainer applicationContainer = (MutablePicoContainer)
-        ApplicationManager.getApplication().getPicoContainer();
+    MutablePicoContainer applicationContainer =
+        (MutablePicoContainer) ApplicationManager.getApplication().getPicoContainer();
 
     cloudSdkService = mock(CloudSdkService.class);
 
@@ -88,8 +84,7 @@ public class AppEngineCloudConfigurableTest extends PlatformTestCase {
   }
 
   private void initCloudConfigurable() {
-    appEngineCloudConfigurable =
-        new AppEngineCloudConfigurable();
+    appEngineCloudConfigurable = new AppEngineCloudConfigurable();
 
     CloudSdkPanel panel = appEngineCloudConfigurable.getCloudSdkPanel();
 

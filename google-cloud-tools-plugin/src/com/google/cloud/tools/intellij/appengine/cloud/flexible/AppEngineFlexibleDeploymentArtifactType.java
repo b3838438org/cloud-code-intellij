@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,22 +16,23 @@
 
 package com.google.cloud.tools.intellij.appengine.cloud.flexible;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import java.nio.file.Path;
 import java.util.Locale;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Represents the supported Java artifact types that we can deploy to App Engine flexible
  * environment.
  */
 public enum AppEngineFlexibleDeploymentArtifactType {
-  UNKNOWN, JAR, WAR;
+  UNKNOWN,
+  JAR,
+  WAR;
 
   /**
-   * Returns the right {@code AppEngineFlexibleDeploymentArtifactType} for the given
-   * {@code deployPackage}.
+   * Returns the right {@code AppEngineFlexibleDeploymentArtifactType} for the given {@code
+   * deployPackage}.
    */
   @NotNull
   public static AppEngineFlexibleDeploymentArtifactType typeForPath(@Nullable Path deployPackage) {
@@ -44,7 +45,6 @@ public enum AppEngineFlexibleDeploymentArtifactType {
     }
     return UNKNOWN;
   }
-
 
   @Override
   public String toString() {

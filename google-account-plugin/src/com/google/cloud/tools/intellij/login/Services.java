@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,9 @@
 
 package com.google.cloud.tools.intellij.login;
 
-
 import com.intellij.openapi.components.ServiceManager;
 
-/**
- * TODO: Describe this class well.
- */
+/** TODO: Describe this class well. */
 public class Services {
 
   public static GoogleLoginService getLoginService() {

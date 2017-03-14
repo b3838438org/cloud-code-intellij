@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,8 +26,8 @@ import com.google.cloud.tools.intellij.util.GctBundle;
  * is Standard (e.g., exploded war), but is finally deployed to the Flexible environment in a Docker
  * container.
  *
- * <p>This distinction is useful, e.g., to select the deploy runner for a compat project (i.e.,
- * the standard runner) and to tell a user which environment the app is being deployed to (i.e.,
+ * <p>This distinction is useful, e.g., to select the deploy runner for a compat project (i.e., the
+ * standard runner) and to tell a user which environment the app is being deployed to (i.e.,
  * flexible environment).
  */
 public enum AppEngineEnvironment {
@@ -57,4 +57,3 @@ public enum AppEngineEnvironment {
     return GctBundle.message(label);
   }
 }
-

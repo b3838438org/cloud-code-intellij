@@ -17,10 +17,8 @@
 package com.google.cloud.tools.intellij.appengine.facet.flexible;
 
 import com.google.cloud.tools.intellij.appengine.cloud.AppEngineDeploymentConfiguration;
-
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.testFramework.PlatformTestCase;
-
 import java.io.File;
 
 public class FlexibleFacetEditorTest extends PlatformTestCase {
@@ -66,7 +64,8 @@ public class FlexibleFacetEditorTest extends PlatformTestCase {
     editor = new FlexibleFacetEditor(deploymentConfiguration, getProject());
     assertTrue(editor.getErrorIcon().isVisible());
     assertTrue(editor.getErrorMessage().isVisible());
-    assertEquals("The specified app.yaml configuration file does not exist or is not a valid file.",
+    assertEquals(
+        "The specified app.yaml configuration file does not exist or is not a valid file.",
         editor.getErrorMessage().getText());
 
     try {
@@ -84,7 +83,8 @@ public class FlexibleFacetEditorTest extends PlatformTestCase {
     editor = new FlexibleFacetEditor(deploymentConfiguration, getProject());
     assertTrue(editor.getErrorIcon().isVisible());
     assertTrue(editor.getErrorMessage().isVisible());
-    assertEquals("The specified app.yaml configuration file does not exist or is not a valid file.",
+    assertEquals(
+        "The specified app.yaml configuration file does not exist or is not a valid file.",
         editor.getErrorMessage().getText());
 
     try {
@@ -102,7 +102,8 @@ public class FlexibleFacetEditorTest extends PlatformTestCase {
     editor.getAppYaml().setText(javaYaml.getParentFile().getPath());
     assertTrue(editor.getErrorIcon().isVisible());
     assertTrue(editor.getErrorMessage().isVisible());
-    assertEquals("The specified app.yaml configuration file does not exist or is not a valid file.",
+    assertEquals(
+        "The specified app.yaml configuration file does not exist or is not a valid file.",
         editor.getErrorMessage().getText());
 
     try {
@@ -176,7 +177,8 @@ public class FlexibleFacetEditorTest extends PlatformTestCase {
     assertTrue(editor.getDockerfile().isEnabled());
     assertTrue(editor.getErrorIcon().isVisible());
     assertTrue(editor.getErrorMessage().isVisible());
-    assertEquals("The specified Dockerfile configuration file does not exist or is not a valid file.",
+    assertEquals(
+        "The specified Dockerfile configuration file does not exist or is not a valid file.",
         editor.getErrorMessage().getText());
     assertFalse(editor.getNoDockerfileLabel().isVisible());
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,25 +23,19 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 import com.google.cloud.tools.intellij.login.PluginFlags;
-
 import com.intellij.ide.util.PropertiesComponent;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-/**
- * Tests for {@link UsageTrackerManager}.
- */
+/** Tests for {@link UsageTrackerManager}. */
 @RunWith(MockitoJUnitRunner.class)
 public class UsageTrackerManagerTest {
 
-  @Mock
-  private PropertiesComponent mockComponent;
-  @Mock
-  private PluginFlags mockFlags;
+  @Mock private PropertiesComponent mockComponent;
+  @Mock private PluginFlags mockFlags;
 
   private UsageTrackerManager manager;
 

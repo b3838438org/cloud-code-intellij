@@ -22,24 +22,19 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.oauth2.Oauth2;
 import com.google.api.services.oauth2.model.Userinfoplus;
 import com.google.cloud.tools.intellij.AccountPluginInfoService;
-
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.ModalityState;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.ui.Messages;
-
-import org.jetbrains.annotations.NotNull;
-
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import org.jetbrains.annotations.NotNull;
 
-/**
- * Utility methods of Google Login.
- */
+/** Utility methods of Google Login. */
 public class GoogleLoginUtils {
 
   public static final Logger LOG = Logger.getInstance(GoogleLoginUtils.class);
@@ -53,8 +48,8 @@ public class GoogleLoginUtils {
    * @param pictureCallback the user image will be set on this callback
    */
   @SuppressWarnings("FutureReturnValueIgnored")
-  public static void provideUserPicture(Userinfoplus userInfo,
-      final IUserPropertyCallback<Image> pictureCallback) {
+  public static void provideUserPicture(
+      Userinfoplus userInfo, final IUserPropertyCallback<Image> pictureCallback) {
     // set the size of the image before it is served
     String urlString = userInfo.getPicture() + "?sz=" + DEFAULT_PICTURE_SIZE;
     URL url;
@@ -76,12 +71,10 @@ public class GoogleLoginUtils {
             });
   }
 
-  /**
-   * Sets the user info on the callback.
-   */
+  /** Sets the user info on the callback. */
   @SuppressWarnings("FutureReturnValueIgnored")
-  public static void getUserInfo(@NotNull final Credential credential,
-      final IUserPropertyCallback<Userinfoplus> callback) {
+  public static void getUserInfo(
+      @NotNull final Credential credential, final IUserPropertyCallback<Userinfoplus> callback) {
     final Oauth2 userInfoService =
         new Oauth2.Builder(new NetHttpTransport(), new JacksonFactory(), credential)
             .setApplicationName(

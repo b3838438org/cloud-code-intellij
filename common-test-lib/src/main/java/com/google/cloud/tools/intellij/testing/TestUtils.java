@@ -20,7 +20,6 @@ import static org.junit.Assert.fail;
 
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
-
 import com.intellij.mock.MockApplicationEx;
 import com.intellij.mock.MockProject;
 import com.intellij.openapi.Disposable;
@@ -34,13 +33,6 @@ import com.intellij.openapi.util.Getter;
 import com.intellij.openapi.vfs.encoding.EncodingManager;
 import com.intellij.openapi.vfs.encoding.EncodingManagerImpl;
 import com.intellij.util.pico.DefaultPicoContainer;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.mockito.Mockito;
-import org.picocontainer.MutablePicoContainer;
-import org.picocontainer.PicoContainer;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.NotSerializableException;
@@ -48,10 +40,13 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.mockito.Mockito;
+import org.picocontainer.MutablePicoContainer;
+import org.picocontainer.PicoContainer;
 
-/**
- * Test utilities.
- */
+/** Test utilities. */
 public class TestUtils {
 
   private static Disposable parentDisposableForCleanup;
@@ -61,15 +56,11 @@ public class TestUtils {
     return mockProject(null);
   }
 
-  /**
-   * Construct a mock project.
-   */
+  /** Construct a mock project. */
   @NotNull
   public static MockProject mockProject(@Nullable PicoContainer container) {
     Extensions.registerAreaClass("IDEA_PROJECT", null);
-    container = container != null
-        ? container
-        : new DefaultPicoContainer();
+    container = container != null ? container : new DefaultPicoContainer();
     return new MockProject(container, getParentDisposableForCleanup());
   }
 
@@ -103,7 +94,8 @@ public class TestUtils {
 
     final PluginMockApplication instance = new PluginMockApplication(parentDisposable);
 
-    ApplicationManager.setApplication(instance,
+    ApplicationManager.setApplication(
+        instance,
         new Getter<FileTypeRegistry>() {
           @Override
           public FileTypeRegistry get() {
@@ -115,9 +107,7 @@ public class TestUtils {
     return parentDisposable;
   }
 
-  /**
-   * Cleanup.
-   */
+  /** Cleanup. */
   public static void disposeMockApplication() {
     // Originally the application was replaced with an empty mock application to make any subsequent
     // test cases fail that do not setup their own application. However having quite many legacy
@@ -136,22 +126,18 @@ public class TestUtils {
     }
   }
 
-  /**
-   * Register a service class with the container.
-   */
+  /** Register a service class with the container. */
   @NotNull
   public static <T> T installMockService(@NotNull Class<T> serviceInterface) {
     T mock = Mockito.mock(serviceInterface);
-    MutablePicoContainer picoContainer = (MutablePicoContainer)
-        ApplicationManager.getApplication().getPicoContainer();
+    MutablePicoContainer picoContainer =
+        (MutablePicoContainer) ApplicationManager.getApplication().getPicoContainer();
     picoContainer.unregisterComponent(serviceInterface.getName());
     picoContainer.registerComponentInstance(serviceInterface.getName(), mock);
     return mock;
   }
 
-  /**
-   * Serialize input and fail on exception.
-   */
+  /** Serialize input and fail on exception. */
   public static void assertIsSerializable(@NotNull Serializable object) {
     ObjectOutputStream out = null;
     ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();

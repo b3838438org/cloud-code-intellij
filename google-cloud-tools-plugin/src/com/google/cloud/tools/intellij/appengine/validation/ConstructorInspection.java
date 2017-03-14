@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package com.google.cloud.tools.intellij.appengine.validation;
 
 import com.google.cloud.tools.intellij.appengine.util.EndpointBundle;
 import com.google.cloud.tools.intellij.appengine.util.EndpointUtilities;
-
 import com.intellij.codeInspection.LocalQuickFix;
 import com.intellij.codeInspection.ProblemDescriptor;
 import com.intellij.codeInspection.ProblemsHolder;
@@ -28,7 +27,6 @@ import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElementFactory;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiMethod;
-
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -45,14 +43,12 @@ public class ConstructorInspection extends EndpointInspectionBase {
     return EndpointBundle.message("constructor.description");
   }
 
-
   @Nls
   @NotNull
   @Override
   public String getDisplayName() {
     return EndpointBundle.message("constructor.name");
   }
-
 
   @NotNull
   @Override
@@ -84,7 +80,8 @@ public class ConstructorInspection extends EndpointInspectionBase {
         }
 
         // Register error if class does not have a public nullary constructor
-        holder.registerProblem(psiClass,
+        holder.registerProblem(
+            psiClass,
             "Each class that is within an API must have a public nullary constructor.",
             new MyQuickFix(psiClass));
       }
@@ -120,8 +117,8 @@ public class ConstructorInspection extends EndpointInspectionBase {
       }
 
       PsiElementFactory factory = JavaPsiFacade.getInstance(project).getElementFactory();
-      PsiMethod newConstructor = factory
-          .createMethodFromText("public " + psiClass.getName() + "() { }", psiClass);
+      PsiMethod newConstructor =
+          factory.createMethodFromText("public " + psiClass.getName() + "() { }", psiClass);
       final PsiMethod[] psiMethods = psiClass.getMethods();
       PsiMethod firstMethod = (psiMethods.length == 0) ? null : psiMethods[0];
       psiClass.addBefore(newConstructor, firstMethod);

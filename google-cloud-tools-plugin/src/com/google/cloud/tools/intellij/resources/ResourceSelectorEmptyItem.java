@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,15 +17,11 @@
 package com.google.cloud.tools.intellij.resources;
 
 import com.intellij.ui.components.JBLabel;
-
 import java.awt.Font;
-
 import javax.swing.BorderFactory;
 import javax.swing.SwingConstants;
 
-/**
- * UI for the node that displays information if a resource manager call returns an empty result.
- */
+/** UI for the node that displays information if a resource manager call returns an empty result. */
 public class ResourceSelectorEmptyItem extends JBLabel {
 
   public ResourceSelectorEmptyItem() {
@@ -35,5 +31,4 @@ public class ResourceSelectorEmptyItem extends JBLabel {
     setVerticalAlignment(SwingConstants.CENTER);
     setFont(new Font(getFont().getFontName(), Font.ITALIC, getFont().getSize()));
   }
-
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,37 +33,28 @@ import com.google.cloud.tools.intellij.appengine.cloud.AppEngineDeploymentConfig
 import com.google.cloud.tools.intellij.appengine.cloud.AppEngineHelper;
 import com.google.cloud.tools.intellij.appengine.cloud.standard.AppEngineStandardStage;
 import com.google.cloud.tools.intellij.appengine.sdk.CloudSdkValidationResult;
-
 import com.intellij.remoteServer.runtime.deployment.ServerRuntimeInstance.DeploymentOperationCallback;
 import com.intellij.remoteServer.runtime.log.LoggingHandler;
-
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Optional;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Optional;
-
-/**
- * Unit tests for {@link AppEngineStandardDeployTask}
- */
+/** Unit tests for {@link AppEngineStandardDeployTask} */
 @RunWith(MockitoJUnitRunner.class)
 public class AppEngineStandardDeployTaskTest {
 
   private AppEngineStandardDeployTask task;
-  @Mock
-  AppEngineDeploy deploy;
-  @Mock
-  AppEngineStandardStage stage;
+  @Mock AppEngineDeploy deploy;
+  @Mock AppEngineStandardStage stage;
   @Mock DeploymentOperationCallback callback;
-  @Mock
-  AppEngineDeploymentConfiguration deploymentConfiguration;
-  @Mock
-  AppEngineHelper helper;
+  @Mock AppEngineDeploymentConfiguration deploymentConfiguration;
+  @Mock AppEngineHelper helper;
   @Mock ProcessStartListener startListener;
 
   private static final String DEPLOY_EXCEPTION_MSG =
@@ -99,7 +90,9 @@ public class AppEngineStandardDeployTaskTest {
     when(deploy.getHelper().stageCredentials(anyString())).thenReturn(null);
     task.execute(startListener);
 
-    verify(callback, times(1)).errorOccurred("Failed to prepare credentials. Please make sure you are logged in with the correct account.");
+    verify(callback, times(1))
+        .errorOccurred(
+            "Failed to prepare credentials. Please make sure you are logged in with the correct account.");
   }
 
   @Test
@@ -153,7 +146,8 @@ public class AppEngineStandardDeployTaskTest {
   @Test
   public void deploy_exception() {
     doThrow(new RuntimeException())
-        .when(deploy).deploy(any(Path.class), any(ProcessStartListener.class));
+        .when(deploy)
+        .deploy(any(Path.class), any(ProcessStartListener.class));
     try {
       task.deploy(Paths.get("myFile.jar"), startListener).onExit(0);
     } catch (AssertionError ae) {

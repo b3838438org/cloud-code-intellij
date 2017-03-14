@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,6 @@ import com.google.cloud.tools.intellij.appengine.facet.flexible.AppEngineFlexibl
 import com.google.cloud.tools.intellij.appengine.sdk.CloudSdkService;
 import com.google.cloud.tools.intellij.appengine.sdk.CloudSdkValidationResult;
 import com.google.common.collect.ImmutableSet;
-
 import com.intellij.facet.FacetManager;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.module.Module;
@@ -36,24 +35,18 @@ import com.intellij.openapi.module.ModulePointerManager;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.util.Disposer;
 import com.intellij.testFramework.PlatformTestCase;
-
-import org.mockito.Mock;
-import org.picocontainer.MutablePicoContainer;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
-
 import javax.swing.JCheckBox;
+import org.mockito.Mock;
+import org.picocontainer.MutablePicoContainer;
 
 public class AppEngineFlexibleDeploymentEditorTest extends PlatformTestCase {
 
-  @Mock
-  private CloudSdkService cloudSdkService;
-  @Mock
-  private AppEngineApplicationInfoPanel appInfoPanel;
-  @Mock
-  private AppEngineArtifactDeploymentSource deploymentSource;
+  @Mock private CloudSdkService cloudSdkService;
+  @Mock private AppEngineApplicationInfoPanel appInfoPanel;
+  @Mock private AppEngineArtifactDeploymentSource deploymentSource;
 
   private UserSpecifiedPathDeploymentSource userSpecifiedPathDeploymentSource;
   private AppEngineFlexibleDeploymentEditor editor;
@@ -70,23 +63,36 @@ public class AppEngineFlexibleDeploymentEditorTest extends PlatformTestCase {
 
     customYaml = createTempFile("custom.yaml", "runtime: custom\nservice: flexService");
     javaYaml = createTempFile("java.yaml", "runtime: java");
-    dockerfile = createTempFile("Dockerfile", "FROM gcr.io/google_appengine/jetty\n"
-        + "ADD target.war $JETTY_BASE/webapps/root.war");
+    dockerfile =
+        createTempFile(
+            "Dockerfile",
+            "FROM gcr.io/google_appengine/jetty\n" + "ADD target.war $JETTY_BASE/webapps/root.war");
 
     javaModule = createModule("flex module");
-    ApplicationManager.getApplication().runWriteAction(
-        () -> {
-          AppEngineFlexibleFacet flexJavaFacet = FacetManager.getInstance(javaModule).addFacet(
-              AppEngineFlexibleFacet.getFacetType(), "flex facet", null /* underlyingFacet */);
-          flexJavaFacet.getConfiguration().setAppYamlPath(javaYaml.getPath());
-        });
+    ApplicationManager.getApplication()
+        .runWriteAction(
+            () -> {
+              AppEngineFlexibleFacet flexJavaFacet =
+                  FacetManager.getInstance(javaModule)
+                      .addFacet(
+                          AppEngineFlexibleFacet.getFacetType(),
+                          "flex facet",
+                          null /* underlyingFacet */);
+              flexJavaFacet.getConfiguration().setAppYamlPath(javaYaml.getPath());
+            });
     customModule = createModule("flex module 2");
-    ApplicationManager.getApplication().runWriteAction(() -> {
-      AppEngineFlexibleFacet flexCustomFacet = FacetManager.getInstance(customModule).addFacet(
-          AppEngineFlexibleFacet.getFacetType(), "flex facet", null /* underlyingFacet */);
-      flexCustomFacet.getConfiguration().setAppYamlPath(customYaml.getPath());
-      flexCustomFacet.getConfiguration().setDockerfilePath(dockerfile.getPath());
-    });
+    ApplicationManager.getApplication()
+        .runWriteAction(
+            () -> {
+              AppEngineFlexibleFacet flexCustomFacet =
+                  FacetManager.getInstance(customModule)
+                      .addFacet(
+                          AppEngineFlexibleFacet.getFacetType(),
+                          "flex facet",
+                          null /* underlyingFacet */);
+              flexCustomFacet.getConfiguration().setAppYamlPath(customYaml.getPath());
+              flexCustomFacet.getConfiguration().setDockerfilePath(dockerfile.getPath());
+            });
     createModule("non flex module");
 
     deploymentSource = mock(AppEngineArtifactDeploymentSource.class);
@@ -99,8 +105,8 @@ public class AppEngineFlexibleDeploymentEditorTest extends PlatformTestCase {
     appInfoPanel = mock(AppEngineApplicationInfoPanel.class);
     when(appInfoPanel.isApplicationValid()).thenReturn(true);
 
-    MutablePicoContainer applicationContainer = (MutablePicoContainer)
-        ApplicationManager.getApplication().getPicoContainer();
+    MutablePicoContainer applicationContainer =
+        (MutablePicoContainer) ApplicationManager.getApplication().getPicoContainer();
 
     applicationContainer.unregisterComponent(CloudSdkService.class.getName());
 
@@ -111,9 +117,10 @@ public class AppEngineFlexibleDeploymentEditorTest extends PlatformTestCase {
     editor.setAppInfoPanel(appInfoPanel);
     editor.getGcpProjectSelector().setText("test project");
 
-    userSpecifiedPathDeploymentSource = new UserSpecifiedPathDeploymentSource(
-        ModulePointerManager.getInstance(getProject()).create(
-            UserSpecifiedPathDeploymentSource.moduleName));
+    userSpecifiedPathDeploymentSource =
+        new UserSpecifiedPathDeploymentSource(
+            ModulePointerManager.getInstance(getProject())
+                .create(UserSpecifiedPathDeploymentSource.moduleName));
 
     templateConfig = new AppEngineDeploymentConfiguration();
     templateConfig.setCloudProjectName("test project");
@@ -238,7 +245,8 @@ public class AppEngineFlexibleDeploymentEditorTest extends PlatformTestCase {
       editor.applyEditorTo(templateConfig);
       fail("Project selector is null");
     } catch (ConfigurationException cfe) {
-      assertEquals("The Cloud SDK is misconfigured. To fix, reconfigure the Server.", cfe.getMessage());
+      assertEquals(
+          "The Cloud SDK is misconfigured. To fix, reconfigure the Server.", cfe.getMessage());
     }
   }
 
@@ -326,7 +334,7 @@ public class AppEngineFlexibleDeploymentEditorTest extends PlatformTestCase {
     } catch (ConfigurationException cfe) {
       assertEquals(
           "The specified Dockerfile configuration file does not exist or is not a valid file."
-          + " Set a valid file in Module Settings or use another one.",
+              + " Set a valid file in Module Settings or use another one.",
           cfe.getMessage());
     }
   }
@@ -341,7 +349,7 @@ public class AppEngineFlexibleDeploymentEditorTest extends PlatformTestCase {
     } catch (ConfigurationException cfe) {
       assertEquals(
           "The specified Dockerfile configuration file does not exist or is not a valid file."
-          + " Set a valid file in Module Settings or use another one.",
+              + " Set a valid file in Module Settings or use another one.",
           cfe.getMessage());
     }
   }
@@ -352,7 +360,8 @@ public class AppEngineFlexibleDeploymentEditorTest extends PlatformTestCase {
       editor.applyEditorTo(templateConfig);
       fail("Invalid application.");
     } catch (ConfigurationException cfe) {
-      assertEquals("An App Engine application must be created before you can deploy to App Engine.",
+      assertEquals(
+          "An App Engine application must be created before you can deploy to App Engine.",
           cfe.getMessage());
     }
   }
@@ -390,8 +399,8 @@ public class AppEngineFlexibleDeploymentEditorTest extends PlatformTestCase {
   }
 
   public void testDockerfileStartsDisabledAndWithModuleSetting() {
-    ApplicationManager.getApplication().runWriteAction(
-        () -> ModuleManager.getInstance(getProject()).disposeModule(javaModule));
+    ApplicationManager.getApplication()
+        .runWriteAction(() -> ModuleManager.getInstance(getProject()).disposeModule(javaModule));
     editor = new AppEngineFlexibleDeploymentEditor(getProject(), deploymentSource);
     assertEquals(1, editor.getModulesWithFlexFacetComboBox().getItemCount());
     assertFalse(editor.getDockerfileTextField().isEnabled());

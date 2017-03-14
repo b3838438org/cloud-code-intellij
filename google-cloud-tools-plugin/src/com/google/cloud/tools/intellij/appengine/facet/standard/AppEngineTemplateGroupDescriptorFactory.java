@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2016 JetBrains s.r.o.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,27 +17,22 @@
 package com.google.cloud.tools.intellij.appengine.facet.standard;
 
 import com.google.cloud.tools.intellij.ui.GoogleCloudToolsIcons;
-
 import com.intellij.ide.fileTemplates.FileTemplateDescriptor;
 import com.intellij.ide.fileTemplates.FileTemplateGroupDescriptor;
 import com.intellij.ide.fileTemplates.FileTemplateGroupDescriptorFactory;
 import com.intellij.openapi.fileTypes.StdFileTypes;
-
 import org.jetbrains.annotations.NonNls;
 
-/**
- * @author nik
- */
+/** @author nik */
 public class AppEngineTemplateGroupDescriptorFactory implements FileTemplateGroupDescriptorFactory {
 
-  @NonNls
-  public static final String APP_ENGINE_WEB_XML_TEMPLATE = "GctAppEngineWeb.xml";
+  @NonNls public static final String APP_ENGINE_WEB_XML_TEMPLATE = "GctAppEngineWeb.xml";
 
   @Override
   public FileTemplateGroupDescriptor getFileTemplatesDescriptor() {
-    final FileTemplateDescriptor appEngineXml = new FileTemplateDescriptor(
-        APP_ENGINE_WEB_XML_TEMPLATE, StdFileTypes.XML.getIcon());
-    return new FileTemplateGroupDescriptor("Google App Engine", GoogleCloudToolsIcons.APP_ENGINE,
-        appEngineXml);
+    final FileTemplateDescriptor appEngineXml =
+        new FileTemplateDescriptor(APP_ENGINE_WEB_XML_TEMPLATE, StdFileTypes.XML.getIcon());
+    return new FileTemplateGroupDescriptor(
+        "Google App Engine", GoogleCloudToolsIcons.APP_ENGINE, appEngineXml);
   }
 }

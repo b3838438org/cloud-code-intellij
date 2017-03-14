@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,17 +19,12 @@ package com.google.cloud.tools.intellij.debugger;
 import com.google.api.client.repackaged.com.google.common.base.Strings;
 import com.google.api.services.clouddebugger.v2.model.StatusMessage;
 import com.google.cloud.tools.intellij.util.GctBundle;
-
 import org.jetbrains.annotations.Nullable;
 
-/**
- * Utility functions for cloud debug data.
- */
+/** Utility functions for cloud debug data. */
 public class BreakpointUtil {
 
-  /**
-   * This is a helper routine that converts a server {@link StatusMessage} to descriptive text.
-   */
+  /** This is a helper routine that converts a server {@link StatusMessage} to descriptive text. */
   @Nullable
   public static String getUserErrorMessage(@Nullable StatusMessage statusMessage) {
     if (statusMessage == null || !Boolean.TRUE.equals(statusMessage.getIsError())) {
@@ -37,13 +32,12 @@ public class BreakpointUtil {
     }
 
     String errorDescription = getUserMessage(statusMessage);
-    return !Strings.isNullOrEmpty(errorDescription) ? errorDescription
+    return !Strings.isNullOrEmpty(errorDescription)
+        ? errorDescription
         : GctBundle.getString("clouddebug.fallbackerrormessage");
   }
 
-  /**
-   * Formats and returns the user message.
-   */
+  /** Formats and returns the user message. */
   @Nullable
   public static String getUserMessage(@Nullable StatusMessage statusMessage) {
     if (statusMessage != null && statusMessage.getDescription() != null) {

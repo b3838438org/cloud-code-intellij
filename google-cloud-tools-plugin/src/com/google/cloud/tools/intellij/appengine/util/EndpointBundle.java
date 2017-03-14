@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,21 +17,16 @@
 package com.google.cloud.tools.intellij.appengine.util;
 
 import com.intellij.CommonBundle;
-
-import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.PropertyKey;
-
 import java.lang.ref.Reference;
 import java.lang.ref.SoftReference;
 import java.util.ResourceBundle;
+import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.PropertyKey;
 
-/**
- * Endpoint messages bundle.
- */
+/** Endpoint messages bundle. */
 public class EndpointBundle {
 
-  @NonNls
-  private static final String BUNDLE_NAME = "messages.EndpointBundle";
+  @NonNls private static final String BUNDLE_NAME = "messages.EndpointBundle";
   private static Reference<ResourceBundle> bundleReference;
 
   private static ResourceBundle getBundle() {
@@ -46,11 +41,10 @@ public class EndpointBundle {
     return bundle;
   }
 
-  private EndpointBundle() {
-  }
+  private EndpointBundle() {}
 
-  public static String message(@PropertyKey(resourceBundle = BUNDLE_NAME) String key,
-      Object... params) {
+  public static String message(
+      @PropertyKey(resourceBundle = BUNDLE_NAME) String key, Object... params) {
     return CommonBundle.message(getBundle(), key, params);
   }
 }

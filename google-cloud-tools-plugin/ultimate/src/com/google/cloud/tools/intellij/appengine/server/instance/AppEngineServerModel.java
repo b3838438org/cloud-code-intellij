@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,14 +17,12 @@
 package com.google.cloud.tools.intellij.appengine.server.instance;
 
 import com.google.cloud.tools.appengine.api.devserver.RunConfiguration;
-import com.google.cloud.tools.intellij.appengine.facet.standard.AppEngineStandardFacet;
 import com.google.cloud.tools.intellij.appengine.sdk.CloudSdkService;
 import com.google.cloud.tools.intellij.appengine.server.run.CloudSdkStartupPolicy;
 import com.google.cloud.tools.intellij.appengine.util.AppEngineUtil;
 import com.google.cloud.tools.intellij.util.GctBundle;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
-
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.RuntimeConfigurationError;
 import com.intellij.execution.configurations.RuntimeConfigurationException;
@@ -50,11 +48,6 @@ import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.xmlb.SkipDefaultValuesSerializationFilters;
 import com.intellij.util.xmlb.XmlSerializer;
 import com.intellij.util.xmlb.annotations.Tag;
-
-import org.jdom.Element;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -62,12 +55,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import org.jdom.Element;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-/**
- * @author nik
- */
-public class AppEngineServerModel implements ServerModel, DeploysArtifactsOnStartupOnly,
-    RunConfiguration, Cloneable {
+/** @author nik */
+public class AppEngineServerModel
+    implements ServerModel, DeploysArtifactsOnStartupOnly, RunConfiguration, Cloneable {
 
   public static final String JVM_FLAG_DELIMITER = " ";
   private ArtifactPointer artifactPointer;
@@ -110,8 +104,10 @@ public class AppEngineServerModel implements ServerModel, DeploysArtifactsOnStar
   @Override
   @NotNull
   public String getDefaultUrlForBrowser() {
-    String host = settings.getHost() != null && settings.getHost().compareTo("") != 0
-        ? settings.getHost() : commonModel.getHost();
+    String host =
+        settings.getHost() != null && settings.getHost().compareTo("") != 0
+            ? settings.getHost()
+            : commonModel.getHost();
     return "http://" + host + ":" + settings.getPort();
   }
 
@@ -121,8 +117,8 @@ public class AppEngineServerModel implements ServerModel, DeploysArtifactsOnStar
   }
 
   @Override
-  public OutputProcessor createOutputProcessor(ProcessHandler processHandler,
-      J2EEServerInstance serverInstance) {
+  public OutputProcessor createOutputProcessor(
+      ProcessHandler processHandler, J2EEServerInstance serverInstance) {
     return new DefaultOutputProcessor(processHandler);
   }
 
@@ -150,8 +146,10 @@ public class AppEngineServerModel implements ServerModel, DeploysArtifactsOnStar
     }
 
     AppEngineUtil.findAppEngineStandardFacet(commonModel.getProject(), artifact)
-        .orElseThrow(() -> new RuntimeConfigurationWarning(
-            "App Engine facet not found in '" + artifact.getName() + "' artifact"));
+        .orElseThrow(
+            () ->
+                new RuntimeConfigurationWarning(
+                    "App Engine facet not found in '" + artifact.getName() + "' artifact"));
 
     if (!CloudSdkService.getInstance().isValidCloudSdk()) {
       throw new RuntimeConfigurationError(
@@ -180,9 +178,7 @@ public class AppEngineServerModel implements ServerModel, DeploysArtifactsOnStar
     return clone;
   }
 
-  /**
-   * Only to be used in cloning.
-   */
+  /** Only to be used in cloning. */
   private void setSettings(AppEngineModelSettings settings) {
     this.settings = settings;
   }
@@ -197,8 +193,8 @@ public class AppEngineServerModel implements ServerModel, DeploysArtifactsOnStar
     XmlSerializer.deserializeInto(settings, element);
     final String artifactName = settings.getArtifact();
     if (artifactName != null) {
-      artifactPointer = ArtifactPointerManager.getInstance(commonModel.getProject())
-          .createPointer(artifactName);
+      artifactPointer =
+          ArtifactPointerManager.getInstance(commonModel.getProject()).createPointer(artifactName);
     } else {
       artifactPointer = null;
     }
@@ -216,8 +212,8 @@ public class AppEngineServerModel implements ServerModel, DeploysArtifactsOnStar
 
   public void setArtifact(@Nullable Artifact artifact) {
     if (artifact != null) {
-      artifactPointer = ArtifactPointerManager.getInstance(commonModel.getProject())
-          .createPointer(artifact);
+      artifactPointer =
+          ArtifactPointerManager.getInstance(commonModel.getProject()).createPointer(artifact);
       settings.setArtifact(artifact.getName());
     } else {
       artifactPointer = null;
@@ -295,10 +291,7 @@ public class AppEngineServerModel implements ServerModel, DeploysArtifactsOnStar
     settings.setLogLevel(logLevel);
   }
 
-  /**
-   * This value is being ignored for the run configuration.
-   * {@link CloudSdkStartupPolicy}
-   */
+  /** This value is being ignored for the run configuration. {@link CloudSdkStartupPolicy} */
   @Override
   public Integer getMaxModuleInstances() {
     return settings.getMaxModuleInstances();
@@ -352,9 +345,12 @@ public class AppEngineServerModel implements ServerModel, DeploysArtifactsOnStar
   }
 
   public void addAllJvmFlags(Collection<String> flags) {
-    settings.setJvmFlags(settings.getJvmFlags() == null
-        ? Joiner.on(JVM_FLAG_DELIMITER).join(flags)
-        : settings.getJvmFlags() + JVM_FLAG_DELIMITER + Joiner.on(JVM_FLAG_DELIMITER).join(flags));
+    settings.setJvmFlags(
+        settings.getJvmFlags() == null
+            ? Joiner.on(JVM_FLAG_DELIMITER).join(flags)
+            : settings.getJvmFlags()
+                + JVM_FLAG_DELIMITER
+                + Joiner.on(JVM_FLAG_DELIMITER).join(flags));
   }
 
   @Override
@@ -452,8 +448,8 @@ public class AppEngineServerModel implements ServerModel, DeploysArtifactsOnStar
    * int, String, etc.).
    *
    * <p>We use this class to store data and use {@link AppEngineServerModel} as an interface to get
-   * that data. We need to interface some non-basic types (e.g., File, Path).
-   * {@link AppEngineServerModel} translates stored data in its basic form to non-basic form.
+   * that data. We need to interface some non-basic types (e.g., File, Path). {@link
+   * AppEngineServerModel} translates stored data in its basic form to non-basic form.
    */
   private static class AppEngineModelSettings implements Cloneable {
 
@@ -462,46 +458,67 @@ public class AppEngineServerModel implements ServerModel, DeploysArtifactsOnStar
 
     @Tag("host")
     private String host = "localhost";
+
     @Tag("port")
     private Integer port = 8080;
+
     @Tag("admin_host")
     private String adminHost = "localhost";
+
     @Tag("admin_port")
     private Integer adminPort = 8000;
+
     @Tag("auth_domain")
     private String authDomain;
+
     @Tag("storage_path")
     private String storagePath;
+
     @Tag("log_level")
     private String logLevel = "info";
+
     @Tag("max_module_instances")
     private Integer maxModuleInstances;
+
     @Tag("use_mtime_file_watcher")
     private boolean useMtimeFileWatcher;
+
     @Tag("threadsafe_override")
     private String threadsafeOverride;
+
     @Tag("python_startup_script")
     private String pythonStartupScript;
+
     @Tag("python_startup_args")
     private String pythonStartupArgs;
+
     @Tag("jvm_flags")
     private String jvmFlags;
+
     @Tag("custom_entrypoint")
     private String customEntrypoint;
+
     @Tag("runtime")
     private String runtime;
+
     @Tag("allow_skipped_files")
     private boolean allowSkippedFiles;
+
     @Tag("api_port")
     private Integer apiPort;
+
     @Tag("automatic_restart")
     private Boolean automaticRestart = true;
+
     @Tag("clear_datastore")
     private Boolean clearDatastore = false;
+
     @Tag("devappserver_log_level")
     private String devAppserverLogLevel;
+
     @Tag("skip_sdk_update_check")
     private Boolean skipSdkUpdateCheck;
+
     @Tag("default_gcs_bucket_name")
     private String defaultGcsBucketName;
 

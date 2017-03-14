@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,31 +25,22 @@ import com.google.cloud.tools.intellij.ApplicationPluginInfoService;
 import com.google.cloud.tools.intellij.CloudToolsPluginConfigurationService;
 import com.google.cloud.tools.intellij.CloudToolsPluginInfoService;
 import com.google.cloud.tools.intellij.testing.BasePluginTestCase;
-
 import com.intellij.openapi.actionSystem.ActionManager;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-/**
- * Tests to validate initialization on supported platforms
- */
-
+/** Tests to validate initialization on supported platforms */
 @RunWith(MockitoJUnitRunner.class)
 public class CloudToolsPluginInitializationComponentTest extends BasePluginTestCase {
 
   private static final String PLUGIN_ID_STRING = "com.google.gct.core";
-  @Mock
-  CloudToolsPluginInfoService pluginInfoService;
-  @Mock
-  CloudToolsPluginConfigurationService pluginConfigurationService;
-  @Mock
-  ActionManager actionManager;
-  @Mock
-  ApplicationPluginInfoService applicationInfoService;
+  @Mock CloudToolsPluginInfoService pluginInfoService;
+  @Mock CloudToolsPluginConfigurationService pluginConfigurationService;
+  @Mock ActionManager actionManager;
+  @Mock ApplicationPluginInfoService applicationInfoService;
 
   CloudToolsPluginInitializationComponent testComponent;
 

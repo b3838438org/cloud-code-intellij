@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,11 +20,11 @@ import com.intellij.remoteServer.util.CloudDeploymentNameConfiguration;
 import com.intellij.util.xmlb.annotations.Attribute;
 
 /**
- * The model for a App Engine based deployment configuration.  This state is specific to the
- * artifact that's being deployed, as such there can be multiple per project.
+ * The model for a App Engine based deployment configuration. This state is specific to the artifact
+ * that's being deployed, as such there can be multiple per project.
  */
-public class AppEngineDeploymentConfiguration extends
-    CloudDeploymentNameConfiguration<AppEngineDeploymentConfiguration> {
+public class AppEngineDeploymentConfiguration
+    extends CloudDeploymentNameConfiguration<AppEngineDeploymentConfiguration> {
 
   public static final String USER_SPECIFIED_ARTIFACT_PATH_ATTRIBUTE = "userSpecifiedArtifactPath";
   static final String ENVIRONMENT_ATTRIBUTE = "environment";

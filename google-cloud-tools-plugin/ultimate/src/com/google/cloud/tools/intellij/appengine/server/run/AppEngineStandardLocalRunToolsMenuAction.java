@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@ import com.google.cloud.tools.intellij.CloudToolsRunConfigurationAction;
 import com.google.cloud.tools.intellij.appengine.project.AppEngineAssetProvider;
 import com.google.cloud.tools.intellij.ui.GoogleCloudToolsIcons;
 import com.google.cloud.tools.intellij.util.GctBundle;
-
 import com.intellij.notification.NotificationDisplayType;
 import com.intellij.notification.NotificationGroup;
 import com.intellij.notification.NotificationListener.UrlOpeningListener;
@@ -29,21 +28,18 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.xml.XmlFile;
-
+import java.util.Arrays;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
-
-/**
- * Creates a shortcut to the App Engine standard local run configuration in the tools menu.
- */
+/** Creates a shortcut to the App Engine standard local run configuration in the tools menu. */
 public class AppEngineStandardLocalRunToolsMenuAction extends CloudToolsRunConfigurationAction {
 
-  private static final String APP_ENGINE_STANDARD_DOCS_LINK
-      = "https://cloud.google.com/appengine/docs/java/";
+  private static final String APP_ENGINE_STANDARD_DOCS_LINK =
+      "https://cloud.google.com/appengine/docs/java/";
 
   public AppEngineStandardLocalRunToolsMenuAction() {
-    super(AppEngineServerConfigurationType.getInstance(),
+    super(
+        AppEngineServerConfigurationType.getInstance(),
         GctBundle.message("appengine.tools.menu.run.server.text"),
         GctBundle.message("appengine.tools.menu.run.server.description"),
         GoogleCloudToolsIcons.APP_ENGINE);
@@ -61,9 +57,10 @@ public class AppEngineStandardLocalRunToolsMenuAction extends CloudToolsRunConfi
    * If it does not, then a notification balloon is shown.
    */
   private boolean isAppEngineStandardProjectCheck(@NotNull Project project) {
-    XmlFile webXml = AppEngineAssetProvider.getInstance()
-        .loadAppEngineStandardWebXml(project,
-            Arrays.asList(ModuleManager.getInstance(project).getModules()));
+    XmlFile webXml =
+        AppEngineAssetProvider.getInstance()
+            .loadAppEngineStandardWebXml(
+                project, Arrays.asList(ModuleManager.getInstance(project).getModules()));
 
     boolean isAppEngineStandardProject = webXml != null;
 
@@ -74,24 +71,27 @@ public class AppEngineStandardLocalRunToolsMenuAction extends CloudToolsRunConfi
               NotificationDisplayType.BALLOON,
               true);
 
-      String errorMessage = new StringBuilder()
-          .append(GctBundle.message("appengine.tools.menu.run.server.error.message"))
-          .append("<br />")
-          .append("<br />")
-          .append(
-              GctBundle.message("appengine.tools.menu.run.server.error.help",
-                  "<a href=\"" + APP_ENGINE_STANDARD_DOCS_LINK + "\">",
-                  "</a>"))
-          .toString();
+      String errorMessage =
+          new StringBuilder()
+              .append(GctBundle.message("appengine.tools.menu.run.server.error.message"))
+              .append("<br />")
+              .append("<br />")
+              .append(
+                  GctBundle.message(
+                      "appengine.tools.menu.run.server.error.help",
+                      "<a href=\"" + APP_ENGINE_STANDARD_DOCS_LINK + "\">",
+                      "</a>"))
+              .toString();
 
-      notification.createNotification(
-          GctBundle.message("appengine.tools.menu.run.server.error.title"),
-          errorMessage,
-          NotificationType.ERROR,
-          new UrlOpeningListener(false /*expire*/)).notify(project);
+      notification
+          .createNotification(
+              GctBundle.message("appengine.tools.menu.run.server.error.title"),
+              errorMessage,
+              NotificationType.ERROR,
+              new UrlOpeningListener(false /*expire*/))
+          .notify(project);
     }
 
     return isAppEngineStandardProject;
   }
-
 }

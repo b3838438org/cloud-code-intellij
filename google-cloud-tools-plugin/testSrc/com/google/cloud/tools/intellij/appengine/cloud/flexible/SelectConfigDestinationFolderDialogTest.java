@@ -17,7 +17,6 @@
 package com.google.cloud.tools.intellij.appengine.cloud.flexible;
 
 import com.intellij.testFramework.PlatformTestCase;
-
 import java.io.File;
 
 public class SelectConfigDestinationFolderDialogTest extends PlatformTestCase {
@@ -39,13 +38,13 @@ public class SelectConfigDestinationFolderDialogTest extends PlatformTestCase {
 
   public void testSuggestion_noParent() {
     SelectConfigDestinationFolderDialog dialog =
-        new SelectConfigDestinationFolderDialog(null,"I don't exist.");
+        new SelectConfigDestinationFolderDialog(null, "I don't exist.");
     assertEquals("", dialog.getDestinationFolder().toString());
   }
 
   public void testSuggestion_nullPath() {
     SelectConfigDestinationFolderDialog dialog =
-        new SelectConfigDestinationFolderDialog(null,null);
+        new SelectConfigDestinationFolderDialog(null, null);
     assertEquals("", dialog.getDestinationFolder().toString());
   }
 }

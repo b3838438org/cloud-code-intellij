@@ -18,7 +18,6 @@ package com.google.cloud.tools.intellij.appengine.cloud;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -32,19 +31,11 @@ import com.google.cloud.tools.intellij.testing.BasePluginTestCase;
 import com.google.common.collect.ImmutableSet;
 import com.google.gdt.eclipse.login.common.GoogleLoginState;
 import com.google.gson.Gson;
-
 import com.intellij.openapi.vcs.impl.CancellableRunnable;
 import com.intellij.remoteServer.configuration.deployment.DeploymentSource;
 import com.intellij.remoteServer.configuration.deployment.DeploymentSourceType;
 import com.intellij.remoteServer.runtime.deployment.ServerRuntimeInstance.DeploymentOperationCallback;
 import com.intellij.remoteServer.runtime.log.LoggingHandler;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-
 import java.io.File;
 import java.io.Reader;
 import java.nio.charset.Charset;
@@ -53,8 +44,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
 import java.util.Optional;
-
 import javax.swing.Icon;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
 
 /** Unit tests for {@link CloudSdkAppEngineHelper} */
 public class CloudSdkAppEngineHelperTest extends BasePluginTestCase {

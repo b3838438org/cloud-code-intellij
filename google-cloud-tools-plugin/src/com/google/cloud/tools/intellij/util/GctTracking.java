@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,7 @@
 
 package com.google.cloud.tools.intellij.util;
 
-/**
- * Class defining client-side event actions we want to track.
- */
+/** Class defining client-side event actions we want to track. */
 public class GctTracking {
 
   // Event actions
@@ -32,10 +30,10 @@ public class GctTracking {
   public static final String APP_ENGINE_ADD_STANDARD_FACET = "appengine.standard.facet.add";
   public static final String APP_ENGINE_ADD_LIBRARY = "appengine.library.add";
   public static final String APP_ENGINE_APPLICATION_CREATE = "appengine.application.create";
-  public static final String APP_ENGINE_APPLICATION_CREATE_SUCCESS
-      = "appengine.application.create.success";
-  public static final String APP_ENGINE_APPLICATION_CREATE_FAIL
-      = "appengine.application.create.fail";
+  public static final String APP_ENGINE_APPLICATION_CREATE_SUCCESS =
+      "appengine.application.create.success";
+  public static final String APP_ENGINE_APPLICATION_CREATE_FAIL =
+      "appengine.application.create.fail";
 
   public static final String PROJECT_SELECTION_CREATE_NEW_PROJECT =
       "project.selection.create.new.project";
@@ -58,8 +56,7 @@ public class GctTracking {
       "appengine.oldplugin.notification";
   public static final String APP_ENGINE_OLD_PLUGIN_NOTIFICATION_CLICK =
       "appengine.oldplugin.notification.link.click";
-  public static final String APP_ENGINE_OLD_PLUGIN_DEACTIVATED =
-      "appengine.oldplugin.deactivated";
+  public static final String APP_ENGINE_OLD_PLUGIN_DEACTIVATED = "appengine.oldplugin.deactivated";
 
   public static final String CLOUD_SDK_MALFORMED_PATH = "cloudsdk.malformedpath";
 

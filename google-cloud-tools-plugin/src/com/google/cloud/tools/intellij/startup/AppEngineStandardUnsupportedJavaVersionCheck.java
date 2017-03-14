@@ -18,7 +18,6 @@ package com.google.cloud.tools.intellij.startup;
 
 import com.google.cloud.tools.intellij.appengine.facet.standard.AppEngineStandardFacet;
 import com.google.cloud.tools.intellij.util.GctBundle;
-
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationDisplayType;
 import com.intellij.notification.NotificationGroup;
@@ -34,13 +33,10 @@ import com.intellij.openapi.roots.ModifiableRootModel;
 import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.startup.StartupActivity;
 import com.intellij.pom.java.LanguageLevel;
-
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.swing.event.HyperlinkEvent;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A StartupActivity that warns the user if they are using a Java language level that corresponds to

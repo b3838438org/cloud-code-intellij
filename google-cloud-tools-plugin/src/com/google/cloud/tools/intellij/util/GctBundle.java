@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,22 +17,17 @@
 package com.google.cloud.tools.intellij.util;
 
 import com.intellij.CommonBundle;
-
+import java.lang.ref.Reference;
+import java.lang.ref.SoftReference;
+import java.util.ResourceBundle;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.PropertyKey;
 
-import java.lang.ref.Reference;
-import java.lang.ref.SoftReference;
-import java.util.ResourceBundle;
-
-/**
- * Bundle class to get cloud tools messages from resources/messages.
- */
+/** Bundle class to get cloud tools messages from resources/messages. */
 public class GctBundle {
 
-  @NonNls
-  private static final String BUNDLE_NAME = "messages.CloudToolsBundle";
+  @NonNls private static final String BUNDLE_NAME = "messages.CloudToolsBundle";
   private static Reference<ResourceBundle> bundleReference;
 
   private static ResourceBundle getBundle() {
@@ -44,16 +39,15 @@ public class GctBundle {
     return bundle;
   }
 
-  private GctBundle() {
-  }
+  private GctBundle() {}
 
-  public static String message(@NotNull @PropertyKey(resourceBundle = BUNDLE_NAME) String key,
-      @NotNull Object... params) {
+  public static String message(
+      @NotNull @PropertyKey(resourceBundle = BUNDLE_NAME) String key, @NotNull Object... params) {
     return CommonBundle.message(getBundle(), key, params);
   }
 
-  public static String getString(@NotNull @PropertyKey(resourceBundle = BUNDLE_NAME) String key,
-      @NotNull Object... params) {
+  public static String getString(
+      @NotNull @PropertyKey(resourceBundle = BUNDLE_NAME) String key, @NotNull Object... params) {
     return message(key, params);
   }
 }

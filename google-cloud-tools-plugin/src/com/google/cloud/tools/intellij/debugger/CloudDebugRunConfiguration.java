@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ package com.google.cloud.tools.intellij.debugger;
 import com.google.api.client.repackaged.com.google.common.base.Strings;
 import com.google.cloud.tools.intellij.stats.UsageTrackerProvider;
 import com.google.cloud.tools.intellij.util.GctTracking;
-
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.Executor;
 import com.intellij.execution.RunManager;
@@ -37,7 +36,6 @@ import com.intellij.openapi.options.SettingsEditor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.InvalidDataException;
 import com.intellij.openapi.util.WriteExternalException;
-
 import org.jdom.Attribute;
 import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
@@ -46,16 +44,18 @@ import org.jetbrains.annotations.Nullable;
 /**
  * The CloudDebugRunConfiguration stores settings to use when attaching to a target. It also creates
  * and possibly caches {@link CloudDebugProcessState}.
- * <p/>
- * When the IDE is shut down, we store this state using {@link CloudDebugProcessStateSerializer} to
- * ensure that it is stored on a per-user basis in workspace.xml.
- * <p/>
- * RunConfigurations can either be stored in workspace.xml or in a shared location depending on
+ *
+ * <p>When the IDE is shut down, we store this state using {@link CloudDebugProcessStateSerializer}
+ * to ensure that it is stored on a per-user basis in workspace.xml.
+ *
+ * <p>RunConfigurations can either be stored in workspace.xml or in a shared location depending on
  * whether the user has selected "Shared".
  */
 public class CloudDebugRunConfiguration extends LocatableConfigurationBase
-    implements ModuleRunConfiguration, RunConfigurationWithSuppressedDefaultDebugAction,
-    RunConfigurationWithSuppressedDefaultRunAction, RemoteRunProfile {
+    implements ModuleRunConfiguration,
+        RunConfigurationWithSuppressedDefaultDebugAction,
+        RunConfigurationWithSuppressedDefaultRunAction,
+        RemoteRunProfile {
 
   private static final String NAME = "Google Stackdriver Debug";
   private static final String PROJECT_NAME_TAG = "CloudProjectName";
@@ -71,8 +71,10 @@ public class CloudDebugRunConfiguration extends LocatableConfigurationBase
   public final RunConfiguration clone() {
     // clone is called for both creation of run configuration and duplication. New run
     // configurations are cloned from the configuration factory's instance
-    if (this == RunManager.getInstance(getProject()).getConfigurationTemplate(this.getFactory())
-        .getConfiguration()) {
+    if (this
+        == RunManager.getInstance(getProject())
+            .getConfigurationTemplate(this.getFactory())
+            .getConfiguration()) {
       UsageTrackerProvider.getInstance()
           .trackEvent(GctTracking.CLOUD_DEBUGGER_NEW_RUN_CONFIG)
           .ping();
@@ -144,8 +146,8 @@ public class CloudDebugRunConfiguration extends LocatableConfigurationBase
    */
   @Nullable
   @Override
-  public RunProfileState getState(@NotNull Executor executor,
-      @NotNull ExecutionEnvironment environment)
+  public RunProfileState getState(
+      @NotNull Executor executor, @NotNull ExecutionEnvironment environment)
       throws ExecutionException {
     if (processState == null) {
       return new CloudDebugProcessState(null, null, cloudProjectName, null, getProject());

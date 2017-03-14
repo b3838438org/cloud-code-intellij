@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.google.cloud.tools.intellij.testing.BasePluginTestCase;
-
 import com.intellij.execution.RunManager;
 import com.intellij.execution.RunnerAndConfigurationSettings;
 import com.intellij.execution.configurations.RunConfiguration;
@@ -34,15 +33,13 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
 import com.intellij.xdebugger.XDebugSession;
 import com.intellij.xdebugger.XDebuggerManager;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.junit.Test;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.junit.Test;
 
 public class CloudDebugProcessStateCollectorTest extends BasePluginTestCase {
 
@@ -55,7 +52,7 @@ public class CloudDebugProcessStateCollectorTest extends BasePluginTestCase {
     Project project1 = createProject(runningSessions, listeningSessions, notListeningSessions);
     Project project2 = createProject(runningSessions, listeningSessions, notListeningSessions);
 
-    createMockProjectManagerWithProjects(new Project[]{ project1, project2 });
+    createMockProjectManagerWithProjects(new Project[] {project1, project2});
 
     List<CloudDebugProcessState> backgroundListeningStates =
         new CloudDebugProcessStateCollector().getBackgroundListeningStates();
@@ -98,9 +95,9 @@ public class CloudDebugProcessStateCollectorTest extends BasePluginTestCase {
     XDebugSession stoppedSession = createMockSession(true, mock(CloudDebugRunConfiguration.class));
     XDebugSession stoppedSessionWithoutRunProfile = createMockSession(true, null);
 
-    createMockXDebuggerManager(project, new XDebugSession[]{ notStoppedSession,
-                                                             stoppedSession,
-                                                             stoppedSessionWithoutRunProfile});
+    createMockXDebuggerManager(
+        project,
+        new XDebugSession[] {notStoppedSession, stoppedSession, stoppedSessionWithoutRunProfile});
 
     Set<RunProfile> profiles =
         new CloudDebugProcessStateCollector().getProfilesWithActiveDebugSession(project);
@@ -141,14 +138,16 @@ public class CloudDebugProcessStateCollectorTest extends BasePluginTestCase {
   public void testNotRunningConfiguration_returnsTrueIfThereAreNoRunningConfigurations() {
     RunConfiguration config = mock(RunConfiguration.class);
 
-    assertTrue(new CloudDebugProcessStateCollector()
-        .notRunningConfiguration(new HashSet<RunProfile>(), config));
+    assertTrue(
+        new CloudDebugProcessStateCollector()
+            .notRunningConfiguration(new HashSet<RunProfile>(), config));
   }
 
   @Test
   public void testNotRunningConfiguration_returnsFalseIfNullConfigIsPassedIn() {
-    assertFalse(new CloudDebugProcessStateCollector()
-        .notRunningConfiguration(new HashSet<RunProfile>(), null));
+    assertFalse(
+        new CloudDebugProcessStateCollector()
+            .notRunningConfiguration(new HashSet<RunProfile>(), null));
   }
 
   @Test
@@ -157,8 +156,9 @@ public class CloudDebugProcessStateCollectorTest extends BasePluginTestCase {
     HashSet<RunProfile> runningConfigurations = new HashSet<RunProfile>();
     runningConfigurations.add(config);
 
-    assertFalse(new CloudDebugProcessStateCollector().notRunningConfiguration(
-        runningConfigurations, config));
+    assertFalse(
+        new CloudDebugProcessStateCollector()
+            .notRunningConfiguration(runningConfigurations, config));
   }
 
   @Test
@@ -167,7 +167,8 @@ public class CloudDebugProcessStateCollectorTest extends BasePluginTestCase {
   }
 
   @Test
-  public void testListensInBackground_returnsFalseIfStateDoesNotListenInBackground() throws Exception {
+  public void testListensInBackground_returnsFalseIfStateDoesNotListenInBackground()
+      throws Exception {
     CloudDebugProcessState state = new CloudDebugProcessState();
     state.setListenInBackground(false);
 
@@ -182,9 +183,10 @@ public class CloudDebugProcessStateCollectorTest extends BasePluginTestCase {
     assertTrue(new CloudDebugProcessStateCollector().listensInBackground(state));
   }
 
-  private Project createProject(int inProgressDebugSessions,
-                                int backgroundListeningDebugsSessions,
-                                int notListeningDebugSessions) {
+  private Project createProject(
+      int inProgressDebugSessions,
+      int backgroundListeningDebugsSessions,
+      int notListeningDebugSessions) {
     Project project = mock(Project.class);
 
     XDebuggerManager debuggerManager = mock(XDebuggerManager.class);
@@ -229,27 +231,30 @@ public class CloudDebugProcessStateCollectorTest extends BasePluginTestCase {
 
   private void createBackgroundListeningDebugSettings(
       List<RunnerAndConfigurationSettings> allRunnerSettings) {
-    createDebugSettingsAndAddToRunnerSettings(allRunnerSettings,
-                       /* isStopped */ true,
-                       /* hasDebugSession */ false,
-                       /* hasProcessState */ Boolean.TRUE);
+    createDebugSettingsAndAddToRunnerSettings(
+        allRunnerSettings,
+        /* isStopped */ true,
+        /* hasDebugSession */ false,
+        /* hasProcessState */ Boolean.TRUE);
   }
 
   private void createNotListeningNotActiveSettings(
       List<RunnerAndConfigurationSettings> allRunnerSettings) {
-    createDebugSettingsAndAddToRunnerSettings(allRunnerSettings,
-                       /* isStopped */ true,
-                       /* hasDebugSession */ false,
-                       /* hasProcessState */ null);
+    createDebugSettingsAndAddToRunnerSettings(
+        allRunnerSettings,
+        /* isStopped */ true,
+        /* hasDebugSession */ false,
+        /* hasProcessState */ null);
   }
 
   @Nullable
   private XDebugSession createInProgressDebugSettings(
       List<RunnerAndConfigurationSettings> allRunnerSettings) {
-    return createDebugSettingsAndAddToRunnerSettings(allRunnerSettings,
-                              /* isStopped */ false,
-                              /* hasDebugSession */ true,
-                              /* hasProcessState */ Boolean.FALSE);
+    return createDebugSettingsAndAddToRunnerSettings(
+        allRunnerSettings,
+        /* isStopped */ false,
+        /* hasDebugSession */ true,
+        /* hasProcessState */ Boolean.FALSE);
   }
 
   private XDebugSession createDebugSettingsAndAddToRunnerSettings(
@@ -288,5 +293,4 @@ public class CloudDebugProcessStateCollectorTest extends BasePluginTestCase {
     }
     return debugSession;
   }
-
 }

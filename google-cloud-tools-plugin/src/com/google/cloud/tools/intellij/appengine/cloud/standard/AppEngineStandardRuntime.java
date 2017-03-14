@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ package com.google.cloud.tools.intellij.appengine.cloud.standard;
 import org.jetbrains.annotations.Nullable;
 
 public enum AppEngineStandardRuntime {
-
   JAVA_8("java8");
 
   private final String label;
@@ -44,7 +43,5 @@ public enum AppEngineStandardRuntime {
       default:
         return null;
     }
-
   }
-
 }

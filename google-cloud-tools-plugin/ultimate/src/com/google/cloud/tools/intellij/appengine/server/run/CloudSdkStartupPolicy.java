@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,6 @@ import com.google.cloud.tools.intellij.appengine.cloud.executor.AppEngineStandar
 import com.google.cloud.tools.intellij.appengine.sdk.CloudSdkService;
 import com.google.cloud.tools.intellij.appengine.server.instance.AppEngineServerModel;
 import com.google.cloud.tools.intellij.util.GctBundle;
-
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.process.OSProcessHandler;
 import com.intellij.execution.runners.ProgramRunner;
@@ -31,15 +30,11 @@ import com.intellij.javaee.run.localRun.ExecutableObject;
 import com.intellij.javaee.run.localRun.ExecutableObjectStartupPolicy;
 import com.intellij.javaee.run.localRun.ScriptHelper;
 import com.intellij.javaee.run.localRun.ScriptsHelper;
-
-import org.jetbrains.annotations.Nullable;
-
 import java.util.Arrays;
 import java.util.Map;
+import org.jetbrains.annotations.Nullable;
 
-/**
- * Runs a Google App Engine Standard app locally with devappserver, through the tools lib.
- */
+/** Runs a Google App Engine Standard app locally with devappserver, through the tools lib. */
 public class CloudSdkStartupPolicy implements ExecutableObjectStartupPolicy {
 
   // The startup process handler is kept so the process can be explicitly terminated, since we're
@@ -96,8 +91,9 @@ public class CloudSdkStartupPolicy implements ExecutableObjectStartupPolicy {
             executor.run();
 
             Process devappserverProcess = executor.getProcess();
-            startupProcessHandler = new OSProcessHandler(devappserverProcess,
-                GctBundle.getString("appengine.run.startupscript"));
+            startupProcessHandler =
+                new OSProcessHandler(
+                    devappserverProcess, GctBundle.getString("appengine.run.startupscript"));
             return startupProcessHandler;
           }
         };

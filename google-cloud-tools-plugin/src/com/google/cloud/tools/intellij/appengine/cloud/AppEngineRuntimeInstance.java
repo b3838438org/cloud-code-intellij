@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,8 +19,6 @@ package com.google.cloud.tools.intellij.appengine.cloud;
 import com.google.cloud.tools.intellij.appengine.cloud.flexible.UserSpecifiedPathDeploymentSource;
 import com.google.cloud.tools.intellij.login.Services;
 import com.google.cloud.tools.intellij.util.GctBundle;
-import com.google.common.base.Strings;
-
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.progress.ProgressIndicator;
@@ -31,18 +29,14 @@ import com.intellij.remoteServer.configuration.deployment.DeploymentSource;
 import com.intellij.remoteServer.runtime.deployment.DeploymentLogManager;
 import com.intellij.remoteServer.runtime.deployment.DeploymentTask;
 import com.intellij.remoteServer.runtime.deployment.ServerRuntimeInstance;
-
+import java.util.HashSet;
+import java.util.Set;
 import org.jetbrains.annotations.NotNull;
 import org.joda.time.DateTime;
 
-import java.util.HashSet;
-import java.util.Set;
-
-/**
- * A {@link ServerRuntimeInstance} for the {@link AppEngineCloudType}.
- */
-public class AppEngineRuntimeInstance extends
-    ServerRuntimeInstance<AppEngineDeploymentConfiguration> {
+/** A {@link ServerRuntimeInstance} for the {@link AppEngineCloudType}. */
+public class AppEngineRuntimeInstance
+    extends ServerRuntimeInstance<AppEngineDeploymentConfiguration> {
 
   private final Set<CancellableRunnable> createdDeployments;
 
@@ -51,7 +45,8 @@ public class AppEngineRuntimeInstance extends
   }
 
   @Override
-  public void deploy(@NotNull final DeploymentTask<AppEngineDeploymentConfiguration> task,
+  public void deploy(
+      @NotNull final DeploymentTask<AppEngineDeploymentConfiguration> task,
       @NotNull final DeploymentLogManager logManager,
       @NotNull final DeploymentOperationCallback callback) {
 
@@ -93,13 +88,13 @@ public class AppEngineRuntimeInstance extends
   }
 
   /**
-   * Disambiguates running deployment line items by prepending a timestamp. Also appends the
-   * cloud project and version id's to the deployment string.
+   * Disambiguates running deployment line items by prepending a timestamp. Also appends the cloud
+   * project and version id's to the deployment string.
    */
   @NotNull
   @Override
-  public String getDeploymentName(@NotNull DeploymentSource source,
-      AppEngineDeploymentConfiguration configuration) {
+  public String getDeploymentName(
+      @NotNull DeploymentSource source, AppEngineDeploymentConfiguration configuration) {
     String deploymentName = String.format("[%s] ", DateTime.now().toString("yyyy-MM-dd HH:mm:ss"));
 
     // If its a user specified archive source then we want to label it by the name of the archive
@@ -125,8 +120,7 @@ public class AppEngineRuntimeInstance extends
   }
 
   @Override
-  public void computeDeployments(@NotNull ComputeDeploymentsCallback callback) {
-  }
+  public void computeDeployments(@NotNull ComputeDeploymentsCallback callback) {}
 
   @Override
   public void disconnect() {
@@ -138,5 +132,4 @@ public class AppEngineRuntimeInstance extends
       createdDeployments.clear();
     }
   }
-
 }

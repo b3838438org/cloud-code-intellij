@@ -34,7 +34,6 @@ import com.google.cloud.tools.intellij.login.CredentialedUser;
 import com.google.cloud.tools.intellij.login.GoogleLoginService;
 import com.google.cloud.tools.intellij.testing.TestUtils;
 import com.google.gdt.eclipse.login.common.GoogleLoginState;
-
 import com.intellij.debugger.actions.DebuggerActions;
 import com.intellij.debugger.ui.DebuggerContentInfo;
 import com.intellij.execution.ui.RunnerLayoutUi;
@@ -55,17 +54,14 @@ import com.intellij.xdebugger.breakpoints.XLineBreakpoint;
 import com.intellij.xdebugger.impl.actions.XDebuggerActions;
 import com.intellij.xdebugger.impl.breakpoints.XLineBreakpointImpl;
 import com.intellij.xdebugger.ui.XDebugTabLayouter;
-
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import javax.swing.Icon;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
-
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-
-import javax.swing.Icon;
 
 public class CloudDebugProcessTest extends PlatformTestCase {
 

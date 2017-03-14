@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,6 @@ import com.google.cloud.tools.intellij.util.GctBundle;
 import com.google.cloud.tools.intellij.util.GctTracking;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
-
 import com.intellij.ide.plugins.IdeaPluginDescriptor;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationDisplayType;
@@ -32,13 +31,10 @@ import com.intellij.notification.NotificationListener;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.ui.popup.util.PopupUtil;
+import javax.swing.event.HyperlinkEvent;
 import org.jetbrains.annotations.NotNull;
 
-import javax.swing.event.HyperlinkEvent;
-
-/**
- * Checks if conflicting any conflicting plugins are installed.
- */
+/** Checks if conflicting any conflicting plugins are installed. */
 public class ConflictingAppEnginePluginCheck {
 
   private static final String DEACTIVATE_LINK_HREF = "#deactivate";
@@ -49,8 +45,8 @@ public class ConflictingAppEnginePluginCheck {
    * notified to disable it.
    */
   public void notifyIfConflicting() {
-    ApplicationPluginInfoService applicationInfoService = ServiceManager
-        .getService(ApplicationPluginInfoService.class);
+    ApplicationPluginInfoService applicationInfoService =
+        ServiceManager.getService(ApplicationPluginInfoService.class);
 
     if (applicationInfoService.isPluginActive(BUNDLED_PLUGIN_ID)) {
       Optional<IdeaPluginDescriptor> plugin = applicationInfoService.findPlugin(BUNDLED_PLUGIN_ID);
@@ -118,8 +114,8 @@ public class ConflictingAppEnginePluginCheck {
     }
 
     private void showDisablePluginDialog() {
-      DisablePluginWarningDialog dialog = new DisablePluginWarningDialog(plugin.getPluginId(),
-          PopupUtil.getActiveComponent());
+      DisablePluginWarningDialog dialog =
+          new DisablePluginWarningDialog(plugin.getPluginId(), PopupUtil.getActiveComponent());
       dialog.showAndDisablePlugin();
     }
   }

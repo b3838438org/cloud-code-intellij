@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,21 +19,19 @@ package com.google.cloud.tools.intellij.stats;
 import com.google.api.client.repackaged.com.google.common.annotations.VisibleForTesting;
 import com.google.cloud.tools.intellij.login.PluginFlags;
 import com.google.cloud.tools.intellij.login.PropertiesFilePluginFlags;
-
 import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.util.PlatformUtils;
-
 import org.jetbrains.annotations.Nullable;
 
-/**
- * Stores the user's choice to opt in/out of sending usage metrics via the Google Usage Tracker.
- */
+/** Stores the user's choice to opt in/out of sending usage metrics via the Google Usage Tracker. */
 // TODO: Refactor to an IntelliJ service
 public final class UsageTrackerManager {
   @VisibleForTesting
   static final String USAGE_TRACKER_KEY = "GOOGLE_CLOUD_TOOLS_USAGE_TRACKER_OPT_IN";
+
   @VisibleForTesting
   static final String USAGE_TRACKER_PROPERTY_PLACEHOLDER = "${usageTrackerProperty}";
+
   private static UsageTrackerManager instance;
   private PropertiesComponent datastore;
   private PluginFlags flags;
@@ -50,9 +48,7 @@ public final class UsageTrackerManager {
     this.flags = flags;
   }
 
-  /**
-   * Return an instance of this manager.
-   */
+  /** Return an instance of this manager. */
   public static UsageTrackerManager getInstance() {
     synchronized (factoryLock) {
       if (instance == null) {
@@ -79,12 +75,12 @@ public final class UsageTrackerManager {
   }
 
   /**
-   * Indicates whether usage tracking is configured for this plugin's release and platform.  This is
+   * Indicates whether usage tracking is configured for this plugin's release and platform. This is
    * independent of whether the user is opted in to usage tracking.
    *
-   * {@code isUsageTrackingAvailable()} and {@link #hasUserOptedIn()} both need to return
-   * {@code true} for tracking to be enabled. Call {@link #isTrackingEnabled()} to determine whether
-   * to do user tracking.
+   * <p>{@code isUsageTrackingAvailable()} and {@link #hasUserOptedIn()} both need to return {@code
+   * true} for tracking to be enabled. Call {@link #isTrackingEnabled()} to determine whether to do
+   * user tracking.
    */
   public boolean isUsageTrackingAvailable() {
     return PlatformUtils.isIntelliJ() && (getAnalyticsProperty() != null);

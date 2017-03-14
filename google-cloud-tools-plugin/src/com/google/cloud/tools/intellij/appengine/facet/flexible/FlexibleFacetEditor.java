@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,6 @@ import com.google.cloud.tools.intellij.appengine.project.AppEngineProjectService
 import com.google.cloud.tools.intellij.appengine.project.AppEngineProjectService.FlexibleRuntime;
 import com.google.cloud.tools.intellij.util.GctBundle;
 import com.google.common.annotations.VisibleForTesting;
-
 import com.intellij.facet.Facet;
 import com.intellij.facet.ui.FacetEditorTab;
 import com.intellij.icons.AllIcons.Ide;
@@ -40,10 +39,6 @@ import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.ui.DocumentAdapter;
-
-import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.NotNull;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -53,17 +48,16 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.function.Supplier;
-
 import javax.annotation.Nullable;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.event.DocumentEvent;
+import org.jetbrains.annotations.Nls;
+import org.jetbrains.annotations.NotNull;
 
-/**
- * Panel used to configure the Flexible settings.
- */
+/** Panel used to configure the Flexible settings. */
 public class FlexibleFacetEditor extends FacetEditorTab {
 
   private static final AppEngineProjectService APP_ENGINE_PROJECT_SERVICE =
@@ -80,7 +74,8 @@ public class FlexibleFacetEditor extends FacetEditorTab {
   private AppEngineDeploymentConfiguration deploymentConfiguration;
   private AppEngineHelper appEngineHelper;
 
-  FlexibleFacetEditor(@Nullable AppEngineDeploymentConfiguration deploymentConfiguration,
+  FlexibleFacetEditor(
+      @Nullable AppEngineDeploymentConfiguration deploymentConfiguration,
       @NotNull Project project) {
     this.appEngineHelper = new CloudSdkAppEngineHelper(project);
     this.deploymentConfiguration = deploymentConfiguration;
@@ -89,41 +84,56 @@ public class FlexibleFacetEditor extends FacetEditorTab {
         GctBundle.message("appengine.flex.config.browse.app.yaml"),
         null /* description */,
         project,
-        FileChooserDescriptorFactory.createSingleFileDescriptor().withFileFilter(
-            virtualFile -> Comparing.equal(virtualFile.getExtension(), "yaml")
-                || Comparing.equal(virtualFile.getExtension(), "yml")
-        )
-    );
+        FileChooserDescriptorFactory.createSingleFileDescriptor()
+            .withFileFilter(
+                virtualFile ->
+                    Comparing.equal(virtualFile.getExtension(), "yaml")
+                        || Comparing.equal(virtualFile.getExtension(), "yml")));
 
-    appYaml.getTextField().getDocument().addDocumentListener(new DocumentAdapter() {
-      @Override
-      protected void textChanged(DocumentEvent event) {
-        toggleDockerfileSection();
-        validateConfiguration();
-      }
-    });
+    appYaml
+        .getTextField()
+        .getDocument()
+        .addDocumentListener(
+            new DocumentAdapter() {
+              @Override
+              protected void textChanged(DocumentEvent event) {
+                toggleDockerfileSection();
+                validateConfiguration();
+              }
+            });
 
-    dockerfile.getTextField().getDocument().addDocumentListener(new DocumentAdapter() {
-      @Override
-      protected void textChanged(DocumentEvent event) {
-        validateConfiguration();
-      }
-    });
+    dockerfile
+        .getTextField()
+        .getDocument()
+        .addDocumentListener(
+            new DocumentAdapter() {
+              @Override
+              protected void textChanged(DocumentEvent event) {
+                validateConfiguration();
+              }
+            });
 
     dockerfile.addBrowseFolderListener(
         GctBundle.message("appengine.flex.config.browse.dockerfile"),
         null /* description */,
         project,
-        FileChooserDescriptorFactory.createSingleFileDescriptor()
-    );
+        FileChooserDescriptorFactory.createSingleFileDescriptor());
 
-    genAppYamlButton.addActionListener(new GenerateConfigActionListener(project, "app.yaml",
-        appEngineHelper::defaultAppYaml, appYaml, this::validateConfiguration));
+    genAppYamlButton.addActionListener(
+        new GenerateConfigActionListener(
+            project,
+            "app.yaml",
+            appEngineHelper::defaultAppYaml,
+            appYaml,
+            this::validateConfiguration));
 
-    genDockerfileButton.addActionListener(new GenerateConfigActionListener(project, "Dockerfile",
-        () -> appEngineHelper.defaultDockerfile(AppEngineFlexibleDeploymentArtifactType.WAR),
-        dockerfile, this::validateConfiguration
-    ));
+    genDockerfileButton.addActionListener(
+        new GenerateConfigActionListener(
+            project,
+            "Dockerfile",
+            () -> appEngineHelper.defaultDockerfile(AppEngineFlexibleDeploymentArtifactType.WAR),
+            dockerfile,
+            this::validateConfiguration));
 
     appYaml.setText(deploymentConfiguration.getAppYamlPath());
     dockerfile.setText(deploymentConfiguration.getDockerFilePath());
@@ -185,7 +195,8 @@ public class FlexibleFacetEditor extends FacetEditorTab {
   }
 
   private boolean isRuntimeCustom() {
-    return APP_ENGINE_PROJECT_SERVICE.getFlexibleRuntimeFromAppYaml(appYaml.getText())
+    return APP_ENGINE_PROJECT_SERVICE
+        .getFlexibleRuntimeFromAppYaml(appYaml.getText())
         .filter(runtime -> runtime == FlexibleRuntime.custom)
         .isPresent();
   }
@@ -205,9 +216,7 @@ public class FlexibleFacetEditor extends FacetEditorTab {
     return true;
   }
 
-  /**
-   * Validates the configuration and turns on/off any necessary warnings.
-   */
+  /** Validates the configuration and turns on/off any necessary warnings. */
   private void validateConfiguration() {
     boolean showError = false;
 
@@ -241,9 +250,7 @@ public class FlexibleFacetEditor extends FacetEditorTab {
     }
   }
 
-  /**
-   * A somewhat generic way of generating a file for a {@link TextFieldWithBrowseButton}.
-   */
+  /** A somewhat generic way of generating a file for a {@link TextFieldWithBrowseButton}. */
   private static class GenerateConfigActionListener implements ActionListener {
 
     private final Project project;
@@ -268,27 +275,31 @@ public class FlexibleFacetEditor extends FacetEditorTab {
 
     @Override
     public void actionPerformed(ActionEvent event) {
-      Path sourceFile = sourceFileProvider.get().orElseThrow(
-          () -> new AssertionError("Invalid location for " + fileName));
+      Path sourceFile =
+          sourceFileProvider
+              .get()
+              .orElseThrow(() -> new AssertionError("Invalid location for " + fileName));
 
-      SelectConfigDestinationFolderDialog destinationFolderDialog = new
-          SelectConfigDestinationFolderDialog(project, filePicker.getText());
+      SelectConfigDestinationFolderDialog destinationFolderDialog =
+          new SelectConfigDestinationFolderDialog(project, filePicker.getText());
       if (destinationFolderDialog.showAndGet()) {
         Path destinationFolderPath = destinationFolderDialog.getDestinationFolder();
         Path destinationFilePath = destinationFolderPath.resolve(fileName);
 
         if (Files.exists(destinationFilePath)) {
           if (!new FileConfirmationDialog(
-              project, DialogType.CONFIRM_OVERWRITE, destinationFilePath).showAndGet()) {
+                  project, DialogType.CONFIRM_OVERWRITE, destinationFilePath)
+              .showAndGet()) {
             return;
           }
         } else if (Files.isRegularFile(destinationFolderPath)) {
-          new FileConfirmationDialog(
-              project, DialogType.NOT_DIRECTORY_ERROR, destinationFolderPath).show();
+          new FileConfirmationDialog(project, DialogType.NOT_DIRECTORY_ERROR, destinationFolderPath)
+              .show();
           return;
         } else if (!Files.exists(destinationFolderPath)) {
           if (!new FileConfirmationDialog(
-              project, DialogType.CONFIRM_CREATE_DIR, destinationFolderPath).showAndGet()) {
+                  project, DialogType.CONFIRM_CREATE_DIR, destinationFolderPath)
+              .showAndGet()) {
             return;
           }
         }
@@ -297,8 +308,9 @@ public class FlexibleFacetEditor extends FacetEditorTab {
           FileUtil.copy(sourceFile.toFile(), destinationFilePath.toFile());
           LocalFileSystem.getInstance().refreshAndFindFileByIoFile(destinationFilePath.toFile());
         } catch (IOException ex) {
-          String message = GctBundle.message(
-              "appengine.flex.config.generation.io.error", destinationFilePath.getFileName());
+          String message =
+              GctBundle.message(
+                  "appengine.flex.config.generation.io.error", destinationFilePath.getFileName());
           Messages.showErrorDialog(project, message + ex.getLocalizedMessage(), "Error");
           return;
         }

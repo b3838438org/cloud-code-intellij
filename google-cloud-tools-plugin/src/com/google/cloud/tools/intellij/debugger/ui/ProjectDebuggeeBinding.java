@@ -27,7 +27,6 @@ import com.google.cloud.tools.intellij.login.CredentialedUser;
 import com.google.cloud.tools.intellij.resources.ProjectSelector;
 import com.google.cloud.tools.intellij.util.GctBundle;
 import com.google.common.base.Strings;
-
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
@@ -35,19 +34,15 @@ import com.intellij.openapi.project.Project;
 import com.intellij.ui.DocumentAdapter;
 import com.intellij.util.containers.HashMap;
 import com.intellij.util.ui.tree.TreeModelAdapter;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import java.io.IOException;
 import java.util.Map;
-
 import javax.swing.Action;
 import javax.swing.JComboBox;
 import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.TreeModelEvent;
-import javax.swing.event.TreeModelListener;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * This binding between the project and debuggee is refactored out to make it reusable in the
@@ -69,26 +64,31 @@ class ProjectDebuggeeBinding {
   //   has projectSelector.getProjectNumber() set to null.
   private boolean isCdbQueried = false;
 
-  public ProjectDebuggeeBinding(@NotNull ProjectSelector projectSelector,
+  public ProjectDebuggeeBinding(
+      @NotNull ProjectSelector projectSelector,
       @NotNull JComboBox targetSelector,
       @NotNull Action okAction) {
     this.projectSelector = projectSelector;
     this.targetSelector = targetSelector;
     this.okAction = okAction;
 
-    this.projectSelector.getDocument().addDocumentListener(new DocumentAdapter() {
-      @Override
-      protected void textChanged(DocumentEvent event) {
-        refreshDebugTargetList();
-      }
-    });
+    this.projectSelector
+        .getDocument()
+        .addDocumentListener(
+            new DocumentAdapter() {
+              @Override
+              protected void textChanged(DocumentEvent event) {
+                refreshDebugTargetList();
+              }
+            });
 
-    this.projectSelector.addModelListener(new TreeModelAdapter() {
-      @Override
-      public void treeStructureChanged(TreeModelEvent event) {
-        refreshDebugTargetList();
-      }
-    });
+    this.projectSelector.addModelListener(
+        new TreeModelAdapter() {
+          @Override
+          public void treeStructureChanged(TreeModelEvent event) {
+            refreshDebugTargetList();
+          }
+        });
   }
 
   @NotNull
@@ -99,7 +99,8 @@ class ProjectDebuggeeBinding {
     String savedDebuggeeId = selectedItem != null ? selectedItem.getId() : null;
     String savedProjectDescription = projectSelector.getText();
 
-    return new CloudDebugProcessState(credentialedUser != null ? credentialedUser.getEmail() : null,
+    return new CloudDebugProcessState(
+        credentialedUser != null ? credentialedUser.getEmail() : null,
         savedDebuggeeId,
         savedProjectDescription,
         projectNumberString,
@@ -115,8 +116,9 @@ class ProjectDebuggeeBinding {
 
     this.credentialedUser = credentialedUser;
     cloudDebuggerClient =
-        this.credentialedUser != null ? CloudDebuggerClient.getLongTimeoutClient(
-            this.credentialedUser.getEmail()) : null;
+        this.credentialedUser != null
+            ? CloudDebuggerClient.getLongTimeoutClient(this.credentialedUser.getEmail())
+            : null;
 
     return cloudDebuggerClient;
   }
@@ -133,9 +135,7 @@ class ProjectDebuggeeBinding {
     }
   }
 
-  /**
-   * Refreshes the list of attachable debug targets based on the project selection.
-   */
+  /** Refreshes the list of attachable debug targets based on the project selection. */
   @SuppressWarnings("FutureReturnValueIgnored")
   private void refreshDebugTargetList() {
     targetSelector.removeAllItems();
@@ -239,8 +239,8 @@ class ProjectDebuggeeBinding {
       case 403:
         return GctBundle.message("clouddebug.debug.targets.accessdenied");
       default:
-        return GctBundle
-            .getString("clouddebug.debug.targets.error", reason.getDetails().getMessage());
+        return GctBundle.getString(
+            "clouddebug.debug.targets.error", reason.getDetails().getMessage());
     }
   }
 

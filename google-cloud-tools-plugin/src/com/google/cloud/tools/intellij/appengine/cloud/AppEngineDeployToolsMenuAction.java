@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package com.google.cloud.tools.intellij.appengine.cloud;
 
 import com.google.cloud.tools.intellij.ui.GoogleCloudToolsIcons;
 import com.google.cloud.tools.intellij.util.GctBundle;
-
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.diagnostic.Logger;
@@ -27,21 +26,17 @@ import com.intellij.remoteServer.ServerType;
 import com.intellij.remoteServer.configuration.RemoteServer;
 import com.intellij.remoteServer.configuration.RemoteServersManager;
 import com.intellij.remoteServer.configuration.deployment.DeploymentConfigurationManager;
-import com.intellij.remoteServer.impl.configuration.deployment.DeployToServerRunConfiguration;
-import com.intellij.remoteServer.impl.configuration.deployment.DeployToServerSettingsEditor;
 import com.intellij.util.containers.ContainerUtil;
-
 import java.util.List;
 
-/**
- * Creates a shortcut to App Engine deployment configuration in the tools menu.
- */
+/** Creates a shortcut to App Engine deployment configuration in the tools menu. */
 public class AppEngineDeployToolsMenuAction extends AnAction {
 
   private static final Logger logger = Logger.getInstance(AppEngineDeployToolsMenuAction.class);
 
   public AppEngineDeployToolsMenuAction() {
-    super(GctBundle.message("appengine.tools.menu.deploy.text"),
+    super(
+        GctBundle.message("appengine.tools.menu.deploy.text"),
         GctBundle.message("appengine.tools.menu.deploy.description"),
         GoogleCloudToolsIcons.APP_ENGINE);
   }
@@ -60,10 +55,10 @@ public class AppEngineDeployToolsMenuAction extends AnAction {
             .createAndRunConfiguration(serverType, ContainerUtil.getFirstItem(servers));
       } catch (NullPointerException npe) {
         /**
-         * Handles the case where the configuration is executed with a null deployment source.
-         * See {@link DeployToServerSettingsEditor#applyEditorTo(DeployToServerRunConfiguration)}
-         * The deployment configuration is set to null causing the following execution to fail:
-         * {@link DeployToServerRunConfiguration#checkConfiguration()}
+         * Handles the case where the configuration is executed with a null deployment source. See
+         * {@link DeployToServerSettingsEditor#applyEditorTo(DeployToServerRunConfiguration)} The
+         * deployment configuration is set to null causing the following execution to fail: {@link
+         * DeployToServerRunConfiguration#checkConfiguration()}
          */
         logger.warn("Error encountered executing App Engine deployment run configuration.", npe);
       }

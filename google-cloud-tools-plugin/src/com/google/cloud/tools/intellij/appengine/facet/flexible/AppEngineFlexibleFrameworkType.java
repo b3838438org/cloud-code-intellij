@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc. All Rights Reserved.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,17 +18,12 @@ package com.google.cloud.tools.intellij.appengine.facet.flexible;
 
 import com.google.cloud.tools.intellij.ui.GoogleCloudToolsIcons;
 import com.google.cloud.tools.intellij.util.GctBundle;
-
 import com.intellij.framework.FrameworkTypeEx;
 import com.intellij.framework.addSupport.FrameworkSupportInModuleProvider;
-
+import javax.swing.Icon;
 import org.jetbrains.annotations.NotNull;
 
-import javax.swing.Icon;
-
-/**
- * The Flexible framework type.
- */
+/** The Flexible framework type. */
 public class AppEngineFlexibleFrameworkType extends FrameworkTypeEx {
 
   public static final String ID = "appengine-flexible";

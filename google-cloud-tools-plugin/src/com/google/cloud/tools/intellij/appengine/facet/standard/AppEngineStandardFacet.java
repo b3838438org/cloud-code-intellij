@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2016 JetBrains s.r.o.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,8 +44,8 @@ public class AppEngineStandardFacet extends Facet<AppEngineStandardFacetConfigur
     super(facetType, module, name, configuration, null);
   }
 
-  public static FacetType<AppEngineStandardFacet,
-      AppEngineStandardFacetConfiguration> getFacetType() {
+  public static FacetType<AppEngineStandardFacet, AppEngineStandardFacetConfiguration>
+      getFacetType() {
     return FacetTypeRegistry.getInstance().findFacetType(ID);
   }
 

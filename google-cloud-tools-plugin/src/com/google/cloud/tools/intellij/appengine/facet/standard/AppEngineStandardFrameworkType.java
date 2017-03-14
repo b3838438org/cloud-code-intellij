@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2016 JetBrains s.r.o.
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,18 +17,13 @@
 package com.google.cloud.tools.intellij.appengine.facet.standard;
 
 import com.google.cloud.tools.intellij.ui.GoogleCloudToolsIcons;
-
 import com.intellij.framework.FrameworkTypeEx;
 import com.intellij.framework.addSupport.FrameworkSupportInModuleProvider;
 import com.intellij.ide.util.frameworkSupport.FrameworkRole;
-
+import javax.swing.Icon;
 import org.jetbrains.annotations.NotNull;
 
-import javax.swing.Icon;
-
-/**
- * @author nik
- */
+/** @author nik */
 public class AppEngineStandardFrameworkType extends FrameworkTypeEx {
   public static final String ID = "appengine-java";
 
@@ -70,5 +65,4 @@ public class AppEngineStandardFrameworkType extends FrameworkTypeEx {
     // Determines the parent of this framework in the "Additional Libraries and Frameworks" menu
     return AppEngineStandardWebIntegration.getInstance().getUnderlyingFrameworkTypeId();
   }
-
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 The Android Open Source Project
+ * Copyright 2017 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,12 +19,9 @@ package com.google.cloud.tools.intellij.ui;
 import java.awt.Color;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
 import javax.swing.JTextField;
 
-/**
- * Extends JTextField to add placeholder text.
- */
+/** Extends JTextField to add placeholder text. */
 public class PlaceholderTextField extends JTextField {
 
   private String placeholderText;
@@ -44,12 +41,14 @@ public class PlaceholderTextField extends JTextField {
 
     updatePlaceholderText();
 
-    this.addPropertyChangeListener("editable", new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-        updatePlaceholderText();
-      }
-    });
+    this.addPropertyChangeListener(
+        "editable",
+        new PropertyChangeListener() {
+          @Override
+          public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+            updatePlaceholderText();
+          }
+        });
   }
 
   private void updatePlaceholderText() {
