@@ -16,124 +16,181 @@
 
 package com.google.cloud.tools.intellij.appengine.sdk;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static com.google.cloud.tools.intellij.appengine.sdk.CloudSdkValidationResult.CLOUD_SDK_NOT_FOUND;
+import static com.google.cloud.tools.intellij.appengine.sdk.CloudSdkValidationResult.CLOUD_SDK_VERSION_NOT_SUPPORTED;
+import static com.google.common.truth.Truth.assertThat;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.when;
 
+import com.google.cloud.tools.intellij.testing.CloudToolsRule;
+import com.google.cloud.tools.intellij.testing.TestService;
+import com.google.cloud.tools.intellij.util.ThreadUtil;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.util.concurrent.MoreExecutors;
+import com.intellij.ide.IdeEventQueue;
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.testFramework.PlatformTestCase;
-import com.intellij.util.containers.HashSet;
+import com.intellij.openapi.options.ConfigurationException;
+import com.intellij.util.concurrency.AppExecutorUtil;
+import com.intellij.util.concurrency.AppScheduledExecutorService;
+import com.intellij.util.ui.UIUtil;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
+import org.mockito.Mock;
 
-import org.mockito.MockitoAnnotations;
-import org.mockito.Spy;
-import org.picocontainer.MutablePicoContainer;
+/** Unit tests for {@link CloudSdkPanel}. */
+@RunWith(JUnit4.class)
+public final class CloudSdkPanelTest {
 
-import java.util.Collections;
-import java.util.Set;
-
-/** Tests for {@link CloudSdkPanel}. */
-public class CloudSdkPanelTest extends PlatformTestCase {
-
-  @Spy private CloudSdkPanel panel;
-
-  private CloudSdkService cloudSdkService;
-
-  private static final String CLOUD_SDK_DOWNLOAD_LINK =
-      "<a href='https://cloud.google.com/sdk/docs/"
-          + "#install_the_latest_cloud_tools_version_cloudsdk_current_version'>Click here</a> to "
-          + "download the Cloud SDK.";
+  private static final String SDK_DOWNLOAD_TEXT = "Click here to download the Cloud SDK.";
   private static final String MISSING_SDK_DIR_WARNING =
-      "Cloud SDK home directory is not specified. " + CLOUD_SDK_DOWNLOAD_LINK;
+      "Cloud SDK home directory is not specified. " + SDK_DOWNLOAD_TEXT;
   private static final String INVALID_SDK_DIR_WARNING =
-      "No Cloud SDK was found in the specified directory. " + CLOUD_SDK_DOWNLOAD_LINK;
+      "No Cloud SDK was found in the specified directory. " + SDK_DOWNLOAD_TEXT;
 
-  @Override
-  public void setUp() throws Exception {
-    super.setUp();
+  @Rule public final CloudToolsRule cloudToolsRule = new CloudToolsRule(this);
 
-    MockitoAnnotations.initMocks(this);
+  @Mock @TestService private CloudSdkService mockCloudSdkService;
 
-    MutablePicoContainer applicationContainer =
-        (MutablePicoContainer) ApplicationManager.getApplication().getPicoContainer();
+  private final CloudSdkPanel panel = new CloudSdkPanel();
 
-    cloudSdkService = mock(CloudSdkService.class);
-
-    applicationContainer.unregisterComponent(CloudSdkService.class.getName());
-
-    applicationContainer.registerComponentInstance(
-        CloudSdkService.class.getName(), cloudSdkService);
+  @Before
+  public void setUpDirectoryText() {
+    // Since several test methods rely on the field's document listeners to trigger after a change,
+    // this set-up guarantees the calls in the test methods will create a text change.
+    invokeOnEDT(() -> panel.setCloudSdkDirectoryText("/setup/path"));
   }
 
-  public void testCheckSdk_nullSdk() throws InterruptedException {
-    when(cloudSdkService.isValidCloudSdk(null)).thenReturn(false);
-    panel.checkSdk(null);
-    verify(panel, times(1)).showWarning(eq(MISSING_SDK_DIR_WARNING));
-    verify(panel, times(0)).hideWarning();
+  @Test
+  public void getCloudSdkDirectoryText_doesReturnFieldText() {
+    assertThat(panel.getCloudSdkDirectoryText()).isEqualTo("/setup/path");
   }
 
-  public void testCheckSdk_emptySdk() throws InterruptedException {
-    when(cloudSdkService.isValidCloudSdk("")).thenReturn(false);
-    panel.checkSdk("");
-    verify(panel, times(1)).showWarning(eq(MISSING_SDK_DIR_WARNING));
-    verify(panel, times(0)).hideWarning();
+  @Test
+  public void setCloudSdkDirectoryText_toNull_doesShowWarning() {
+    invokeOnEDT(
+        () -> {
+          panel.setCloudSdkDirectoryText(null);
+
+          assertWarningIsShown(MISSING_SDK_DIR_WARNING);
+        });
   }
 
-  public void testCheckSdk_invalidSdk() throws InterruptedException {
-    setValidateCloudSdkResponse(CloudSdkValidationResult.CLOUD_SDK_NOT_FOUND);
-    when(cloudSdkService.isValidCloudSdk("/non/empty/path")).thenReturn(false);
-    panel.checkSdk("/non/empty/path");
-    verify(panel, times(1)).showWarning(eq(INVALID_SDK_DIR_WARNING));
-    verify(panel, times(0)).hideWarning();
+  @Test
+  public void setCloudSdkDirectoryText_toEmptyString_doesShowWarning() {
+    invokeOnEDT(
+        () -> {
+          panel.setCloudSdkDirectoryText("");
+
+          assertWarningIsShown(MISSING_SDK_DIR_WARNING);
+        });
   }
 
-  public void testCheckSdk_unsupportedSdk() {
-    setValidateCloudSdkResponse(CloudSdkValidationResult.CLOUD_SDK_VERSION_NOT_SUPPORTED);
-    when(cloudSdkService.isValidCloudSdk("/non/empty/path")).thenReturn(false);
-    panel.checkSdk("/non/empty/path");
-    verify(panel, times(1))
-        .showWarning(eq(CloudSdkValidationResult.CLOUD_SDK_VERSION_NOT_SUPPORTED.getMessage()));
-    verify(panel, times(0)).hideWarning();
+  @Test
+  public void setCloudSdkDirectoryText_withCloudSdkNotFound_doesShowWarning() {
+    invokeOnEDT(
+        () -> {
+          when(mockCloudSdkService.validateCloudSdk(anyString()))
+              .thenReturn(ImmutableSet.of(CLOUD_SDK_NOT_FOUND));
+
+          panel.setCloudSdkDirectoryText("/some/path");
+
+          assertWarningIsShown(INVALID_SDK_DIR_WARNING);
+        });
   }
 
-  public void testCheckSdk_multipleValidationResults() {
-    setValidateCloudSdkResponse(
-        CloudSdkValidationResult.CLOUD_SDK_VERSION_NOT_SUPPORTED,
-        CloudSdkValidationResult.CLOUD_SDK_NOT_FOUND);
-    when(cloudSdkService.isValidCloudSdk("/non/empty/path")).thenReturn(false);
+  @Test
+  public void setCloudSdkDirectoryText_withUnsupportedSdk_doesShowWarning() {
+    invokeOnEDT(
+        () -> {
+          when(mockCloudSdkService.validateCloudSdk(anyString()))
+              .thenReturn(ImmutableSet.of(CLOUD_SDK_VERSION_NOT_SUPPORTED));
 
-    String expectedMessage =
-        INVALID_SDK_DIR_WARNING
-            + "<p>"
-            + CloudSdkValidationResult.CLOUD_SDK_VERSION_NOT_SUPPORTED.getMessage()
-            + "</p>";
+          panel.setCloudSdkDirectoryText("/some/path");
 
-    panel.checkSdk("/non/empty/path");
-    verify(panel, times(1)).showWarning(eq(expectedMessage));
-    verify(panel, times(0)).hideWarning();
+          assertWarningIsShown(CLOUD_SDK_VERSION_NOT_SUPPORTED.getMessage());
+        });
   }
 
-  public void testCheckSdk_validSdk() {
-    when(cloudSdkService.isValidCloudSdk("/non/empty/path")).thenReturn(true);
-    setValidateCloudSdkResponse();
-    panel.checkSdk("/non/empty/path");
-    verify(panel, times(0)).showWarning(any(String.class));
-    verify(panel, times(1)).hideWarning();
+  @Test
+  public void
+      setCloudSdkDirectoryText_withMultipleValidationResults_doesShowWarningWithCombinedText() {
+    invokeOnEDT(
+        () -> {
+          when(mockCloudSdkService.validateCloudSdk(anyString()))
+              .thenReturn(ImmutableSet.of(CLOUD_SDK_NOT_FOUND, CLOUD_SDK_VERSION_NOT_SUPPORTED));
+
+          panel.setCloudSdkDirectoryText("/some/path");
+
+          assertWarningIsShown(
+              INVALID_SDK_DIR_WARNING + "\n" + CLOUD_SDK_VERSION_NOT_SUPPORTED.getMessage());
+        });
   }
 
-  public void testApplyWith_invalidSdk() throws Exception {
-    setValidateCloudSdkResponse(CloudSdkValidationResult.CLOUD_SDK_NOT_FOUND);
-    panel.getCloudSdkDirectoryField().setText("/non/empty/path");
+  @Test
+  public void setCloudSdkDirectoryText_toValidSdk_doesNotShowWarning() {
+    invokeOnEDT(
+        () -> {
+          String sdkPath = "/some/sdk/path";
+          when(mockCloudSdkService.isValidCloudSdk(sdkPath)).thenReturn(true);
 
-    // No exception should be thrown on invalid sdk entry from this panel
+          panel.setCloudSdkDirectoryText(sdkPath);
+
+          assertWarningIsHidden();
+        });
+  }
+
+  @Test
+  public void apply_withInvalidSdk_doesNotThrowException() {
+    String sdkPath = "/some/sdk/path";
+    when(mockCloudSdkService.validateCloudSdk(sdkPath))
+        .thenReturn(ImmutableSet.of(CLOUD_SDK_NOT_FOUND));
+    invokeOnEDT(() -> panel.setCloudSdkDirectoryText(sdkPath));
+
     panel.apply();
   }
 
-  private void setValidateCloudSdkResponse(CloudSdkValidationResult... results) {
-    Set<CloudSdkValidationResult> validationResults = new HashSet<>();
-    Collections.addAll(validationResults, results);
-    when(cloudSdkService.validateCloudSdk(any(String.class))).thenReturn(validationResults);
+  @Test
+  public void apply_withValidSdk_doesNotThrowException() throws ConfigurationException {
+    String sdkPath = "/some/sdk/path";
+    when(mockCloudSdkService.validateCloudSdk(sdkPath)).thenReturn(ImmutableSet.of());
+    invokeOnEDT(() -> panel.setCloudSdkDirectoryText(sdkPath));
+
+    panel.apply();
+  }
+
+  /** Runs the given {@link Runnable} on the EDT. */
+  private static void invokeOnEDT(Runnable runnable) {
+    ApplicationManager.getApplication().invokeAndWait(runnable);
+  }
+
+  /**
+   * Asserts the warning icon and message are shown in the {@link #panel} with the given message.
+   */
+  private void assertWarningIsShown(String message) {
+    assertThat(panel.getWarningIcon().isVisible()).isTrue();
+    assertThat(panel.getWarningMessage().isVisible()).isTrue();
+
+    try {
+      Document document = panel.getWarningMessage().getDocument();
+      assertThat(document.getText(0, document.getLength())).contains(message);
+    } catch (BadLocationException e) {
+      throw new AssertionError(e);
+    }
+  }
+
+  /** Asserts the warning icon and message are hidden. */
+  private void assertWarningIsHidden() {
+    assertThat(panel.getWarningIcon().isVisible()).isFalse();
+    assertThat(panel.getWarningMessage().isVisible()).isFalse();
   }
 }

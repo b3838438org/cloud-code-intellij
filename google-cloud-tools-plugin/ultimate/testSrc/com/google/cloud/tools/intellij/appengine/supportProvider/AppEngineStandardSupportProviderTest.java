@@ -31,7 +31,8 @@ import com.google.cloud.tools.intellij.appengine.sdk.CloudSdkService;
 import com.google.cloud.tools.intellij.appengine.server.run.AppEngineServerConfigurationType;
 import com.google.cloud.tools.intellij.compiler.artifacts.ArtifactsTestUtil;
 import com.google.cloud.tools.intellij.javaee.supportProvider.JavaeeFrameworkSupportProviderTestCase;
-
+import com.google.cloud.tools.intellij.util.ThreadUtil;
+import com.google.common.util.concurrent.MoreExecutors;
 import com.intellij.appengine.AppEngineCodeInsightTestCase;
 import com.intellij.execution.RunManager;
 import com.intellij.execution.configurations.RunConfiguration;
@@ -49,12 +50,10 @@ import com.intellij.openapi.roots.impl.libraries.ProjectLibraryTable;
 import com.intellij.openapi.roots.libraries.Library;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.packaging.artifacts.Artifact;
-
-import org.jetbrains.annotations.NotNull;
-import org.picocontainer.MutablePicoContainer;
-
 import java.io.File;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
+import org.picocontainer.MutablePicoContainer;
 
 /**
  * @author nik
@@ -114,6 +113,8 @@ public class AppEngineStandardSupportProviderTest extends JavaeeFrameworkSupport
   }
 
   private void setupAppEngine(AppEngineStandardLibraryPanel libraryPanel, Library library) {
+    ThreadUtil.getInstance().setBackgroundExecutorService(MoreExecutors.newDirectExecutorService());
+
     CloudSdkService sdkService = mock(CloudSdkService.class);
     when(sdkService.getLibraries()).thenReturn(new File[]{});
 
