@@ -38,12 +38,14 @@ final class GcsBucketContentEditorPanel {
   private JPanel breadCrumbsPanel;
   private JTable bucketContentTable;
 
+  // TODO maybe move to an enum? (in this class?)...no needs to be ordered
   private static final List<String> TABLE_COL_HEADER =
       Arrays.asList("Name", "Size", "Type", "Last Modified");
 
   void setTableModel(@NotNull Iterable<Blob> blobs) {
     if (Iterators.size(blobs.iterator()) != 0) {
       bucketContentTable.setModel(new GcsBucketTableModel(blobs));
+      bucketContentTable.getColumnModel().getColumn(0).setCellRenderer(new GcsBlobNameCellRender());
     }
   }
 
