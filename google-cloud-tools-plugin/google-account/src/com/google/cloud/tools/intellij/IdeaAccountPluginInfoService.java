@@ -13,8 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-include 'google-cloud-tools-plugin'
-include 'common-lib'
-include 'common-test-lib'
-include 'google-cloud-tools-plugin:ultimate'
-include 'google-cloud-tools-plugin:google-account'
+
+package com.google.cloud.tools.intellij;
+
+/**
+ * The singleton instance of this class provides plugin metadata for the Google Account plugin.
+ */
+public class IdeaAccountPluginInfoService extends BasePluginInfoService
+    implements AccountPluginInfoService {
+
+  protected IdeaAccountPluginInfoService() {
+    super("gcloud-intellij-account-plugin", "com.google.gct.login");
+  }
+}

@@ -13,8 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-include 'google-cloud-tools-plugin'
-include 'common-lib'
-include 'common-test-lib'
-include 'google-cloud-tools-plugin:ultimate'
-include 'google-cloud-tools-plugin:google-account'
+
+package com.google.cloud.tools.intellij;
+
+/**
+ * Use this service to change the Google Account plugins configuration.
+ */
+public interface AccountPluginConfigurationService extends PluginConfigurationService {
+
+}

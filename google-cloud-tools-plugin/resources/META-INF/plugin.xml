@@ -295,7 +295,6 @@
   <depends optional="true" config-file="javaee-integration.xml">com.intellij.javaee</depends>
   <depends optional="true" config-file="gwt-integration.xml">com.intellij.gwt</depends>
   <depends optional="true" config-file="google-app-engine-maven-support.xml">org.jetbrains.idea.maven</depends>
-
   <depends>com.intellij.modules.platform</depends>
   <depends>com.intellij.modules.lang</depends>
   <depends>com.intellij.modules.vcs</depends>
@@ -303,7 +302,6 @@
   <depends>com.intellij.modules.xdebugger</depends>
   <depends>org.jetbrains.plugins.gradle</depends>
   <depends>org.jetbrains.plugins.yaml</depends>
-  <depends>com.google.gct.login</depends>
   <depends>Git4Idea</depends>
   <depends>org.jetbrains.idea.maven</depends>
 

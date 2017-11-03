@@ -13,8 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-include 'google-cloud-tools-plugin'
-include 'common-lib'
-include 'common-test-lib'
-include 'google-cloud-tools-plugin:ultimate'
-include 'google-cloud-tools-plugin:google-account'
+
+package com.google.cloud.tools.intellij.stats;
+
+/**
+ * For usage tracker of the Google Login actions.
+ */
+public class LoginTracking {
+
+  private LoginTracking() {
+  }
+
+  public static final String LOGIN_START = "user.login.start";
+  public static final String LOGIN_CANCELLED = "user.login.cancelled";
+  public static final String LOGIN_COMPLETE = "user.login.complete";
+  public static final String LOGOUT_COMPLETE = "user.logout.complete";
+}

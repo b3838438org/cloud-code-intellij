@@ -13,8 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-include 'google-cloud-tools-plugin'
-include 'common-lib'
-include 'common-test-lib'
-include 'google-cloud-tools-plugin:ultimate'
-include 'google-cloud-tools-plugin:google-account'
+
+package com.google.cloud.tools.intellij.stats;
+
+import com.intellij.openapi.components.ServiceManager;
+import org.jetbrains.annotations.NotNull;
+
+/**
+ * Usage Tracker Provider (as a Service) for obtaining UsageTracker implementations.
+ */
+public abstract class UsageTrackerProvider {
+
+  @NotNull
+  public static UsageTracker getInstance() {
+    return ServiceManager.getService(UsageTrackerProvider.class).getTracker();
+  }
+
+  /**
+   * Do not return a tracker that includes PII.
+   */
+  @NotNull
+  protected abstract UsageTracker getTracker();
+
+}

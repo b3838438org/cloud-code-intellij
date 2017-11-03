@@ -13,8 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-include 'google-cloud-tools-plugin'
-include 'common-lib'
-include 'common-test-lib'
-include 'google-cloud-tools-plugin:ultimate'
-include 'google-cloud-tools-plugin:google-account'
+
+package com.google.cloud.tools.intellij.login;
+
+
+import com.intellij.openapi.components.ServiceManager;
+
+/**
+ * TODO: Describe this class well.
+ */
+public class Services {
+
+  public static GoogleLoginService getLoginService() {
+    return ServiceManager.getService(GoogleLoginService.class);
+  }
+}

@@ -13,8 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-include 'google-cloud-tools-plugin'
-include 'common-lib'
-include 'common-test-lib'
-include 'google-cloud-tools-plugin:ultimate'
-include 'google-cloud-tools-plugin:google-account'
+
+package com.google.cloud.tools.intellij.login;
+
+
+import com.intellij.openapi.extensions.ExtensionPointName;
+
+public interface GoogleLoginMessageExtender {
+  ExtensionPointName<GoogleLoginMessageExtender> EP_NAME =
+      new ExtensionPointName<>("com.google.gct.login.googleLoginMessageExtender");
+
+  String additionalLogoutMessage();
+}

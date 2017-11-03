@@ -13,8 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-include 'google-cloud-tools-plugin'
-include 'common-lib'
-include 'common-test-lib'
-include 'google-cloud-tools-plugin:ultimate'
-include 'google-cloud-tools-plugin:google-account'
+
+package com.google.cloud.tools.intellij.login.ui;
+
+import com.google.cloud.tools.intellij.login.CredentialedUser;
+import java.awt.Image;
+
+/**
+ * A single user item in the Google Login panel.
+ */
+public class UsersListItem {
+  private final CredentialedUser user;
+
+  public UsersListItem(CredentialedUser user) {
+    this.user = user;
+  }
+
+  public String getUserEmail() {
+    return user.getEmail();
+  }
+
+  public boolean isActiveUser() {
+    return user.isActive();
+  }
+
+  public String getUserName() {
+    return user.getName();
+  }
+
+  public Image getUserPicture() {
+    return user.getPicture();
+  }
+}

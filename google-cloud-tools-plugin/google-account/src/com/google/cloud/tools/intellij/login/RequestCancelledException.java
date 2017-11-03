@@ -13,8 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-include 'google-cloud-tools-plugin'
-include 'common-lib'
-include 'common-test-lib'
-include 'google-cloud-tools-plugin:ultimate'
-include 'google-cloud-tools-plugin:google-account'
+
+package com.google.cloud.tools.intellij.login;
+
+import java.io.IOException;
+
+/**
+ * An exception that indicates that the login request was cancelled by the user.
+ */
+class RequestCancelledException extends IOException {
+}

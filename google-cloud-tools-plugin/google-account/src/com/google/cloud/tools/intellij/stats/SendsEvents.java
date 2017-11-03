@@ -13,8 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-include 'google-cloud-tools-plugin'
-include 'common-lib'
-include 'common-test-lib'
-include 'google-cloud-tools-plugin:ultimate'
-include 'google-cloud-tools-plugin:google-account'
+
+package com.google.cloud.tools.intellij.stats;
+
+import java.util.Map;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+/**
+ * Package internal only interface used for providing multiple ping implementations to the
+ * {@link TrackingEventBuilder}.
+ */
+interface SendsEvents {
+
+  /**
+   * When tracking events, do NOT include any information that can identify the user.
+   */
+  void sendEvent(@NotNull String eventCategory,
+      @NotNull String eventAction,
+      @Nullable Map<String, String> metadataMap);
+}
