@@ -20,9 +20,6 @@ sourceSets.main.resources.srcDirs = ['resources']
 sourceSets.test.java.srcDirs = ['testSrc']
 sourceSets.test.resources.srcDirs = ['testResources']
 
-intellij {
-}
-
 dependencies {
     compile(project(':common-lib'))
     compile files('lib/google.gdt.eclipse.login.common.jar')

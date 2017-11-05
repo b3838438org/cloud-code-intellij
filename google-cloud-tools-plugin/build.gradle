@@ -20,12 +20,18 @@ sourceSets.main.resources.srcDirs = ['resources']
 sourceSets.test.java.srcDirs = ['testSrc']
 sourceSets.test.resources.srcDirs = ['testResources', 'testData']
 
+apply plugin: 'org.jetbrains.intellij'
+
 intellij {
+
     pluginName = 'google-cloud-tools'
     plugins 'Groovy', 'gradle', 'git4idea', 'properties', 'junit', 'maven', 'yaml'
 
     publish {
         pluginId '8079'
+        username System.getenv('IJ_REPO_USERNAME')
+        password System.getenv('IJ_REPO_PASSWORD')
+        channel ijPluginRepoChannel
     }
 }
 
@@ -33,12 +39,10 @@ project.afterEvaluate {
     //todo: currently we need this to include 'ultimate' module to the plugin zip; it would be better to support such inclusion in 'intellij' plugin
     def prepareSandboxTask = project.tasks.findByName("prepareSandbox")
     prepareSandboxTask.dependsOn project('ultimate').jar
-    prepareSandboxTask.dependsOn project('google-account').jar
 
     prepareSandboxTask.doLast {
         copy {
             from files(project('ultimate').jar)
-            from files(project('google-account').jar)
             into "$prepareSandboxTask.destinationDir/$intellij.pluginName/lib"
         }
     }
