@@ -42,7 +42,7 @@ dependencies {
     }
     testCompile 'org.yaml:snakeyaml:1.18'
     testCompile project(path: ':google-cloud-tools-plugin', configuration: 'tests')
-    testRuntime files(project(':google-cloud-tools-plugin').sourceSets.test.resources.srcDirs)
+//    testRuntime files(project(':google-cloud-tools-plugin').sourceSets.test.resources.srcDirs)
 }
 
 jar.archiveName = "google-cloud-tools-ultimate.jar"

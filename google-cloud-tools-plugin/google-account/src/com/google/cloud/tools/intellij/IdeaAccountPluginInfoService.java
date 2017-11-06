@@ -23,6 +23,8 @@ public class IdeaAccountPluginInfoService extends BasePluginInfoService
     implements AccountPluginInfoService {
 
   protected IdeaAccountPluginInfoService() {
-    super("gcloud-intellij-account-plugin", "com.google.gct.login");
+    // TODO(paflynn): delete Account Plugin Config and Info Services
+    // Blocked on usage from the GoogleUsageTracker. Will fix by folding usage tracking into core.
+    super("gcloud-intellij-cloud-tools-plugin", "com.google.gct.core");
   }
 }

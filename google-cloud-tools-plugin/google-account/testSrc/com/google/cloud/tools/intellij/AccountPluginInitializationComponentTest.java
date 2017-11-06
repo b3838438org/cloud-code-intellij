@@ -16,7 +16,6 @@
 
 package com.google.cloud.tools.intellij;
 
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -41,7 +40,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class AccountPluginInitializationComponentTest extends BasePluginTestCase {
 
-  private static final String PLUGIN_ID_STRING = "com.google.gct.login";
+  private static final String PLUGIN_ID_STRING = "com.google.gct.core";
   @Mock
   AccountPluginInfoService pluginInfoService;
   @Mock
@@ -58,22 +57,6 @@ public class AccountPluginInitializationComponentTest extends BasePluginTestCase
     registerService(AccountPluginConfigurationService.class, pluginConfigurationService);
     registerService(GoogleLoginService.class, googleLoginService);
     testComponent = new AccountPluginInitializationComponent();
-  }
-
-  // TODO: factor out commonality in tests and application components for feedback initialization
-  @Test
-  public void testInitComponent_feedbackIsEnabled() {
-    when(pluginInfoService.shouldEnableErrorFeedbackReporting()).thenReturn(true);
-    when(pluginInfoService.getPluginId()).thenReturn(PLUGIN_ID_STRING);
-    testComponent.initComponent();
-    verify(pluginConfigurationService).enabledGoogleFeedbackErrorReporting(PLUGIN_ID_STRING);
-  }
-
-  @Test
-  public void testInitComponent_feedbackIsDisabled() {
-    when(pluginInfoService.shouldEnableErrorFeedbackReporting()).thenReturn(false);
-    testComponent.initComponent();
-    verify(pluginConfigurationService, never()).enabledGoogleFeedbackErrorReporting(anyString());
   }
 
   @Test

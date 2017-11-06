@@ -31,7 +31,7 @@ public class PluginXmlTest {
     public void testWellFormed() throws SAXException, IOException {
         XMLReader reader = XMLReaderFactory.createXMLReader();
         // Shouldn't this be reading from the build output classpath?
-        reader.parse("resources/META-INF/plugin.xml");
+        reader.parse("resources/META-INF/google-account.xml");
         // throws exception if file is malformed
     }
 }
