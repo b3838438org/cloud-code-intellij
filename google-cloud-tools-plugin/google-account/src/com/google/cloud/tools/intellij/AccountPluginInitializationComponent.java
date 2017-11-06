@@ -26,7 +26,6 @@ import com.intellij.notification.NotificationsConfiguration;
 import com.intellij.notification.NotificationsManager;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ApplicationComponent;
-import com.intellij.openapi.components.ServiceManager;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -42,14 +41,6 @@ public class AccountPluginInitializationComponent implements ApplicationComponen
 
   @Override
   public void initComponent() {
-    AccountPluginInfoService pluginInfoService =
-        ServiceManager.getService(AccountPluginInfoService.class);
-    AccountPluginConfigurationService pluginConfigurationService = ServiceManager
-        .getService(AccountPluginConfigurationService.class);
-    if (pluginInfoService.shouldEnableErrorFeedbackReporting()) {
-      pluginConfigurationService
-          .enabledGoogleFeedbackErrorReporting(pluginInfoService.getPluginId());
-    }
     if (!ApplicationManager.getApplication().isUnitTestMode()) {
       configureUsageTracking();
     }

@@ -21,7 +21,7 @@ import com.intellij.openapi.extensions.ExtensionPointName;
 
 public interface GoogleLoginMessageExtender {
   ExtensionPointName<GoogleLoginMessageExtender> EP_NAME =
-      new ExtensionPointName<>("com.google.gct.login.googleLoginMessageExtender");
+      new ExtensionPointName<>("com.google.gct.core.googleLoginMessageExtender");
 
   String additionalLogoutMessage();
 }

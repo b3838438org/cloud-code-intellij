@@ -14,7 +14,7 @@
   ~ limitations under the License.
   -->
 
-<idea-plugin xmlns:xi="http://www.w3.org/2001/XInclude">
+<idea-plugin>
   <id>com.google.gct.core</id>
   <name>Google Cloud Tools</name>
   <description>
@@ -448,7 +448,7 @@
     <GitHttpAuthDataProvider implementation="com.google.cloud.tools.intellij.vcs.GcpHttpAuthDataProvider" />
   </extensions>
 
-  <extensions defaultExtensionNs="com.google.gct.login">
+  <extensions defaultExtensionNs="com.google.gct.core">
     <googleLoginMessageExtender
             implementation="com.google.cloud.tools.intellij.login.IntelliJGoogleLoginMessageExtender"/>
   </extensions>
