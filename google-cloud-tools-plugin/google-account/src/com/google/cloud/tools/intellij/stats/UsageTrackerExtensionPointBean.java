@@ -32,7 +32,7 @@ public class UsageTrackerExtensionPointBean extends AbstractExtensionPointBean i
 
   // TODO : when changing the package root for this plugin, update this
   static final ExtensionPointName<UsageTracker> EP_NAME =
-      new ExtensionPointName<UsageTracker>("com.google.gct.login.usageTracker");
+      new ExtensionPointName<UsageTracker>("com.google.gct.core.usageTracker");
 
   @Attribute("key")
   public String key;

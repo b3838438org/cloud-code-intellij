@@ -49,11 +49,13 @@
                         serviceImplementation="com.google.cloud.tools.intellij.login.IntellijGoogleLoginService"/>
   </extensions>
 
-  <extensions defaultExtensionNs="com.google.gct">
+  <extensions defaultExtensionNs="com.google.gct.core">
     <!-- For IJ Community Edition -->
-    <login.usageTracker implementationClass="com.google.cloud.tools.intellij.stats.GoogleUsageTracker" key="Idea" />
+    <usageTracker implementationClass="com.google.cloud.tools.intellij.stats.GoogleUsageTracker"
+                  key="Idea"/>
     <!-- For IJ Ultimate Edition -->
-    <login.usageTracker implementationClass="com.google.cloud.tools.intellij.stats.GoogleUsageTracker" key="idea" />
+    <usageTracker implementationClass="com.google.cloud.tools.intellij.stats.GoogleUsageTracker"
+                  key="idea"/>
   </extensions>
 
   <extensionPoints>
