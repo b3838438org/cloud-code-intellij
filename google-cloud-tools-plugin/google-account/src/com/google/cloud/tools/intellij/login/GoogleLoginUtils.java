@@ -21,7 +21,7 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.oauth2.Oauth2;
 import com.google.api.services.oauth2.model.Userinfoplus;
-import com.google.cloud.tools.intellij.AccountPluginInfoService;
+import com.google.cloud.tools.intellij.OldAccountPluginInfoService;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.ModalityState;
 import com.intellij.openapi.components.ServiceManager;
@@ -80,7 +80,7 @@ public final class GoogleLoginUtils {
     final Oauth2 userInfoService =
         new Oauth2.Builder(new NetHttpTransport(), new JacksonFactory(), credential)
             .setApplicationName(
-                ServiceManager.getService(AccountPluginInfoService.class).getUserAgent())
+                ServiceManager.getService(OldAccountPluginInfoService.class).getUserAgent())
             .build();
 
     ApplicationManager.getApplication()

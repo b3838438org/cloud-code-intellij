@@ -62,15 +62,15 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Class that handles logging in to Google services.
  */
-public class IntellijGoogleLoginService implements GoogleLoginService {
+public class NewIntellijGoogleLoginService implements NewGoogleLoginService {
 
-  private static final Logger LOG = Logger.getInstance(IntellijGoogleLoginService.class);
+  private static final Logger LOG = Logger.getInstance(NewIntellijGoogleLoginService.class);
   private ClientInfo clientInfo;
   private AndroidUiFacade uiFacade;
   private AndroidPreferencesOAuthDataStore dataStore;
   private CredentialedUserRoster users;
 
-  private IntellijGoogleLoginService() {
+  private NewIntellijGoogleLoginService() {
     this.clientInfo = getClientInfo();
     this.uiFacade = new AndroidUiFacade();
     this.users = new CredentialedUserRoster();

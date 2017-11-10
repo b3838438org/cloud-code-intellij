@@ -19,10 +19,10 @@ package com.google.cloud.tools.intellij;
 /**
  * The singleton instance of this class provides plugin metadata for the Google Account plugin.
  */
-public class IdeaAccountPluginInfoService extends BasePluginInfoService
-    implements AccountPluginInfoService {
+public class OldGoogleAccountPluginInfoService extends BasePluginInfoService
+    implements OldAccountPluginInfoService {
 
-  protected IdeaAccountPluginInfoService() {
+  protected OldGoogleAccountPluginInfoService() {
     // TODO(paflynn): delete Account Plugin Config and Info Services
     // Blocked on usage from the GoogleUsageTracker. Will fix by folding usage tracking into core.
     super("gcloud-intellij-cloud-tools-plugin", "com.google.gct.core");

@@ -26,7 +26,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Provides Google user authentication services.
  */
-public interface GoogleLoginService {
+public interface NewGoogleLoginService {
 
   /**
    * Returns an HttpRequestFactory object that has been signed with the active user's authentication

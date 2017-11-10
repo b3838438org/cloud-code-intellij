@@ -24,7 +24,7 @@ import com.intellij.openapi.components.ServiceManager;
  */
 public class Services {
 
-  public static GoogleLoginService getLoginService() {
-    return ServiceManager.getService(GoogleLoginService.class);
+  public static NewGoogleLoginService getLoginService() {
+    return ServiceManager.getService(NewGoogleLoginService.class);
   }
 }

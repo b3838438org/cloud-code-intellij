@@ -19,6 +19,6 @@ package com.google.cloud.tools.intellij;
 /**
  * Provides information about the configuration of the google-account-plugin.
  */
-public interface AccountPluginInfoService extends PluginInfoService {
+public interface OldAccountPluginInfoService extends PluginInfoService {
 
 }
