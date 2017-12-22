@@ -17,10 +17,10 @@
 package com.google.cloud.tools.intellij.startup;
 
 import com.google.cloud.tools.intellij.ApplicationPluginInfoService;
+import com.google.cloud.tools.intellij.analytics.GctTracking;
 import com.google.cloud.tools.intellij.analytics.UsageTrackerProvider;
 import com.google.cloud.tools.intellij.ui.DisablePluginWarningDialog;
 import com.google.cloud.tools.intellij.util.GctBundle;
-import com.google.cloud.tools.intellij.util.GctTracking;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
 import com.intellij.ide.plugins.IdeaPluginDescriptor;

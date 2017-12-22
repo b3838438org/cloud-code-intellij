@@ -318,6 +318,7 @@
   <depends optional="true" config-file="gwt-integration.xml">com.intellij.gwt</depends>
   <depends optional="true" config-file="google-app-engine-maven-support.xml">org.jetbrains.idea.maven</depends>
   <depends optional="true" config-file="google-account.xml">com.intellij.modules.platform</depends>
+  <depends optional="true" config-file="cloud-storage.xml">com.intellij.modules.platform</depends>
   <depends>com.intellij.modules.lang</depends>
   <depends>com.intellij.modules.vcs</depends>
   <depends>com.intellij.modules.xml</depends>
@@ -506,7 +507,6 @@
       <separator/>
       <reference ref="GoogleCloudTools.UploadSourceToGCP"/>
       <separator/>
-      <action id="GoogleCloudTools.CloudStorage" class="com.google.cloud.tools.intellij.gcs.GcsToolWindowAction"/>
       <!--
       <separator/>
       <action id="GoogleCloudTools.AddCloudLibrariesWizard" class="com.google.cloud.tools.intellij.apis.AddCloudLibrariesWizardAction"/>

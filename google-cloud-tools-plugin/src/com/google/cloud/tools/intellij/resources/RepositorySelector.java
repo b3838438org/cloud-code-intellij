@@ -16,6 +16,7 @@
 
 package com.google.cloud.tools.intellij.resources;
 
+import com.google.cloud.tools.intellij.GoogleCloudCoreIcons;
 import com.google.cloud.tools.intellij.login.CredentialedUser;
 import com.google.cloud.tools.intellij.ui.CustomizableComboBox;
 import com.google.cloud.tools.intellij.ui.CustomizableComboBoxPopup;
@@ -272,7 +273,7 @@ public class RepositorySelector extends CustomizableComboBox implements Customiz
       }
 
       JButton refreshButton = new JButton();
-      refreshButton.setIcon(GoogleCloudToolsIcons.REFRESH);
+      refreshButton.setIcon(GoogleCloudCoreIcons.REFRESH);
       refreshButton.addActionListener(
           event -> {
             refresh();

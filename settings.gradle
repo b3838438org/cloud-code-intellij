@@ -16,5 +16,7 @@
 include 'google-cloud-tools-plugin'
 include 'common-lib'
 include 'common-test-lib'
+include 'google-cloud-tools-plugin:google-cloud-core'
 include 'google-cloud-tools-plugin:ultimate'
 include 'google-cloud-tools-plugin:google-account'
+include 'google-cloud-tools-plugin:cloud-storage'
