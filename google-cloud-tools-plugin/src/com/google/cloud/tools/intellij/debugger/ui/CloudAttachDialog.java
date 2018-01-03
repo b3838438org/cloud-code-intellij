@@ -85,6 +85,7 @@ public class CloudAttachDialog extends DialogWrapper {
   private JBLabel warningHeader;
   private JBLabel warningMessage;
   private ProjectSelector projectSelector;
+  private JPanel projectSelectorPanel;
 
   /** Initializes the cloud debugger dialog. */
   public CloudAttachDialog(
@@ -437,5 +438,11 @@ public class CloudAttachDialog extends DialogWrapper {
     } else {
       refreshAndClose();
     }
+  }
+
+  private void createUIComponents() {
+    projectSelector = new ProjectSelector();
+    projectSelectorPanel = new JPanel();
+    projectSelectorPanel.add(projectSelector);
   }
 }

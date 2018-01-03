@@ -33,6 +33,7 @@ public class CloudDebugRunConfigurationPanel {
   private JLabel description;
   private ProjectSelector projectSelector;
   private JCheckBox hiddenValidationTrigger;
+  private JPanel projectSelectorPanel;
 
   public CloudDebugRunConfigurationPanel() {
     docsLink.setHyperlinkText(
@@ -69,5 +70,7 @@ public class CloudDebugRunConfigurationPanel {
           // settings editor does not see all the changes by default, use explicit notification.
           triggerValidation();
         });
+    projectSelectorPanel = new JPanel();
+    projectSelectorPanel.add(projectSelector);
   }
 }

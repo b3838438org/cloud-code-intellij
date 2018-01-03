@@ -60,6 +60,7 @@ final class GcsBucketPanel {
   private final Project project;
 
   private JPanel gcsBucketPanel;
+  private JPanel projectSelectorPanel;
   private ProjectSelector projectSelector;
   private JPanel notificationPanel;
   private JPanel bucketListPanel;
@@ -267,5 +268,11 @@ final class GcsBucketPanel {
       copyBucketNameMenuItem.addActionListener(new CopyToClipboardActionListener(bucket.getName()));
       rightClickMenu.show(event.getComponent(), event.getX(), event.getY());
     }
+  }
+
+  private void createUIComponents() {
+    projectSelector = new ProjectSelector();
+    projectSelectorPanel = new JPanel();
+    projectSelectorPanel.add(projectSelector);
   }
 }

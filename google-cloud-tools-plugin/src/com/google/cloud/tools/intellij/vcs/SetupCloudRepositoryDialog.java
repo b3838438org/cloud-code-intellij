@@ -46,6 +46,7 @@ public class SetupCloudRepositoryDialog extends DialogWrapper {
   private ProjectSelector projectSelector;
   private RepositorySelector repositorySelector;
   private RepositoryRemotePanel remoteNameSelector;
+  private JPanel projectSelectorPanel;
   private String projectId;
   private String repositoryId;
   private String remoteName;
@@ -97,6 +98,8 @@ public class SetupCloudRepositoryDialog extends DialogWrapper {
   private void createUIComponents() {
     projectSelector = new ProjectSelector();
     projectSelector.setMinimumSize(new Dimension(400, 0));
+    projectSelectorPanel = new JPanel();
+    projectSelectorPanel.add(projectSelector);
 
     repositorySelector =
         new RepositorySelector(projectSelector.getSelectedProject(), true /*canCreateRepository*/);

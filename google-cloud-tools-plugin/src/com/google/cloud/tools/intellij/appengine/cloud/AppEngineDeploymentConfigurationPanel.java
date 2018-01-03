@@ -51,6 +51,7 @@ public final class AppEngineDeploymentConfigurationPanel {
   private HyperlinkLabel appEngineCostWarningLabel;
   private JLabel serviceLabel;
   private JCheckBox hiddenValidationTrigger;
+  private JPanel projectSelectorPanel;
 
   private static final boolean PROMOTE_DEFAULT = false;
   private static final boolean STOP_PREVIOUS_VERSION_DEFAULT = false;
@@ -190,6 +191,9 @@ public final class AppEngineDeploymentConfigurationPanel {
   private void createUIComponents() {
     hiddenValidationTrigger = new JBCheckBox();
     hiddenValidationTrigger.setVisible(false);
+    projectSelector = new ProjectSelector();
+    projectSelectorPanel = new JPanel();
+    projectSelectorPanel.add(projectSelector);
   }
 
   public ProjectSelector getProjectSelector() {

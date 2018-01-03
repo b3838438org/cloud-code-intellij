@@ -58,6 +58,7 @@ public class CloneCloudRepositoryDialog extends DialogWrapper {
   private JTextField directoryName;
   private JLabel parentDirectoryLabel;
   private RepositorySelector repositorySelector;
+  private JPanel projectSelectorPanel;
 
   @NotNull private String defaultDirectoryName = "";
   @NotNull private final Project project;
@@ -219,6 +220,8 @@ public class CloneCloudRepositoryDialog extends DialogWrapper {
     projectSelector = new ProjectSelector();
     projectSelector.setMinimumSize(new Dimension(400, 0));
     projectSelector.addProjectSelectionListener(this::updateRepositorySelector);
+    projectSelectorPanel = new JPanel();
+    projectSelectorPanel.add(projectSelector);
     repositorySelector =
         new RepositorySelector(projectSelector.getSelectedProject(), false /*canCreateRepository*/);
 
