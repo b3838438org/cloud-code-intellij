@@ -16,6 +16,9 @@
 
 package com.google.cloud.tools.intellij.apis;
 
+import static java.util.stream.Collectors.collectingAndThen;
+import static java.util.stream.Collectors.toSet;
+
 import com.google.cloud.tools.intellij.project.CloudProject;
 import com.google.cloud.tools.intellij.project.ProjectSelector;
 import com.google.cloud.tools.libraries.json.CloudLibrary;
@@ -92,9 +95,11 @@ final class GoogleCloudApiSelectorPanel {
         libraries
             .stream()
             .collect(
-                ImmutableMap.toImmutableMap(
-                    Function.identity(),
-                    lib -> new CloudApiManagementSpec(SHOULD_ENABLE_API_DEFAULT)));
+                Collectors.collectingAndThen(
+                    Collectors.toMap(
+                        Function.identity(),
+                        lib -> new CloudApiManagementSpec(SHOULD_ENABLE_API_DEFAULT)),
+                    ImmutableMap::copyOf));
 
     panel.setPreferredSize(new Dimension(800, 600));
 
@@ -135,7 +140,7 @@ final class GoogleCloudApiSelectorPanel {
         .stream()
         .filter(library -> Objects.nonNull(library.getServiceName()))
         .filter(library -> apiManagementMap.get(library).shouldEnable())
-        .collect(Collectors.toSet());
+        .collect(toSet());
   }
 
   /** Returns the {@link ModulesComboBox} in this panel. */
@@ -290,7 +295,7 @@ final class GoogleCloudApiSelectorPanel {
           .stream()
           .filter(Entry::getValue)
           .map(Entry::getKey)
-          .collect(ImmutableSet.toImmutableSet());
+          .collect(collectingAndThen(toSet(), ImmutableSet::copyOf));
     }
 
     @Override
