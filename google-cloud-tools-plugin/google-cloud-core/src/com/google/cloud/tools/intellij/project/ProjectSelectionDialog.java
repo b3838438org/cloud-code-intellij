@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Google Inc. All Rights Reserved.
+ * Copyright 2018 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -75,6 +75,7 @@ import org.jetbrains.annotations.Nullable;
  * project list and simple filter. {@link ProjectSelector} calls {@link #showDialog(CloudProject)}.
  * Calls {@link ProjectLoader#} to load projects for all known accounts and caches them.
  */
+//TODO(patflynn): Remove git4idea dep from this class. (file bug before merging)
 public class ProjectSelectionDialog {
 
   private JComboBox<CredentialedUser> accountComboBox;
