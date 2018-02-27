@@ -16,6 +16,6 @@
 
 <idea-plugin xmlns:xi="http://www.w3.org/2001/XInclude">
     <name>Google Cloud Core Tests</name>
-    <id>com.google.cloud.tools.intellij.core.tests</id>
+    <id>com.google.gct.core</id>
     <xi:include href="/META-INF/google-cloud-core.xml" xpointer="xpointer(/idea-plugin/*)"/>
 </idea-plugin>
