@@ -62,7 +62,8 @@ public class UserSelector extends CustomizableComboBox implements CustomizableCo
 
   public UserSelector() {
     getTextField().setCursor(Cursor.getDefaultCursor());
-    getTextField().getEmptyText()
+    getTextField()
+        .getEmptyText()
         .setText(GoogleCloudCoreMessageBundle.message("select.user.emptytext"));
   }
 
@@ -259,12 +260,8 @@ public class UserSelector extends CustomizableComboBox implements CustomizableCo
       return projectSelectorCredentialedUser;
     }
 
-    /**
-     * This class marks an empty credential list, giving us an indication to show the signin UI.
-     */
-    class EmptyMarker {
-
-    }
+    /** This class marks an empty credential list, giving us an indication to show the signin UI. */
+    class EmptyMarker {}
   }
 
   @Override

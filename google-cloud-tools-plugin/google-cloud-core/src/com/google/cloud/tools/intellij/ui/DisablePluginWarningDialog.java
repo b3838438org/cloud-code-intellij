@@ -53,7 +53,9 @@ public class DisablePluginWarningDialog extends DialogWrapper {
     this.pluginId = pluginId;
     IdeaPluginDescriptor plugin = PluginManager.getPlugin(pluginId);
     isRestartCapable = ApplicationManager.getApplication().isRestartCapable();
-    promptLabel.setText(GoogleCloudCoreMessageBundle.message("error.dialog.disable.plugin.prompt", plugin.getName()));
+    promptLabel.setText(
+        GoogleCloudCoreMessageBundle.message(
+            "error.dialog.disable.plugin.prompt", plugin.getName()));
     restartLabel.setText(
         GoogleCloudCoreMessageBundle.message(
             isRestartCapable
@@ -117,7 +119,9 @@ public class DisablePluginWarningDialog extends DialogWrapper {
 
   private class DisableAndRestartAction extends DialogWrapperAction {
     protected DisableAndRestartAction() {
-      super(GoogleCloudCoreMessageBundle.message("error.dialog.disable.plugin.action.disableAndRestart"));
+      super(
+          GoogleCloudCoreMessageBundle.message(
+              "error.dialog.disable.plugin.action.disableAndRestart"));
     }
 
     @Override

@@ -44,6 +44,7 @@ public class SetupCloudRepositoryDialog extends DialogWrapper {
   private ProjectSelector projectSelector;
   private RepositorySelector repositorySelector;
   private RepositoryRemotePanel remoteNameSelector;
+  private JPanel projectSelectorPanel;
   private String projectId;
   private String repositoryId;
   private String remoteName;
@@ -128,6 +129,8 @@ public class SetupCloudRepositoryDialog extends DialogWrapper {
                 updateButtons();
               }
             });
+    projectSelectorPanel = new JPanel();
+    projectSelectorPanel.add(projectSelector);
   }
 
   private void updateRepositorySelector(CloudProject cloudProject) {

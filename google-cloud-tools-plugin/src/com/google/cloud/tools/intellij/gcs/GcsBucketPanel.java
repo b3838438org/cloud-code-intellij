@@ -66,6 +66,7 @@ final class GcsBucketPanel {
   private JPanel bucketListPanel;
   private JLabel notificationLabel;
   private JList<Bucket> bucketList;
+  private JPanel projectSelectorPanel;
   private DefaultListModel<Bucket> bucketListModel;
   private Future<?> bucketLoadExecution;
 
@@ -165,6 +166,8 @@ final class GcsBucketPanel {
 
   private void createUIComponents() {
     projectSelector = new ProjectSelector(project);
+    projectSelectorPanel = new JPanel();
+    projectSelectorPanel.add(projectSelector);
   }
 
   private void loadAndDisplayBuckets(String projectId, CredentialedUser credentialedUser) {

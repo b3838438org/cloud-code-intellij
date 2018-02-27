@@ -74,6 +74,7 @@ final class GoogleCloudApiSelectorPanel {
   private JLabel modulesLabel;
   private ModulesComboBox modulesComboBox;
   private ProjectSelector projectSelector;
+  private JPanel projectSelectorPanel;
 
   private final Map<CloudLibrary, CloudApiManagementSpec> apiManagementMap;
   private final List<CloudLibrary> libraries;
@@ -213,6 +214,8 @@ final class GoogleCloudApiSelectorPanel {
 
     projectSelector = new ProjectSelector(project);
     projectSelector.addProjectSelectionListener(cloudProject -> updateManagementUI());
+    projectSelectorPanel = new JPanel();
+    projectSelectorPanel.add(projectSelector);
   }
 
   private void updateManagementUI() {

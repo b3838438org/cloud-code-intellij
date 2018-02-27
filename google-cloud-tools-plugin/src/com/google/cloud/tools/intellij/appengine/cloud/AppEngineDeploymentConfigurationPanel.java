@@ -52,6 +52,7 @@ public final class AppEngineDeploymentConfigurationPanel {
   private HyperlinkLabel appEngineCostWarningLabel;
   private JLabel serviceLabel;
   private JCheckBox hiddenValidationTrigger;
+  private JPanel projectSelectorPanel;
 
   private final Project ideProject;
 
@@ -198,6 +199,8 @@ public final class AppEngineDeploymentConfigurationPanel {
     hiddenValidationTrigger.setVisible(false);
 
     projectSelector = new ProjectSelector(ideProject);
+    projectSelectorPanel = new JPanel();
+    projectSelectorPanel.add(projectSelector);
   }
 
   public ProjectSelector getProjectSelector() {

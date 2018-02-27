@@ -57,6 +57,7 @@ public class CloneCloudRepositoryDialog extends DialogWrapper {
   private JTextField directoryName;
   private JLabel parentDirectoryLabel;
   private RepositorySelector repositorySelector;
+  private JPanel projectSelectorPanel;
 
   @NotNull private String defaultDirectoryName = "";
   @NotNull private final Project project;
@@ -132,7 +133,7 @@ public class CloneCloudRepositoryDialog extends DialogWrapper {
     parentDirectory.getChildComponent().getDocument().addDocumentListener(updateOkButtonListener);
     parentDirectory.setText(ProjectUtil.getBaseDir());
     directoryName.getDocument().addDocumentListener(updateOkButtonListener);
-
+    projectSelectorPanel.add(projectSelector);
     setOKActionEnabled(false);
   }
 

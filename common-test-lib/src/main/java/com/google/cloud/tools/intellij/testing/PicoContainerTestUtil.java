@@ -19,6 +19,7 @@ package com.google.cloud.tools.intellij.testing;
 import com.google.auto.value.AutoValue;
 import com.intellij.openapi.application.ApplicationManager;
 import java.util.ArrayList;
+import org.jetbrains.annotations.NotNull;
 import org.picocontainer.MutablePicoContainer;
 
 /**
@@ -50,6 +51,9 @@ final class PicoContainerTestUtil {
    */
   void replaceServiceWithInstance(Class<?> clazz, Object instance) {
     Object originalInstance = setService(clazz, instance);
+    if (originalInstance == null) {
+      throw new RuntimeException("No binding found for " + clazz);
+    }
     services.add(Service.create(clazz, originalInstance));
   }
 
@@ -80,7 +84,7 @@ final class PicoContainerTestUtil {
   abstract static class Service {
 
     /** Returns a new instance for the given class and original service instance. */
-    static Service create(Class<?> clazz, Object originalInstance) {
+    static Service create(@NotNull Class<?> clazz, @NotNull Object originalInstance) {
       return new AutoValue_PicoContainerTestUtil_Service(clazz, originalInstance);
     }
 

@@ -75,7 +75,7 @@ import org.jetbrains.annotations.Nullable;
  * project list and simple filter. {@link ProjectSelector} calls {@link #showDialog(CloudProject)}.
  * Calls {@link ProjectLoader#} to load projects for all known accounts and caches them.
  */
-//TODO(patflynn): Remove git4idea dep from this class. (file bug before merging)
+// TODO(patflynn): Remove git4idea dep from this class. (file bug before merging)
 public class ProjectSelectionDialog {
 
   private JComboBox<CredentialedUser> accountComboBox;
