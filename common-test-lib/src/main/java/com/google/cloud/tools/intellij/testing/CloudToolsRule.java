@@ -72,17 +72,11 @@ public final class CloudToolsRule implements TestRule {
   private final Object testInstance;
   private final List<File> filesToDelete = new ArrayList<>();
   private final AtomicInteger moduleCounter = new AtomicInteger();
-  private final String pluginXmlPath;
   private IdeaProjectTestFixture testFixture;
 
-  public CloudToolsRule(Object testInstance) {
-    this(testInstance, null);
-  }
-
   /** Returns a new instance for the given {@code testInstance}. */
-  public CloudToolsRule(Object testInstance, String pluginXmlPath) {
+  public CloudToolsRule(Object testInstance) {
     this.testInstance = Preconditions.checkNotNull(testInstance);
-    this.pluginXmlPath = pluginXmlPath;
   }
 
   @Override
