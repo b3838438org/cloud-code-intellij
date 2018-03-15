@@ -34,7 +34,9 @@ import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.ui.DocumentAdapter;
+import com.intellij.uiDesigner.core.GridConstraints;
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
 import java.io.File;
 import java.util.Optional;
 import javax.swing.JComponent;
@@ -57,7 +59,6 @@ public class CloneCloudRepositoryDialog extends DialogWrapper {
   private JTextField directoryName;
   private JLabel parentDirectoryLabel;
   private RepositorySelector repositorySelector;
-  private JPanel projectSelectorPanel;
 
   @NotNull private String defaultDirectoryName = "";
   @NotNull private final Project project;
@@ -66,12 +67,10 @@ public class CloneCloudRepositoryDialog extends DialogWrapper {
     super(project, true);
     this.project = project;
     parentDirectoryLabel.setText(DvcsBundle.message("clone.parent.dir"));
-    init();
     initComponents();
     setTitle(GctBundle.message("clonefromgcp.title"));
     setOKButtonText(GctBundle.message("clonefromgcp.button"));
-
-    projectSelector.loadActiveCloudProject();
+    init();
   }
 
   @Nullable
@@ -97,6 +96,9 @@ public class CloneCloudRepositoryDialog extends DialogWrapper {
   }
 
   private void initComponents() {
+    projectSelector.setMinimumSize(new Dimension(400, 0));
+    projectSelector.addProjectSelectionListener(this::updateRepositorySelector);
+    projectSelector.loadActiveCloudProject();
     FileChooserDescriptor fcd = FileChooserDescriptorFactory.createSingleFolderDescriptor();
     fcd.setShowFileSystemRoots(true);
     fcd.setTitle(GctBundle.message("clonefromgcp.destination.directory.title"));
@@ -112,6 +114,7 @@ public class CloneCloudRepositoryDialog extends DialogWrapper {
             TextComponentAccessor.TEXT_FIELD_WHOLE_TEXT) {
           @Override
           protected VirtualFile getInitialFile() {
+            ProjectSelector ps = CloneCloudRepositoryDialog.this.projectSelector;
             String text = getComponentText();
             if (text.length() == 0) {
               VirtualFile file = project.getBaseDir();
@@ -133,8 +136,11 @@ public class CloneCloudRepositoryDialog extends DialogWrapper {
     parentDirectory.getChildComponent().getDocument().addDocumentListener(updateOkButtonListener);
     parentDirectory.setText(ProjectUtil.getBaseDir());
     directoryName.getDocument().addDocumentListener(updateOkButtonListener);
-    projectSelectorPanel.add(projectSelector);
     setOKActionEnabled(false);
+    GridConstraints gbc = new GridConstraints();
+    gbc.setRow(0);
+    gbc.setColumn(1);
+    rootPanel.add(projectSelector, gbc);
   }
 
   @Override
@@ -219,8 +225,6 @@ public class CloneCloudRepositoryDialog extends DialogWrapper {
 
   private void createUIComponents() {
     projectSelector = new ProjectSelector(project);
-    projectSelector.setMinimumSize(new Dimension(400, 0));
-    projectSelector.addProjectSelectionListener(this::updateRepositorySelector);
     repositorySelector =
         new RepositorySelector(projectSelector.getSelectedProject(), false /*canCreateRepository*/);
 
