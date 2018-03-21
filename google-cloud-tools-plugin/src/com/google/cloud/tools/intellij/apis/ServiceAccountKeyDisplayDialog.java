@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Google Inc. All Rights Reserved.
+ * Copyright 2018 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,30 +16,42 @@
 
 package com.google.cloud.tools.intellij.apis;
 
-import com.google.cloud.tools.intellij.ui.CopyToClipboardActionListener;
 import com.google.cloud.tools.intellij.util.GctBundle;
+import com.intellij.CommonBundle;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
+import com.intellij.ui.components.JBList;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.Action;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
-import javax.swing.JTextPane;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+// TODO:
+// 1. do we need the cancel button?
+// 2. implement print to console
 /**
  * Dialog confirming the download of the service account JSON key with information on how to set the
  * credential environment variables for local run.
  */
 public class ServiceAccountKeyDisplayDialog extends DialogWrapper {
 
+  private JLabel yourServiceAccountKeyLabel;
+  private JLabel envVarInfoText;
+  private JBList envVarList;
+  private JButton printButton;
+  private JList serverList;
   private JLabel downloadPathLabel;
   private JPanel panel;
-  private JLabel credentialEnvVarLabel;
-  private JButton copyToClipboardButton;
-  private JTextPane envVarInfoText;
   private static final String CREDENTIAL_ENV_VAR_KEY = "GOOGLE_APPLICATION_CREDENTIALS";
   private static final String ENV_VAR_DISPLAY_FORMAT = "%s=%s";
+  private Action applyAction;
 
   ServiceAccountKeyDisplayDialog(@Nullable Project project, String downloadPath) {
     super(project);
@@ -52,14 +64,34 @@ public class ServiceAccountKeyDisplayDialog extends DialogWrapper {
 
     String credentialEnvVar =
         String.format(ENV_VAR_DISPLAY_FORMAT, CREDENTIAL_ENV_VAR_KEY, downloadPath);
-    credentialEnvVarLabel.setText(credentialEnvVar);
+    // credentialEnvVarLabel.setText(credentialEnvVar);
 
-    copyToClipboardButton.addActionListener(new CopyToClipboardActionListener(credentialEnvVar));
+    DefaultListModel<String> model = new DefaultListModel();
+    model.addElement(credentialEnvVar);
+    envVarList.setModel(model);
+
+    // copyToClipboardButton.addActionListener(new CopyToClipboardActionListener(credentialEnvVar));
+    printButton.addActionListener(
+        new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {}
+        });
   }
 
   @Nullable
   @Override
   protected JComponent createCenterPanel() {
     return panel;
+  }
+
+  @NotNull
+  @Override
+  protected Action[] createActions() {
+    applyAction =
+        new DialogWrapperAction(CommonBundle.getApplyButtonText()) {
+          @Override
+          protected void doAction(ActionEvent e) {}
+        };
+    return new Action[] {getOKAction(), getCancelAction(), applyAction};
   }
 }
