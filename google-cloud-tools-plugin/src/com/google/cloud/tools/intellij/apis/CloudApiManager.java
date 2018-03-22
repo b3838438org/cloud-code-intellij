@@ -52,6 +52,7 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.DialogWrapper;
 import git4idea.DialogManager;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -442,8 +443,9 @@ class CloudApiManager {
     ApplicationManager.getApplication()
         .invokeLater(
             () -> {
-              ServiceAccountKeyDisplayDialog keyDialog =
-                  new ServiceAccountKeyDisplayDialog(project, downloadDir.toString());
+              ServiceAccountKeyDialogService service =
+                  ServiceManager.getService(ServiceAccountKeyDialogService.class);
+              DialogWrapper keyDialog = service.getDialog(project, downloadDir.toString());
               DialogManager.show(keyDialog);
             });
   }
