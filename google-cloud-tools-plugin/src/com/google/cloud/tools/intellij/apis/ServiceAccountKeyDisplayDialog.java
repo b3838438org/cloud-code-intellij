@@ -38,12 +38,13 @@ public class ServiceAccountKeyDisplayDialog extends DialogWrapper {
   private static final String CREDENTIAL_ENV_VAR_KEY = "GOOGLE_APPLICATION_CREDENTIALS";
   private static final String ENV_VAR_DISPLAY_FORMAT = "%s=%s";
 
+  private JLabel yourServiceAccountKeyLabel;
   private JLabel envVarInfoText;
   private JBList envVarList;
   private JButton printButton;
   private JLabel downloadPathLabel;
   private JPanel mainPanel;
-  private JPanel subPanel;
+  private JPanel extensionPanel;
 
 
   ServiceAccountKeyDisplayDialog(@Nullable Project project, String downloadPath) {
@@ -81,7 +82,7 @@ public class ServiceAccountKeyDisplayDialog extends DialogWrapper {
     return mainPanel;
   }
 
-  public JPanel getSubPanel() {
-    return subPanel;
+  public JPanel getExtensionPanel() {
+    return extensionPanel;
   }
 }

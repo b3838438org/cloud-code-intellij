@@ -20,7 +20,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import org.jetbrains.annotations.Nullable;
 
-/** Application service that provides the handle to the IU's Service Account Key Created dialog */
+/** Application service that provides a handle to the IU's Service Account Key Created dialog */
 public class ServiceAccountKeyUltimateDialogService extends ServiceAccountKeyDialogService {
 
   @Override

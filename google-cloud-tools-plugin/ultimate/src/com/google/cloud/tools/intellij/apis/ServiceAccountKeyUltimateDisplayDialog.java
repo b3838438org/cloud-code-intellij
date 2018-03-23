@@ -26,6 +26,7 @@ import com.intellij.ui.TableUtil;
 import com.intellij.ui.table.JBTable;
 import com.intellij.util.ui.UIUtil;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
@@ -34,6 +35,7 @@ import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import javax.swing.Action;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -54,12 +56,14 @@ import org.jetbrains.annotations.Nullable;
 public class ServiceAccountKeyUltimateDisplayDialog extends ServiceAccountKeyDisplayDialog {
 
   private JTable serverTable;
-  private static int CLOUD_LIBRARY_COL = 0;
-  private static int CLOUD_LIBRARY_SELECT_COL = 1;
+  private static final int CLOUD_LIBRARY_COL = 0;
+  private static final int CLOUD_LIBRARY_SELECT_COL = 1;
+  private static final int HORIZONTAL_GAP = 0;
+  private static final int VERTICAL_GAP = 10;
 
   ServiceAccountKeyUltimateDisplayDialog(@Nullable Project project, String downloadPath) {
     super(project, downloadPath);
-    JPanel panel = super.getSubPanel();
+    JPanel panel = super.getExtensionPanel();
 
     // TODO: remove
     List<String> fakeServers = new ArrayList<>();
@@ -82,6 +86,7 @@ public class ServiceAccountKeyUltimateDisplayDialog extends ServiceAccountKeyDis
 
     panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
     panel.add(label);
+    panel.add(Box.createRigidArea(new Dimension(HORIZONTAL_GAP,VERTICAL_GAP)));
     panel.add(serverTable);
   }
 
