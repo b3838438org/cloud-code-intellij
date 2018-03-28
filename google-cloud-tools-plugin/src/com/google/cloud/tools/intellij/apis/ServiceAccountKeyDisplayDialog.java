@@ -19,15 +19,13 @@ package com.google.cloud.tools.intellij.apis;
 import com.google.cloud.tools.intellij.util.GctBundle;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.Enumeration;
-import javax.swing.DefaultListModel;
+import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -42,7 +40,7 @@ public class ServiceAccountKeyDisplayDialog extends DialogWrapper {
 
   private JLabel yourServiceAccountKeyLabel;
   private JLabel envVarInfoText;
-  private JList envVarList;
+  private JTable envVarTable;
   private JButton printButton;
   private JLabel downloadPathLabel;
   private JPanel mainPanel;
@@ -64,22 +62,24 @@ public class ServiceAccountKeyDisplayDialog extends DialogWrapper {
     String cloudProjectEnvVar =
         String.format(ENV_VAR_DISPLAY_FORMAT, CLOUD_PROJECT_ENV_VAR_KEY, gcpProjectId);
 
-    DefaultListModel<String> model = new DefaultListModel();
-    model.addElement(credentialEnvVar);
-    model.addElement(cloudProjectEnvVar);
-    envVarList.setModel(model);
+    DefaultTableModel tableModel = new DefaultTableModel() {
+      @Override
+      public boolean isCellEditable(int row, int column) {
+        return false;
+      }
+    };
 
-    printButton.addActionListener(
-        new ActionListener() {
-          // TODO: copy to event log instead?
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            Enumeration<String> enumeration = model.elements();
-            while (enumeration.hasMoreElements()) {
-              System.out.println(enumeration.nextElement());
-            }
-          }
-        });
+    tableModel.setColumnCount(1);
+    tableModel.addRow(new String[]{credentialEnvVar});
+    tableModel.addRow(new String[]{cloudProjectEnvVar});
+    envVarTable.setModel(tableModel);
+    envVarTable.setRowSelectionAllowed(false);
+  }
+
+  @NotNull
+  @Override
+  protected Action[] createActions() {
+    return new Action[] {getOKAction()};
   }
 
   @Nullable

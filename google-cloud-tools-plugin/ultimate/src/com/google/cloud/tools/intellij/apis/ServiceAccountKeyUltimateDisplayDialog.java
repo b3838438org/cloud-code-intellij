@@ -93,7 +93,7 @@ public class ServiceAccountKeyUltimateDisplayDialog extends ServiceAccountKeyDis
   @NotNull
   @Override
   protected Action[] createActions() {
-    return new Action[] {getOKAction(), getCancelAction(), new ApplyAction()};
+    return new Action[] {getOKAction(), new ApplyAction()};
   }
 
   /** Adds the environment variables to the selected App Engine run configurations. */
