@@ -24,7 +24,7 @@ import org.jetbrains.annotations.Nullable;
 /** Application service that provides the handle to the IC's Service Account Key Created dialog */
 public class ServiceAccountKeyDialogService {
 
-  public DialogWrapper getDialog(@Nullable Project project, String downloadPath) {
-    return new ServiceAccountKeyDisplayDialog(project, downloadPath);
+  public DialogWrapper getDialog(@Nullable Project project, String gcpProjectId, String downloadPath) {
+    return new ServiceAccountKeyDisplayDialog(project, gcpProjectId, downloadPath);
   }
 }

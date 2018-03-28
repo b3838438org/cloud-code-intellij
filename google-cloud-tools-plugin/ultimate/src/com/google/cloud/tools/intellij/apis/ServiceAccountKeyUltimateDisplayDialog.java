@@ -61,8 +61,8 @@ public class ServiceAccountKeyUltimateDisplayDialog extends ServiceAccountKeyDis
   private static final int HORIZONTAL_GAP = 0;
   private static final int VERTICAL_GAP = 10;
 
-  ServiceAccountKeyUltimateDisplayDialog(@Nullable Project project, String downloadPath) {
-    super(project, downloadPath);
+  ServiceAccountKeyUltimateDisplayDialog(@Nullable Project project, @NotNull String gcpProjectId, @NotNull String downloadPath) {
+    super(project, gcpProjectId, downloadPath);
     JPanel panel = super.getExtensionPanel();
 
     // TODO: remove

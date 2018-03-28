@@ -211,7 +211,7 @@ class CloudApiManager {
           step / numSteps);
       Path keyPath = writeServiceAccountKey(serviceAccountKey, downloadDir, cloudProject);
 
-      notifyServiceAccountCreated(project, name, keyPath);
+      notifyServiceAccountCreated(project, cloudProject.projectId(), name, keyPath);
     } catch (IOException e) {
       LOG.warn(
           "Exception occurred attempting to create service account on GCP and download its key", e);
@@ -431,7 +431,7 @@ class CloudApiManager {
     notification.notify(project);
   }
 
-  private static void notifyServiceAccountCreated(Project project, String name, Path downloadDir) {
+  private static void notifyServiceAccountCreated(Project project, String gcpProjectId, String name, Path downloadDir) {
     Notification notification =
         NOTIFICATION_GROUP.createNotification(
             GctBundle.message("cloud.apis.service.account.created.title"),
@@ -445,7 +445,7 @@ class CloudApiManager {
             () -> {
               ServiceAccountKeyDialogService service =
                   ServiceManager.getService(ServiceAccountKeyDialogService.class);
-              DialogWrapper keyDialog = service.getDialog(project, downloadDir.toString());
+              DialogWrapper keyDialog = service.getDialog(project, gcpProjectId, downloadDir.toString());
               DialogManager.show(keyDialog);
             });
   }

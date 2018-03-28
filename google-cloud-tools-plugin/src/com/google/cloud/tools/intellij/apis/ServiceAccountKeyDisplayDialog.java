@@ -19,7 +19,6 @@ package com.google.cloud.tools.intellij.apis;
 import com.google.cloud.tools.intellij.util.GctBundle;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
-import com.intellij.ui.components.JBList;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Enumeration;
@@ -27,7 +26,9 @@ import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -35,19 +36,21 @@ import org.jetbrains.annotations.Nullable;
  * environment variables for local run.
  */
 public class ServiceAccountKeyDisplayDialog extends DialogWrapper {
+  private static final String CLOUD_PROJECT_ENV_VAR_KEY = "GOOGLE_CLOUD_PROJECT";
   private static final String CREDENTIAL_ENV_VAR_KEY = "GOOGLE_APPLICATION_CREDENTIALS";
   private static final String ENV_VAR_DISPLAY_FORMAT = "%s=%s";
 
   private JLabel yourServiceAccountKeyLabel;
   private JLabel envVarInfoText;
-  private JBList envVarList;
+  private JList envVarList;
   private JButton printButton;
   private JLabel downloadPathLabel;
   private JPanel mainPanel;
   private JPanel extensionPanel;
 
 
-  ServiceAccountKeyDisplayDialog(@Nullable Project project, String downloadPath) {
+  ServiceAccountKeyDisplayDialog(@Nullable Project project, @NotNull String gcpProjectId,
+      @NotNull String downloadPath) {
     super(project);
     init();
 
@@ -58,9 +61,12 @@ public class ServiceAccountKeyDisplayDialog extends DialogWrapper {
 
     String credentialEnvVar =
         String.format(ENV_VAR_DISPLAY_FORMAT, CREDENTIAL_ENV_VAR_KEY, downloadPath);
+    String cloudProjectEnvVar =
+        String.format(ENV_VAR_DISPLAY_FORMAT, CLOUD_PROJECT_ENV_VAR_KEY, gcpProjectId);
 
     DefaultListModel<String> model = new DefaultListModel();
     model.addElement(credentialEnvVar);
+    model.addElement(cloudProjectEnvVar);
     envVarList.setModel(model);
 
     printButton.addActionListener(

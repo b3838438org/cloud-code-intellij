@@ -24,7 +24,7 @@ import org.jetbrains.annotations.Nullable;
 public class ServiceAccountKeyUltimateDialogService extends ServiceAccountKeyDialogService {
 
   @Override
-  public DialogWrapper getDialog(@Nullable Project project, String downloadPath) {
-    return new ServiceAccountKeyUltimateDisplayDialog(project, downloadPath);
+  public DialogWrapper getDialog(@Nullable Project project, String gcpProjectId, String downloadPath) {
+    return new ServiceAccountKeyUltimateDisplayDialog(project, gcpProjectId, downloadPath);
   }
 }
