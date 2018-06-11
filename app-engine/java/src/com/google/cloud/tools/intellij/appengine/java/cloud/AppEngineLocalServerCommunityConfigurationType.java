@@ -18,10 +18,12 @@ package com.google.cloud.tools.intellij.appengine.java.cloud;
 
 import com.google.cloud.tools.intellij.appengine.java.AppEngineIcons;
 import com.google.cloud.tools.intellij.appengine.java.AppEngineMessageBundle;
+import com.intellij.execution.BeforeRunTask;
 import com.intellij.execution.configurations.ConfigurationFactory;
 import com.intellij.execution.configurations.ConfigurationType;
 import com.intellij.execution.configurations.RunConfiguration;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.Key;
 import javax.swing.Icon;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
@@ -76,5 +78,13 @@ public class AppEngineLocalServerCommunityConfigurationType implements Configura
       return new AppEngineCommunityLocalServerRunConfiguration(
           AppEngineMessageBundle.getString("appengine.run.server.name"), project, this);
     }
+
+    @Override
+    public void configureBeforeRunTaskDefaults(Key<? extends BeforeRunTask> providerID,
+        BeforeRunTask task) {
+      super.configureBeforeRunTaskDefaults(providerID, task);
+    }
+
+    // todo isApplicable to determine if shows up..check that platform is CE
   }
 }

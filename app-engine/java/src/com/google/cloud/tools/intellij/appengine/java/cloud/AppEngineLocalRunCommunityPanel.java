@@ -16,10 +16,16 @@
 
 package com.google.cloud.tools.intellij.appengine.java.cloud;
 
+import com.intellij.application.options.ModulesComboBox;
+import com.intellij.execution.ui.ConfigurationModuleSelector;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.options.SettingsEditor;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -30,13 +36,29 @@ public class AppEngineLocalRunCommunityPanel
     extends SettingsEditor<AppEngineCommunityLocalServerRunConfiguration> {
 
   private JPanel panel;
+  private JTextField textField1;
+  private JTextField textField2;
+  private ModulesComboBox modulesComboBox;
 
   @Override
-  protected void resetEditorFrom(@NotNull AppEngineCommunityLocalServerRunConfiguration s) {}
+  protected void resetEditorFrom(
+      @NotNull AppEngineCommunityLocalServerRunConfiguration configuration) {
+    modulesComboBox.setModules(configuration.getValidModules());
+    modulesComboBox.setSelectedModule(configuration.getConfigurationModule().getModule());
+
+    modulesComboBox.addItemListener(new ItemListener() {
+      @Override
+      public void itemStateChanged(ItemEvent e) {
+        System.out.println("modules changed");
+      }
+    });
+  }
 
   @Override
-  protected void applyEditorTo(@NotNull AppEngineCommunityLocalServerRunConfiguration s)
-      throws ConfigurationException {}
+  protected void applyEditorTo(@NotNull AppEngineCommunityLocalServerRunConfiguration configuration)
+      throws ConfigurationException {
+    configuration.setModule(modulesComboBox.getSelectedModule());
+  }
 
   @NotNull
   @Override
