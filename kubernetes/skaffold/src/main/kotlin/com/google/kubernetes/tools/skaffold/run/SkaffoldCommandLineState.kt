@@ -45,6 +45,8 @@ class SkaffoldCommandLineState(
     environment: ExecutionEnvironment,
     val executionMode: SkaffoldExecutorSettings.ExecutionMode
 ) : CommandLineState(environment) {
+    lateinit var killCallack: () -> Unit
+
     public override fun startProcess(): ProcessHandler {
 
         val runConfiguration: RunConfiguration? =
@@ -86,6 +88,21 @@ class SkaffoldCommandLineState(
                 defaultImageRepo = runConfiguration.imageRepositoryOverride
             )
         )
-        return KillableProcessHandler(skaffoldProcess.process, skaffoldProcess.commandLine)
+        return SkaffoldKillableProcessHandler(skaffoldProcess.process, skaffoldProcess.commandLine, killCallack)
+    }
+
+    fun setKillCallback(callback: () -> Unit) {
+        killCallack = callback
     }
 }
+
+class SkaffoldKillableProcessHandler(process:Process, commandLine: String, val killCallback: () -> Unit): KillableProcessHandler(process, commandLine) {
+
+    override fun destroyProcess() {
+        // todo kill remote run configs here
+        killCallback()
+        super.destroyProcess()
+//        return KillableProcessHandler(skaffoldProcess.process, skaffoldProcess.commandLine)
+    }
+}
+

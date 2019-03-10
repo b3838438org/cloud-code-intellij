@@ -16,9 +16,18 @@
 
 package com.google.kubernetes.tools.skaffold.run
 
+import com.google.kubernetes.tools.skaffold.run.ui.SkaffoldDevSettingsEditor
+import com.intellij.debugger.engine.RemoteStateState
+import com.intellij.debugger.impl.GenericDebuggerRunner
+import com.intellij.execution.ExecutionManager
+import com.intellij.execution.configurations.RemoteConnection
 import com.intellij.execution.configurations.RunProfile
 import com.intellij.execution.configurations.RunProfileState
 import com.intellij.execution.executors.DefaultDebugExecutor
+import com.intellij.execution.impl.ExecutionManagerImpl
+import com.intellij.execution.impl.RunConfigurationLevel
+import com.intellij.execution.impl.RunnerAndConfigurationSettingsImpl
+import com.intellij.execution.remote.RemoteConfiguration
 import com.intellij.execution.runners.DefaultProgramRunner
 import com.intellij.execution.runners.ExecutionEnvironment
 import com.intellij.execution.ui.RunContentDescriptor
@@ -42,7 +51,46 @@ class SkaffoldDebugProgramRunner : DefaultProgramRunner() {
 
     override fun doExecute(state: RunProfileState, environment: ExecutionEnvironment):
             RunContentDescriptor? {
-        // TODO implement in later PRs
-        return super.doExecute(state, environment)
+
+        val remote505 = RemoteConnection(true, "127.0.0.1", "5005", false)
+        val runnerAndConfig = RunnerAndConfigurationSettingsImpl(
+                (environment.runnerAndConfigurationSettings as RunnerAndConfigurationSettingsImpl).manager,
+                RemoteConfiguration(environment.project, SkaffoldDevConfigurationFactory(SkaffoldRunConfigurationType())),
+                false,
+                RunConfigurationLevel.WORKSPACE
+        )
+        runnerAndConfig.name = "debug: image-rec:5005"
+        val newEnv1 = ExecutionEnvironment(
+                environment.executor,
+                environment.runner,
+                runnerAndConfig,
+                environment.project
+        )
+        val gen = object : GenericDebuggerRunner() {
+            override fun doExecute(
+                    state: RunProfileState,
+                    environment: ExecutionEnvironment
+            ): RunContentDescriptor? {
+                return attachVirtualMachine(
+                        RemoteStateState(environment.project, remote505),
+                        newEnv1,
+                        remote505,
+                        true
+                )
+            }
+        }
+        gen.execute(newEnv1)
+
+        state as SkaffoldCommandLineState
+
+        state.killCallack = {
+            ExecutionManagerImpl.stopProcess(newEnv1.contentToReuse)
+            ExecutionManager.getInstance(environment.project).contentManager.removeRunContent(newEnv1.executor, newEnv1.contentToReuse!!)
+        }
+
+        return super.doExecute(
+                state,
+                environment
+        )
     }
 }
