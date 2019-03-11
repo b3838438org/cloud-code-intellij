@@ -26,10 +26,14 @@ import com.google.kubernetes.tools.skaffold.metrics.SKAFFOLD_DEV_RUN_SUCCESS
 import com.google.kubernetes.tools.skaffold.metrics.SKAFFOLD_SINGLE_RUN_FAIL
 import com.google.kubernetes.tools.skaffold.metrics.SKAFFOLD_SINGLE_RUN_SUCCESS
 import com.intellij.execution.configurations.GeneralCommandLine
+import com.intellij.execution.configurations.PathEnvironmentVariableUtil
 import com.intellij.openapi.components.ServiceManager
+import com.intellij.openapi.util.SystemInfo
+import com.intellij.util.EnvironmentUtil
 import java.io.File
 import java.nio.file.Path
 import java.nio.file.Paths
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 /**
@@ -149,9 +153,29 @@ abstract class SkaffoldExecutorService {
         val generalCommandLine = GeneralCommandLine(commandList)
         generalCommandLine.withParentEnvironmentType(
                 GeneralCommandLine.ParentEnvironmentType.CONSOLE)
+        generalCommandLine.withExePath(getExePath(generalCommandLine))
         workingDirectory?.let { generalCommandLine.workDirectory = it }
 
         return generalCommandLine.createProcess()
+    }
+
+    private fun getExePath(generalCommandLine: GeneralCommandLine):String {
+        var exePath = generalCommandLine.exePath
+        if (SystemInfo.isLinux && generalCommandLine.exePath.indexOf(File.pathSeparatorChar) == -1) {
+            val systemPath = System.getenv("PATH")
+            val shellPath = EnvironmentUtil.getValue("PATH")
+            if (!Objects.equals(systemPath, shellPath)) {
+                var exeFile = PathEnvironmentVariableUtil.findInPath(generalCommandLine.exePath, systemPath, null);
+                if (exeFile == null) {
+                    exeFile = PathEnvironmentVariableUtil.findInPath(generalCommandLine.exePath, shellPath, null);
+                    if (exeFile != null) {
+//            LOG.debug(exePath + " => " + exeFile);
+                        exePath = exeFile.getPath();
+                    }
+                }
+            }
+        }
+        return exePath
     }
 }
 
