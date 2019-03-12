@@ -20,14 +20,11 @@ import com.google.cloud.tools.intellij.analytics.UsageTrackerService
 import com.google.common.annotations.VisibleForTesting
 import com.google.kubernetes.tools.core.settings.KubernetesSettingsService
 import com.google.kubernetes.tools.skaffold.SkaffoldExecutorSettings.ExecutionMode
-import com.google.kubernetes.tools.skaffold.metrics.METADATA_ERROR_MESSAGE_KEY
-import com.google.kubernetes.tools.skaffold.metrics.SKAFFOLD_DEV_RUN_FAIL
-import com.google.kubernetes.tools.skaffold.metrics.SKAFFOLD_DEV_RUN_SUCCESS
-import com.google.kubernetes.tools.skaffold.metrics.SKAFFOLD_SINGLE_RUN_FAIL
-import com.google.kubernetes.tools.skaffold.metrics.SKAFFOLD_SINGLE_RUN_SUCCESS
+import com.google.kubernetes.tools.skaffold.metrics.*
 import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.openapi.components.ServiceManager
 import com.intellij.openapi.diagnostic.Logger
+import com.intellij.openapi.util.SystemInfo
 import com.intellij.util.EnvironmentUtil
 import java.io.File
 import java.nio.file.Path
@@ -51,6 +48,9 @@ abstract class SkaffoldExecutorService {
 
     /** Path for Skaffold executable, any form supported by [ProcessBuilder] */
     abstract var skaffoldExecutablePath: Path
+
+    /** Additional directories for Skaffold executable, in case a specific executor needs them. */
+    abstract var additionalPathDirectories: List<String>
 
     /**
      * Checks if Skaffold is available by executing a 'skaffold version' command. If the process
@@ -150,7 +150,7 @@ abstract class SkaffoldExecutorService {
         workingDirectory: File?,
         commandList: List<String>
     ): Process {
-        val generalCommandLine = GeneralCommandLine(commandList)
+        var generalCommandLine = GeneralCommandLine(commandList)
         generalCommandLine.withParentEnvironmentType(
                 GeneralCommandLine.ParentEnvironmentType.CONSOLE)
 
@@ -158,10 +158,18 @@ abstract class SkaffoldExecutorService {
         // this ensures that the shell environment is read and included. If the shell environment
         // reader returns an empty map, [GeneralCommandLine#withEnvironment] will be a noop.
         try {
-            generalCommandLine.withEnvironment(EnvironmentUtil.ShellEnvReader().readShellEnv())
+            generalCommandLine = generalCommandLine.withEnvironment(EnvironmentUtil.ShellEnvReader().readShellEnv())
         } catch (e: Exception) {
             log.warn("Exception occurred reading the shell environment. Continue process " +
                     "creation with already loaded environment")
+        }
+
+        // add additional path into existing PATH variable.
+        if (additionalPathDirectories.size > 0) {
+            val pathVariableName = "PATH"
+            val existingPath = generalCommandLine.effectiveEnvironment[pathVariableName] ?: ""
+            val updatedPath = existingPath + File.pathSeparator + additionalPathDirectories.joinToString(File.pathSeparator)
+            generalCommandLine = generalCommandLine.withEnvironment(pathVariableName, updatedPath)
         }
 
         workingDirectory?.let { generalCommandLine.workDirectory = it }
@@ -227,6 +235,16 @@ class DefaultSkaffoldExecutorService : SkaffoldExecutorService() {
                 Paths.get(skaffoldPathOverride.trim())
             } else {
                 field
+            }
+        }
+
+    /** For system-default Skaffold, add typical installation locations to ease PATH issues. */
+    override var additionalPathDirectories: List<String> = listOf()
+        get() {
+            if (SystemInfo.isLinux || SystemInfo.isMac) {
+                return listOf("/usr/local/bin") // typical Skaffold/kubectl installation path.
+            } else {
+                return field
             }
         }
 }

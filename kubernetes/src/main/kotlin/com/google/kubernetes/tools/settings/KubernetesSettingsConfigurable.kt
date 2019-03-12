@@ -64,6 +64,7 @@ class KubernetesSettingsConfigurable : Configurable {
         skaffoldBrowser.textField.document.addDocumentListener(object : DocumentListener {
             val skaffoldExecutorService = object : SkaffoldExecutorService() {
                 override var skaffoldExecutablePath: Path = Paths.get(skaffoldBrowser.text)
+                override var additionalPathDirectories = listOf<String>()
             }
 
             override fun changedUpdate(event: DocumentEvent?) {
