@@ -26,6 +26,52 @@ allprojects {
     }
 
     dependencies {
+//        compile("org.jetbrains.kotlin:kotlin-runtime:1.3")
+
+//        compile("io.grpc:grpc-netty:1.19.0") {
+//            exclude(group = "com.google.guava", module = "guava")
+//            exclude(group = "com.google.code.gson", module = "gson")
+//            exclude(group = "com.google.api.grpc", module = "proto-google-common-protos")
+//            exclude(group = "com.google.protobuf", module = "protobuf-java")
+//        }
+//        compile("com.google.protobuf:protobuf-java:3.7.0")
+//    compile("com.google.protobuf:protobuf-java:3.4.0")
+
+        compile("io.grpc:grpc-protobuf:1.19.0") {
+            exclude(group = "com.google.guava", module = "guava")
+        exclude(group = "com.google.code.gson", module = "gson")
+        exclude(group = "com.google.api.grpc", module = "proto-google-common-protos")
+        exclude(group = "com.google.protobuf", module = "protobuf-java")
+//            exclude(group = "io.grpc", module = "grpc-protobuf-lite")
+        }
+    compile("io.grpc:grpc-stub:1.19.0") {
+            exclude(group = "com.google.guava", module = "guava")
+        exclude(group = "com.google.code.gson", module = "gson")
+
+        exclude(group = "com.google.protobuf", module = "protobuf-java")
+//        exclude(group = "com.google.api.grpc", module = "proto-google-common-protos")
+//        exclude(group = "com.google.protobuf", module = "protobuf-java")
+    }
+
+        compile("io.grpc:grpc-okhttp:1.19.0") {
+            exclude(group = "com.google.guava", module = "guava")
+        exclude(group = "com.google.code.gson", module = "gson")
+            exclude(group = "com.squareup.okio", module = "okio")
+
+            exclude(group = "com.google.protobuf", module = "protobuf-java")
+//        exclude(group = "com.google.api.grpc", module = "proto-google-common-protos")
+//        exclude(group = "com.google.protobuf", module = "protobuf-java")
+    }
+
+        compile("io.grpc:grpc-netty:1.19.0") {
+            exclude(group = "com.google.guava", module = "guava")
+        exclude(group = "com.google.code.gson", module = "gson")
+
+            exclude(group = "com.google.protobuf", module = "protobuf-java")
+//        exclude(group = "com.google.api.grpc", module = "proto-google-common-protos")
+//        exclude(group = "com.google.protobuf", module = "protobuf-java")
+    }
+
         testCompile("io.mockk:mockk:+") {
             // this ensures kotlin plugin/version takes precedence, mockk updates less often
             exclude(group = "org.jetbrains.kotlin", module = "kotlin-reflect")
@@ -37,7 +83,8 @@ dependencies {
     compile(project(":kubernetes:core"))
     compile(project(":kubernetes:skaffold"))
 
-    compile("com.google.protobuf:protobuf-java:2.5.0")
+//    compile("com.google.protobuf:protobuf-java:2.5.0")
+
 
     testCompile(project(":kubernetes:common-test-lib"))
 }

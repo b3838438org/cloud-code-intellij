@@ -20,11 +20,7 @@ import com.google.cloud.tools.intellij.analytics.UsageTrackerService
 import com.google.common.annotations.VisibleForTesting
 import com.google.kubernetes.tools.core.settings.KubernetesSettingsService
 import com.google.kubernetes.tools.skaffold.SkaffoldExecutorSettings.ExecutionMode
-import com.google.kubernetes.tools.skaffold.metrics.METADATA_ERROR_MESSAGE_KEY
-import com.google.kubernetes.tools.skaffold.metrics.SKAFFOLD_DEV_RUN_FAIL
-import com.google.kubernetes.tools.skaffold.metrics.SKAFFOLD_DEV_RUN_SUCCESS
-import com.google.kubernetes.tools.skaffold.metrics.SKAFFOLD_SINGLE_RUN_FAIL
-import com.google.kubernetes.tools.skaffold.metrics.SKAFFOLD_SINGLE_RUN_SUCCESS
+import com.google.kubernetes.tools.skaffold.metrics.*
 import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.openapi.components.ServiceManager
 import com.intellij.openapi.diagnostic.Logger
@@ -163,6 +159,8 @@ abstract class SkaffoldExecutorService {
             log.warn("Exception occurred reading the shell environment. Continue process " +
                     "creation with already loaded environment")
         }
+
+//        Skaffold.StateResponse.newBuilder().build().state
 
         workingDirectory?.let { generalCommandLine.workDirectory = it }
 

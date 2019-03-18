@@ -60,7 +60,8 @@ dependencies {
     compile(project(':stackdriver-debugger'))
     compile(project(':kubernetes'))
 
-    compile 'com.google.protobuf:protobuf-java:2.5.0'
+    compile 'com.squareup.okio:okio:1.13.0'
+    compile 'com.google.protobuf:protobuf-java:3.4.0'
     compile 'com.google.apis:google-api-services-clouddebugger:v2-rev7-1.21.0'
     compile 'com.google.apis:google-api-services-cloudresourcemanager:v1beta1-rev12-1.21.0'
     compile 'com.google.apis:google-api-services-iam:v1-rev225-1.22.0'
